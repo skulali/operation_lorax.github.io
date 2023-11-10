@@ -12,6 +12,8 @@ P8105 Final Project Proposal
 
 ## Project title
 
+**Operation Lorax - Data Speaks for the Trees!**
+
 ## Motivation
 
 There is a growing body of evidence demonstrating the beneficial effects
@@ -40,6 +42,36 @@ used as a comparison point when the next tree census is realeased in
 2015 and 2025.
 
 ## Final products
+
+**1. Report**
+
+A collaborative report will be written by our team to give specific
+details about how and why we completed our project. This report will
+include some guiding questions that our work will be centered around
+with a common goal of yielding credible answers to each. There will be
+descriptive sections on the motivation for the project, our data
+collection and cleaning steps, how we analyzed the data and what we can
+conclude from our results and findings. It will detail the challenges
+and limitations of our analysis and approaches and will also describe
+our findings and how they can be interpreted from a public health
+perspective.
+
+**2. Website**
+
+An interactive webpage will be created to include the scope of our
+project and our choice of data sources. There will be supplementary
+pages within the webpage to detail data processing, exploratory data
+analysis, visualizations and geographic mapping, and our overall
+findings to attempt to find linkages between the health of trees and
+humans. We hope that this webpage yields an accessible and interesting
+platform to inform the eco-curious public about the necessity of trees
+in New York City.
+
+**3. Screencast Video**
+
+A 2-minute narrated video screencast will be available on the website to
+view in order to further display all aspects of our webpage project and
+teach viewers how to navigate to each section.
 
 ## Data sources
 
