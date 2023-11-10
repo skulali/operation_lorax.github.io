@@ -1,4 +1,4 @@
-Proposal
+P8105 Final Project Proposal
 ================
 2023-11-11
 
@@ -29,10 +29,15 @@ tree exposure may differ across sociodemographic groups ([Wolf et al.,
 2020](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7345658/)). Here, we
 focus on New York City using tree data from 2015 (most recent dataset).
 In this study, we aim to examine the geographic distribution of trees
-across NYC and potential associations with sociodemographic variables
-and health outcomes, at the zipcode and/or borough resolution. Such
-research will aid in informing public health interventions to promote
-equitable access to urban trees and improve health.
+across NYC neighborhoods and potential associations with
+sociodemographic variables and health outcomes, primarily at the NTA
+(neighborhood tabulation area as defined by the 2010 census) resolution.
+Such research will aid in informing public health interventions to
+promote equitable access to urban trees and improve health. While our
+analyses are retrospective, our work will lay a foundation that can be
+used as a comparison point when the next tree census is realeased in
+2025, allowing researchers to see how trends may have changed between
+2015 and 2025.
 
 ## Final products
 
