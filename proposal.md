@@ -2,7 +2,7 @@ Proposal
 ================
 2023-11-11
 
-### Group members
+## Group members
 
 - Stephanie Calluori - sdc2157
 - Zander De Jesus - agd2159
@@ -10,9 +10,9 @@ Proposal
 - Christine Kuryla - clk2162
 - Grace Santos - gvs2113
 
-### Project title
+## Project title
 
-### Motivation
+## Motivation
 
 There is a growing body of evidence demonstrating the beneficial effects
 of green space exposure on human health ([Yang et al.,
@@ -34,10 +34,35 @@ and health outcomes, at the zipcode and/or borough resolution. Such
 research will aid in informing public health interventions to promote
 equitable access to urban trees and improve health.
 
-### Final products
+## Final products
 
-### Data sources
+## Data sources
 
-### Planned analyses / visualizations / coding challenges
+## Planned analyses / visualizations / coding challenges
 
-### Planned timeline
+## Planned timeline
+
+| Dates           | Tasks                                  | Due Dates  |
+|-----------------|----------------------------------------|------------|
+| Oct 30 - Nov 5  | Brainstorm project ideas               | \-         |
+| Nov 6 - Nov 12  | Finalize dataset and draft proposal    | Nov 8      |
+|                 | Finalize proposal                      | Nov 10     |
+|                 | Proposal due                           | **Nov 11** |
+| Nov 13 - Nov 19 | Project review meeting                 | TBD        |
+|                 | Divide up the work                     | \-         |
+|                 | Create ‘foundation’ documents          | \-         |
+|                 | Start data tidying and manipulation    | \-         |
+| Nov 20 - Nov 26 | Finalize data tidying and manipulation | Nov 26     |
+| Nov 27 - Dec 3  | Start data analyses and visualizations | \-         |
+|                 | Start building the website             | \-         |
+|                 | Draft the report                       | \-         |
+|                 | Video script and/or slides             | \-         |
+| Dec 4 - Dec 10  | Record video                           | Dec 4      |
+|                 | Finalize all components                | Dec 8      |
+|                 | Project due                            | **Dec 9**  |
+|                 | \- Written report                      | \-         |
+|                 | \- Webpage                             | \-         |
+|                 | \- Explanatory video                   | \-         |
+|                 | \- Peer assessment                     | \-         |
+| Dec 11 - Dec 17 | Prepare for class discussion           | Dec 11     |
+|                 | In-class discussion of projects        | **Dec 14** |
