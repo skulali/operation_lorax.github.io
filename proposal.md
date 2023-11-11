@@ -152,11 +152,84 @@ our Research Questions):*
   each borough):
   <https://www.nyc.gov/site/doh/data/data-publications/profiles-2015-community-health-profiles.page>
 
+- Environmental Health Data Portal:
+  <https://a816-dohbesp.nyc.gov/IndicatorPublic/beta/data-explorer/>
+
 - Neighborhood name matching / conversion across other resolutions:
   PUMA, Council District, Census Tracts, Neighborhood Tracking Area
-  <https://guides.newman.baruch.cuny.edu/nyc_data/nbhoods>
+
+  - <https://guides.newman.baruch.cuny.edu/nyc_data/nbhoods>
+  - <https://a816-dohbesp.nyc.gov/IndicatorPublic/beta/data-stories/geographies/>
 
 ## Planned analyses / visualizations / coding challenges
+
+### Analyses and visualizations
+
+#### Overall tree distributions in NYC
+
+- EDA: Summary statistics (mean, median, standard deviation, minimum,
+  maximum) for various metrics like tree size (measured by Diameter at
+  Breast Height, DBH, sometimes seen as a proxy for tree age) and
+  health, both overall and segmented by borough and neighborhood.
+- Distributions: Bar charts will visualize frequency counts for
+  categorical variables like tree species, and histograms as well as
+  violin plots will be used to explore distributions (sometimes faceted
+  by borough) and identify outliers.
+- Species Analysis and Biodiversity: Identify the most common tree
+  species across different neighborhoods and boroughs, assessing their
+  health and distribution. Additionally, we will assess biodiversity by
+  counting different species, and analyzing species richness and
+  evenness. This can then be used to correlate with health and
+  environmental variables.
+- Tree Status: Assess whether trees being along or offset from the curb
+  or protected by the guardrail are related to their health, damage
+  amount, or whether they are alive. Sneakers amount by borough
+  visualized by a bar chart, both with the gross number of sneakers in
+  the trees and with a normalized value.
+- Additional Visualizations: Latitude/longitude maps of various tree
+  variables such as tree health across NYC. Latitude longitude plot of
+  top tree species colored by species. Tree density by neighborhood.
+  Stacked bars for tree species/health/relative sidewalk position by
+  neighborhood or borough.
+
+#### Sociodemographic associations
+
+- Correlation and Exploratory Analysis: Examine the relationships
+  between tree variables (density, health, species prevalence) and
+  sociodemographic factors (such as population density). Example: tree
+  density and poverty level.
+- Visualizations: Scatterplots illustrating the relationship between
+  tree density and demographic variables like population density, with
+  color or size variations to represent different demographic or
+  health-related outcomes.
+
+#### Health outcomes
+
+- Public Health Correlations: Investigate the link between tree presence
+  and public health outcomes such as asthma by correlating tree density
+  or health with emergency room asthma visits per neighborhood unit.
+  - Tree species compared to emergency room asthma visits as well as
+    asthma prevalence (certain tree species may exacerbate allergies,
+    leading to asthma attacks).
+  - Association between heat vulnerability index and tree density,
+    including a corresponding box plot.
+  - Regression on physical activity data and tree density, including a
+    visualization with a scatterplot and regression line.
+- Environmental Impact Analysis: Assess how tree density or health
+  correlates with environmental factors like air quality or temperature
+  (data pending).
+
+### Coding challenges
+
+- Data Integration: Merging datasets with different location
+  descriptions (ZIP code, neighborhood name, latitude/longitude) into a
+  coherent format, which may be different for different analyses.
+- Time Windows: Dealing with tree data collected every ten years and
+  sociodemographic data collected annually, requiring aggregation or
+  alignment.
+- Data Wrangling: Ensuring that comparisons like tree density are
+  meaningful by adjusting for area size differences across
+  neighborhoods.
 
 ## Planned timeline
 
