@@ -14,6 +14,19 @@ Sometimes you need to say a bit about the site -- how it was made, where it's ho
 
 If this is for a project or analysis, I recommend giving some details about the R package versions that you used to create the content.
 
+## Obtaining the raw 2015 tree data (220 MB)
+
+The raw tree data is 220 MB, which is too big to host on github. The following process will align your rproject folders with our paths and file names and enable the relative paths in the code. 
+
+0. Create a folder in the rproject folder that is called exactly "large_tree_data".
+1. Go to the NYC OpenData website for the 2015 tree census: https://data.cityofnewyork.us/Environment/2015-Street-Tree-Census-Tree-Data/uvpi-gqnh 
+2. Click on "Export" and then "CSV" and download the csv file onto your computer. 
+3. The file will have the date of download in it. Rename the file to "2015_tree_raw.csv".
+4. Move it into the rproject/large_tree_data/ folder on your computer.
+
+We put the path to the folder and file in the .gitignore file so that it will not push or pull when we push and pull the project. The other data is located in the "small_data" folder and is hosted on the github. 
+
+
 ```{r, message = FALSE, eval = FALSE}
 library(tidyverse)
 

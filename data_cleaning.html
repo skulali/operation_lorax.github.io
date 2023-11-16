@@ -13,7 +13,7 @@
 
 <title>Data Cleaning</title>
 
-<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -298,6 +298,30 @@ $(document).ready(function () {
 where it’s hosted, where the source code can be found.</p>
 <p>If this is for a project or analysis, I recommend giving some details
 about the R package versions that you used to create the content.</p>
+</div>
+<div id="obtaining-the-raw-2015-tree-data-220-mb"
+class="section level2">
+<h2>Obtaining the raw 2015 tree data (220 MB)</h2>
+<p>The raw tree data is 220 MB, which is too big to host on github. The
+following process will align your rproject folders with our paths and
+file names and enable the relative paths in the code.</p>
+<ol start="0" style="list-style-type: decimal">
+<li>Create a folder in the rproject folder that is called exactly
+“large_tree_data”.</li>
+<li>Go to the NYC OpenData website for the 2015 tree census: <a
+href="https://data.cityofnewyork.us/Environment/2015-Street-Tree-Census-Tree-Data/uvpi-gqnh"
+class="uri">https://data.cityofnewyork.us/Environment/2015-Street-Tree-Census-Tree-Data/uvpi-gqnh</a></li>
+<li>Click on “Export” and then “CSV” and download the csv file onto your
+computer.</li>
+<li>The file will have the date of download in it. Rename the file to
+“2015_tree_raw.csv”.</li>
+<li>Move it into the rproject/large_tree_data/ folder on your
+computer.</li>
+</ol>
+<p>We put the path to the folder and file in the .gitignore file so that
+it will not push or pull when we push and pull the project. The other
+data is located in the “small_data” folder and is hosted on the
+github.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre class="r"><code>library(tidyverse)
 trees_2015 = read_csv(&quot;large_tree_data/2015_tree_raw.csv&quot;, na = c(&quot;&quot;, &quot;NA&quot;, &quot;Unknown&quot;)) |&gt; 
