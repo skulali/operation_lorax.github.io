@@ -19,6 +19,17 @@ library(tidyverse)
 
 ```
 
+```{r Zander Test, eval = FALSE}
+
+library(tidyverse)
+trees_2015 = read_csv("large_tree_data/2015_tree_raw.csv", na = c("", "NA", "Unknown")) |> 
+  janitor::clean_names()
+
+tree_alive_test = trees_2015 |> 
+  filter(status == "Alive") |> 
+  count(status)
+```
+
 
 
 ```{r, eval = FALSE}
