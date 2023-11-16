@@ -13,7 +13,7 @@
 
 <title>Data Cleaning</title>
 
-<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -301,7 +301,11 @@ about the R package versions that you used to create the content.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre class="r"><code>library(tidyverse)
 trees_2015 = read_csv(&quot;large_tree_data/2015_tree_raw.csv&quot;, na = c(&quot;&quot;, &quot;NA&quot;, &quot;Unknown&quot;)) |&gt; 
-  janitor::clean_names()</code></pre>
+  janitor::clean_names()
+
+tree_alive_test = trees_2015 |&gt; 
+  filter(status == &quot;Alive&quot;) |&gt; 
+  count(status)</code></pre>
 <pre class="r"><code>tree_raw &lt;- read_csv(&quot;large_tree_data/2015_tree_raw.csv&quot;, col_names = TRUE, na = c(&quot;&quot;, &quot;NA&quot;, &quot;Unknown&quot;))
 
 tree_clean &lt;- tree_raw |&gt; 
