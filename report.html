@@ -12,7 +12,7 @@
 
 <meta name="date" content="2023-11-17" />
 
-<title>report</title>
+<title>Project Report</title>
 
 <script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -290,30 +290,186 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">report</h1>
+<h1 class="title toc-ignore">Project Report</h1>
 <h4 class="date">2023-11-17</h4>
 
 </div>
 
 
-<p>Your report should include the following topics. Depending on your
-project type the amount of discussion you devote to each of them will
-vary:</p>
-<p>Motivation: Provide an overview of the project goals and motivation.
-Related work: Anything that inspired you, such as a paper, a web site,
-or something we discussed in class. Initial questions: What questions
-are you trying to answer? How did these questions evolve over the course
-of the project? What new questions did you consider in the course of
-your analysis? Data: Source, scraping method, cleaning, etc. Exploratory
-analysis: Visualizations, summaries, and exploratory statistical
-analyses. Justify the steps you took, and show any major changes to your
-ideas. Additional analysis: If you undertake formal statistical
-analyses, describe these in detail Discussion: What were your findings?
-Are they what you expect? What insights into the data can you make? As
-this will be your only chance to describe your project in detail, make
-sure that your report is a standalone document that fully describes your
-process and results. We also expect you to write high-quality code that
-is understandable to an outside reader.</p>
+<p>As this will be your only chance to describe your project in detail,
+make sure that your report is a standalone document that fully describes
+your process and results. We also expect you to write high-quality code
+that is understandable to an outside reader.</p>
+<p><strong>Project Name:</strong> <em>Operation Lorax - Data Speaks for
+the Trees!</em></p>
+<p><strong>Project Members:</strong> Christine Kuryla, Grace Santos,
+Sharon Kulali, Stephanie Calluori, Zander De Jesus</p>
+<div id="motivation" class="section level2">
+<h2>Motivation</h2>
+<p>Provide an overview of the project goals and motivation.</p>
+<p>There is a growing body of evidence demonstrating the beneficial
+effects of green space exposure on human health (<a
+href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8479545/">Yang et
+al., 2021</a>). To better inform public health interventions,
+researchers are diving deeper into the specific aspects of nature, such
+as urban trees, and their effects on health. Most studies have observed
+positive effects of urban trees on physical activity and a collection of
+health outcomes, including respiratory, cardiovascular, and mental
+health (<a
+href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7345658/">Wolf et
+al., 2020</a>). However, validation of these results and further
+exploration of additional health outcomes is needed. In addition, few
+studies have examined how urban tree exposure may differ across
+sociodemographic groups (<a
+href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7345658/">Wolf et
+al., 2020</a>). Here, we focus on New York City using tree data from
+2015 (most recent dataset). In this study, we aim to examine the
+geographic distribution of trees across NYC neighborhoods and potential
+associations with sociodemographic variables and health outcomes,
+primarily at the NTA (neighborhood tabulation area as defined by the
+2010 census) resolution. Such research will aid in informing public
+health interventions to promote equitable access to urban trees and
+improve health. While our analyses are retrospective, our work will lay
+a foundation that can be used as a comparison point when the next tree
+census is realeased in 2025, allowing researchers to see how trends may
+have changed between 2015 and 2025.</p>
+</div>
+<div id="related-work" class="section level2">
+<h2>Related work</h2>
+<p>Anything that inspired you, such as a paper, a web site, or something
+we discussed in class.</p>
+</div>
+<div id="initial-questions" class="section level2">
+<h2>Initial questions</h2>
+<p>What questions are you trying to answer? How did these questions
+evolve over the course of the project? What new questions did you
+consider in the course of your analysis?</p>
+</div>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<p>Source, scraping method, cleaning, etc.</p>
+<p>We found localized Street Tree Survey data collected by the NYC Parks
+and Recreation Department and volunteer partnerships with community
+organizations. This dataset provides street addresses for surveyed
+trees, evaluates species and metrics for tree health, and can be grouped
+by Borough, Neighborhood Tabulation Area (NTA) demarcated by 2010
+Census, “zip_city” zip code neighborhood level, and as well as latitude
+and longitude coordinates available for specific point mapping.</p>
+<p>The first data resolution of greatest interest to us is the
+<strong>Neighborhood Tabulation Area (NTA)</strong> level neighborhood.
+These standardized neighborhood level names are built on the combination
+of 2010 census tracts, and also nest into larger PUMA regions across New
+York City. The 1995 dataset Street Tree Survey also has NTA regions
+brought from the 2010 census for comparison. Many of our auxiliary
+datasets for comparison on sociodemographic or environmental health data
+also have 2010 NTA codes.</p>
+<p>The second resolution of interest was zipcode / ZCTA, but this data
+resolution has a few inconsistencies that would need to be cleaned. The
+tree survey splits zipcode into two columns - “postcode” and associated
+“zip_city” neighborhood name, but some of these neighborhoods are
+specific while others are broader borough names of different scales.</p>
+<p>To potentially standardize this, we have found:</p>
+<ul>
+<li><p>Raw zip code ids (ZCTA) for standardizing NYC and Neighborhood
+Names Provided by NYCHealth: <a
+href="https://nychealth.github.io/covid-maps/modzcta-geo/about.html"
+class="uri">https://nychealth.github.io/covid-maps/modzcta-geo/about.html</a></p></li>
+<li><p>We could match the neighborhood names associated with these ZCTA
+codes using joins, and then group tree data by these cleaned ZCTA
+neighborhood names.</p></li>
+</ul>
+<p>The Street Tree survey appears to be collected citywide every 10
+years, and the primary dataset of interest was 2015 data. Previous
+surveys from 2005 and 1995 are also available and could be used for
+comparison overtime. We are currently exploring what local
+sociodemographic datasets are available at neighborhood resolution to
+think about how tree health and abundance associates with variables like
+household income, ethnic demographic, surveyed mental wellbeing,
+etc.</p>
+<p><strong>Main Dataset (NYC Street Tree Survey):</strong></p>
+<ul>
+<li>2015 Street Trees: <a
+href="https://data.cityofnewyork.us/Environment/2015-Street-Tree-Census-Tree-Data/uvpi-gqnh"
+class="uri">https://data.cityofnewyork.us/Environment/2015-Street-Tree-Census-Tree-Data/uvpi-gqnh</a>
+<ul>
+<li>2005 <a
+href="https://data.cityofnewyork.us/Environment/2005-Street-Tree-Census/29bw-z7pj"
+class="uri">https://data.cityofnewyork.us/Environment/2005-Street-Tree-Census/29bw-z7pj</a></li>
+<li>1995 <a
+href="https://data.cityofnewyork.us/Environment/1995-Street-Tree-Census/kyad-zm4j"
+class="uri">https://data.cityofnewyork.us/Environment/1995-Street-Tree-Census/kyad-zm4j</a></li>
+</ul></li>
+</ul>
+<p><em>Primary NTA Level Datasets for Sociodemographics and
+Environmental Health:</em></p>
+<ul>
+<li>NYC Population Breakdown from 2010 Census NTA
+<ul>
+<li><a
+href="https://www.nyc.gov/site/planning/planning-level/nyc-population/census-2010.page"
+class="uri">https://www.nyc.gov/site/planning/planning-level/nyc-population/census-2010.page</a></li>
+<li><a
+href="https://www.nyc.gov/site/planning/data-maps/open-data/census-download-metadata.page"
+class="uri">https://www.nyc.gov/site/planning/data-maps/open-data/census-download-metadata.page</a></li>
+</ul></li>
+<li>NYC Department of Environmental Health NTA Metrics:
+<ul>
+<li><a
+href="https://a816-dohbesp.nyc.gov/IndicatorPublic/beta/data-stories/geographies/"
+class="uri">https://a816-dohbesp.nyc.gov/IndicatorPublic/beta/data-stories/geographies/</a></li>
+<li>Asthma Emergency Visits in NYC <a
+href="https://a816-dohbesp.nyc.gov/IndicatorPublic/beta/data-explorer/asthma/?id=2384#display=summary"
+class="uri">https://a816-dohbesp.nyc.gov/IndicatorPublic/beta/data-explorer/asthma/?id=2384#display=summary</a></li>
+</ul></li>
+</ul>
+<p><em>Additional Comparative Datasets (Supplemental Depending on the
+needs of our Research Questions):</em></p>
+<ul>
+<li><p>US Census/ ACS demographic data by County: <a
+href="https://data.census.gov/table/ACSDP1Y2022.DP05?q=demographic&amp;g=050XX00US36005,36047,36061,36081,3608"
+class="uri">https://data.census.gov/table/ACSDP1Y2022.DP05?q=demographic&amp;g=050XX00US36005,36047,36061,36081,3608</a></p>
+<ul>
+<li>By Zip Code: <a
+href="https://data.census.gov/table/ACSDP5Y2021.DP05?g=040XX00US36$8600000"
+class="uri">https://data.census.gov/table/ACSDP5Y2021.DP05?g=040XX00US36$8600000</a></li>
+</ul></li>
+<li><p>Demograpic Youth data by Zip Code: <a
+href="https://data.cityofnewyork.us/City-Government/Demographic-Statistics-By-Zip-Code/kku6-nxdu"
+class="uri">https://data.cityofnewyork.us/City-Government/Demographic-Statistics-By-Zip-Code/kku6-nxdu</a></p></li>
+<li><p>2015 Community Health profile (has percentages of diff outcomes
+for each borough): <a
+href="https://www.nyc.gov/site/doh/data/data-publications/profiles-2015-community-health-profiles.page"
+class="uri">https://www.nyc.gov/site/doh/data/data-publications/profiles-2015-community-health-profiles.page</a></p></li>
+<li><p>Environmental Health Data Portal: <a
+href="https://a816-dohbesp.nyc.gov/IndicatorPublic/beta/data-explorer/"
+class="uri">https://a816-dohbesp.nyc.gov/IndicatorPublic/beta/data-explorer/</a></p></li>
+<li><p>Neighborhood name matching / conversion across other resolutions:
+PUMA, Council District, Census Tracts, Neighborhood Tracking Area</p>
+<ul>
+<li><a href="https://guides.newman.baruch.cuny.edu/nyc_data/nbhoods"
+class="uri">https://guides.newman.baruch.cuny.edu/nyc_data/nbhoods</a></li>
+<li><a
+href="https://a816-dohbesp.nyc.gov/IndicatorPublic/beta/data-stories/geographies/"
+class="uri">https://a816-dohbesp.nyc.gov/IndicatorPublic/beta/data-stories/geographies/</a></li>
+</ul></li>
+</ul>
+</div>
+<div id="exploratory-analysis" class="section level2">
+<h2>Exploratory analysis</h2>
+<p>Visualizations, summaries, and exploratory statistical analyses.
+Justify the steps you took, and show any major changes to your
+ideas.</p>
+</div>
+<div id="additional-analysis" class="section level2">
+<h2>Additional analysis</h2>
+<p>If you undertake formal statistical analyses, describe these in
+detail</p>
+</div>
+<div id="discussion" class="section level2">
+<h2>Discussion</h2>
+<p>What were your findings? Are they what you expect? What insights into
+the data can you make?</p>
+</div>
 
 
 
