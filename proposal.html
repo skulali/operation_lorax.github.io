@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style type="text/css">
+@font-face {
+font-family: octicons-link;
+src: url(data:font/woff;charset=utf-8;base64,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) format('woff');
+}
+body {
+-webkit-text-size-adjust: 100%;
+text-size-adjust: 100%;
+color: #333;
+font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+font-size: 16px;
+line-height: 1.6;
+word-wrap: break-word;
+}
+a {
+background-color: transparent;
+}
+a:active,
+a:hover {
+outline: 0;
+}
+strong {
+font-weight: bold;
+}
+h1 {
+font-size: 2em;
+margin: 0.67em 0;
+}
+img {
+border: 0;
+}
+hr {
+box-sizing: content-box;
+height: 0;
+}
+pre {
+overflow: auto;
+}
+code,
+kbd,
+pre {
+font-family: monospace, monospace;
+font-size: 1em;
+}
+input {
+color: inherit;
+font: inherit;
+margin: 0;
+}
+html input[disabled] {
+cursor: default;
+}
+input {
+line-height: normal;
+}
+input[type="checkbox"] {
+box-sizing: border-box;
+padding: 0;
+}
+table {
+border-collapse: collapse;
+border-spacing: 0;
+}
+td,
+th {
+padding: 0;
+}
+* {
+box-sizing: border-box;
+}
+input {
+font: 13px / 1.4 Helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+a {
+color: #4078c0;
+text-decoration: none;
+}
+a:hover,
+a:active {
+text-decoration: underline;
+}
+hr {
+height: 0;
+margin: 15px 0;
+overflow: hidden;
+background: transparent;
+border: 0;
+border-bottom: 1px solid #ddd;
+}
+hr:before {
+display: table;
+content: "";
+}
+hr:after {
+display: table;
+clear: both;
+content: "";
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+margin-top: 15px;
+margin-bottom: 15px;
+line-height: 1.1;
+}
+h1 {
+font-size: 30px;
+}
+h2 {
+font-size: 21px;
+}
+h3 {
+font-size: 16px;
+}
+h4 {
+font-size: 14px;
+}
+h5 {
+font-size: 12px;
+}
+h6 {
+font-size: 11px;
+}
+blockquote {
+margin: 0;
+}
+ul,
+ol {
+padding: 0;
+margin-top: 0;
+margin-bottom: 0;
+}
+ol ol,
+ul ol {
+list-style-type: lower-roman;
+}
+ul ul ol,
+ul ol ol,
+ol ul ol,
+ol ol ol {
+list-style-type: lower-alpha;
+}
+dd {
+margin-left: 0;
+}
+code {
+font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+font-size: 12px;
+}
+pre {
+margin-top: 0;
+margin-bottom: 0;
+font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+.select::-ms-expand {
+opacity: 0;
+}
+.octicon {
+font: normal normal normal 16px/1 octicons-link;
+display: inline-block;
+text-decoration: none;
+text-rendering: auto;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+-webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+}
+.octicon-link:before {
+content: '\f05c';
+}
+.markdown-body:before {
+display: table;
+content: "";
+}
+.markdown-body:after {
+display: table;
+clear: both;
+content: "";
+}
+.markdown-body>*:first-child {
+margin-top: 0 !important;
+}
+.markdown-body>*:last-child {
+margin-bottom: 0 !important;
+}
+a:not([href]) {
+color: inherit;
+text-decoration: none;
+}
+.anchor {
+display: inline-block;
+padding-right: 2px;
+margin-left: -18px;
+}
+.anchor:focus {
+outline: none;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+margin-top: 1em;
+margin-bottom: 16px;
+font-weight: bold;
+line-height: 1.4;
+}
+h1 .octicon-link,
+h2 .octicon-link,
+h3 .octicon-link,
+h4 .octicon-link,
+h5 .octicon-link,
+h6 .octicon-link {
+color: #000;
+vertical-align: middle;
+visibility: hidden;
+}
+h1:hover .anchor,
+h2:hover .anchor,
+h3:hover .anchor,
+h4:hover .anchor,
+h5:hover .anchor,
+h6:hover .anchor {
+text-decoration: none;
+}
+h1:hover .anchor .octicon-link,
+h2:hover .anchor .octicon-link,
+h3:hover .anchor .octicon-link,
+h4:hover .anchor .octicon-link,
+h5:hover .anchor .octicon-link,
+h6:hover .anchor .octicon-link {
+visibility: visible;
+}
+h1 {
+padding-bottom: 0.3em;
+font-size: 2.25em;
+line-height: 1.2;
+border-bottom: 1px solid #eee;
+}
+h1 .anchor {
+line-height: 1;
+}
+h2 {
+padding-bottom: 0.3em;
+font-size: 1.75em;
+line-height: 1.225;
+border-bottom: 1px solid #eee;
+}
+h2 .anchor {
+line-height: 1;
+}
+h3 {
+font-size: 1.5em;
+line-height: 1.43;
+}
+h3 .anchor {
+line-height: 1.2;
+}
+h4 {
+font-size: 1.25em;
+}
+h4 .anchor {
+line-height: 1.2;
+}
+h5 {
+font-size: 1em;
+}
+h5 .anchor {
+line-height: 1.1;
+}
+h6 {
+font-size: 1em;
+color: #777;
+}
+h6 .anchor {
+line-height: 1.1;
+}
+p,
+blockquote,
+ul,
+ol,
+dl,
+table,
+pre {
+margin-top: 0;
+margin-bottom: 16px;
+}
+hr {
+height: 4px;
+padding: 0;
+margin: 16px 0;
+background-color: #e7e7e7;
+border: 0 none;
+}
+ul,
+ol {
+padding-left: 2em;
+}
+ul ul,
+ul ol,
+ol ol,
+ol ul {
+margin-top: 0;
+margin-bottom: 0;
+}
+li>p {
+margin-top: 16px;
+}
+dl {
+padding: 0;
+}
+dl dt {
+padding: 0;
+margin-top: 16px;
+font-size: 1em;
+font-style: italic;
+font-weight: bold;
+}
+dl dd {
+padding: 0 16px;
+margin-bottom: 16px;
+}
+blockquote {
+padding: 0 15px;
+color: #777;
+border-left: 4px solid #ddd;
+}
+blockquote>:first-child {
+margin-top: 0;
+}
+blockquote>:last-child {
+margin-bottom: 0;
+}
+table {
+display: block;
+width: 100%;
+overflow: auto;
+word-break: normal;
+word-break: keep-all;
+}
+table th {
+font-weight: bold;
+}
+table th,
+table td {
+padding: 6px 13px;
+border: 1px solid #ddd;
+}
+table tr {
+background-color: #fff;
+border-top: 1px solid #ccc;
+}
+table tr:nth-child(2n) {
+background-color: #f8f8f8;
+}
+img {
+max-width: 100%;
+box-sizing: content-box;
+background-color: #fff;
+}
+code {
+padding: 0;
+padding-top: 0.2em;
+padding-bottom: 0.2em;
+margin: 0;
+font-size: 85%;
+background-color: rgba(0,0,0,0.04);
+border-radius: 3px;
+}
+code:before,
+code:after {
+letter-spacing: -0.2em;
+content: "\00a0";
+}
+pre>code {
+padding: 0;
+margin: 0;
+font-size: 100%;
+word-break: normal;
+white-space: pre;
+background: transparent;
+border: 0;
+}
+.highlight {
+margin-bottom: 16px;
+}
+.highlight pre,
+pre {
+padding: 16px;
+overflow: auto;
+font-size: 85%;
+line-height: 1.45;
+background-color: #f7f7f7;
+border-radius: 3px;
+}
+.highlight pre {
+margin-bottom: 0;
+word-break: normal;
+}
+pre {
+word-wrap: normal;
+}
+pre code {
+display: inline;
+max-width: initial;
+padding: 0;
+margin: 0;
+overflow: initial;
+line-height: inherit;
+word-wrap: normal;
+background-color: transparent;
+border: 0;
+}
+pre code:before,
+pre code:after {
+content: normal;
+}
+kbd {
+display: inline-block;
+padding: 3px 5px;
+font-size: 11px;
+line-height: 10px;
+color: #555;
+vertical-align: middle;
+background-color: #fcfcfc;
+border: solid 1px #ccc;
+border-bottom-color: #bbb;
+border-radius: 3px;
+box-shadow: inset 0 -1px 0 #bbb;
+}
+.pl-c {
+color: #969896;
+}
+.pl-c1,
+.pl-s .pl-v {
+color: #0086b3;
+}
+.pl-e,
+.pl-en {
+color: #795da3;
+}
+.pl-s .pl-s1,
+.pl-smi {
+color: #333;
+}
+.pl-ent {
+color: #63a35c;
+}
+.pl-k {
+color: #a71d5d;
+}
+.pl-pds,
+.pl-s,
+.pl-s .pl-pse .pl-s1,
+.pl-sr,
+.pl-sr .pl-cce,
+.pl-sr .pl-sra,
+.pl-sr .pl-sre {
+color: #183691;
+}
+.pl-v {
+color: #ed6a43;
+}
+.pl-id {
+color: #b52a1d;
+}
+.pl-ii {
+background-color: #b52a1d;
+color: #f8f8f8;
+}
+.pl-sr .pl-cce {
+color: #63a35c;
+font-weight: bold;
+}
+.pl-ml {
+color: #693a17;
+}
+.pl-mh,
+.pl-mh .pl-en,
+.pl-ms {
+color: #1d3e81;
+font-weight: bold;
+}
+.pl-mq {
+color: #008080;
+}
+.pl-mi {
+color: #333;
+font-style: italic;
+}
+.pl-mb {
+color: #333;
+font-weight: bold;
+}
+.pl-md {
+background-color: #ffecec;
+color: #bd2c00;
+}
+.pl-mi1 {
+background-color: #eaffea;
+color: #55a532;
+}
+.pl-mdr {
+color: #795da3;
+font-weight: bold;
+}
+.pl-mo {
+color: #1d3e81;
+}
+kbd {
+display: inline-block;
+padding: 3px 5px;
+font: 11px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+line-height: 10px;
+color: #555;
+vertical-align: middle;
+background-color: #fcfcfc;
+border: solid 1px #ccc;
+border-bottom-color: #bbb;
+border-radius: 3px;
+box-shadow: inset 0 -1px 0 #bbb;
+}
+.task-list-item {
+list-style-type: none;
+}
+.task-list-item+.task-list-item {
+margin-top: 3px;
+}
+.task-list-item input {
+margin: 0 0.35em 0.25em -1.6em;
+vertical-align: middle;
+}
+:checked+.radio-label {
+z-index: 1;
+position: relative;
+border-color: #4078c0;
+}
+.sourceLine {
+display: inline-block;
+}
+code .kw { color: #000000; }
+code .dt { color: #ed6a43; }
+code .dv { color: #009999; }
+code .bn { color: #009999; }
+code .fl { color: #009999; }
+code .ch { color: #009999; }
+code .st { color: #183691; }
+code .co { color: #969896; }
+code .ot { color: #0086b3; }
+code .al { color: #a61717; }
+code .fu { color: #63a35c; }
+code .er { color: #a61717; background-color: #e3d2d2; }
+code .wa { color: #000000; }
+code .cn { color: #008080; }
+code .sc { color: #008080; }
+code .vs { color: #183691; }
+code .ss { color: #183691; }
+code .im { color: #000000; }
+code .va {color: #008080; }
+code .cf { color: #000000; }
+code .op { color: #000000; }
+code .bu { color: #000000; }
+code .ex { color: #000000; }
+code .pp { color: #999999; }
+code .at { color: #008080; }
+code .do { color: #969896; }
+code .an { color: #008080; }
+code .cv { color: #008080; }
+code .in { color: #008080; }
+</style>
+<style>
+body {
+box-sizing: border-box;
+min-width: 200px;
+max-width: 980px;
+margin: 0 auto;
+padding: 45px;
+padding-top: 0px;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<h1 id="p8105-final-project-proposal">P8105 Final Project Proposal</h1>
+<p>2023-11-11</p>
+<h2 id="group-members">Group members</h2>
+<ul>
+<li>Stephanie Calluori - sdc2157</li>
+<li>Zander De Jesus - agd2159</li>
+<li>Sharon Kulali - sjk2254</li>
+<li>Christine Kuryla - clk2162</li>
+<li>Grace Santos - gvs2113</li>
+</ul>
+<h2 id="project-title">Project title</h2>
+<p><strong>Operation Lorax - Data Speaks for the Trees!</strong></p>
+<h2 id="motivation">Motivation</h2>
+<p>There is a growing body of evidence demonstrating the beneficial
+effects of green space exposure on human health (<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8479545/">Yang et
+al., 2021</a>). To better inform public health interventions,
+researchers are diving deeper into the specific aspects of nature, such
+as urban trees, and their effects on health. Most studies have observed
+positive effects of urban trees on physical activity and a collection of
+health outcomes, including respiratory, cardiovascular, and mental
+health (<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7345658/">Wolf et
+al., 2020</a>). However, validation of these results and further
+exploration of additional health outcomes is needed. In addition, few
+studies have examined how urban tree exposure may differ across
+sociodemographic groups (<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7345658/">Wolf et
+al., 2020</a>). Here, we focus on New York City using tree data from
+2015 (most recent dataset). In this study, we aim to examine the
+geographic distribution of trees across NYC neighborhoods and potential
+associations with sociodemographic variables and health outcomes,
+primarily at the NTA (neighborhood tabulation area as defined by the
+2010 census) resolution. Such research will aid in informing public
+health interventions to promote equitable access to urban trees and
+improve health. While our analyses are retrospective, our work will lay
+a foundation that can be used as a comparison point when the next tree
+census is realeased in 2025, allowing researchers to see how trends may
+have changed between 2015 and 2025.</p>
+<h2 id="final-products">Final products</h2>
+<p><strong>1. Report</strong></p>
+<p>A collaborative report will be written by our team to give specific
+details about how and why we completed our project. This report will
+include some guiding questions that our work will be centered around
+with a common goal of yielding credible answers to each. There will be
+descriptive sections on the motivation for the project, our data
+collection and cleaning steps, how we analyzed the data and what we can
+conclude from our results and findings. It will detail the challenges
+and limitations of our analysis and approaches and will also describe
+our findings and how they can be interpreted from a public health
+perspective.</p>
+<p><strong>2. Website</strong></p>
+<p>An interactive webpage will be created to include the scope of our
+project and our choice of data sources. There will be supplementary
+pages within the webpage to detail data processing, exploratory data
+analysis, visualizations and geographic mapping, and our overall
+findings to attempt to find linkages between the health of trees and
+humans. We hope that this webpage yields an accessible and interesting
+platform to inform the eco-curious public about the necessity of trees
+in New York City.</p>
+<p><strong>3. Screencast Video</strong></p>
+<p>A 2-minute narrated video screencast will be available on the website
+to view in order to further display all aspects of our webpage project
+and teach viewers how to navigate to each section.</p>
+<h2 id="data-sources">Data sources</h2>
+<p>We found localized Street Tree Survey data collected by the NYC Parks
+and Recreation Department and volunteer partnerships with community
+organizations. This dataset provides street addresses for surveyed
+trees, evaluates species and metrics for tree health, and can be grouped
+by Borough, Neighborhood Tabulation Area (NTA) demarcated by 2010
+Census, “zip_city” zip code neighborhood level, and as well as latitude
+and longitude coordinates available for specific point mapping.</p>
+<p>The first data resolution of greatest interest to us is the
+<strong>Neighborhood Tabulation Area (NTA)</strong> level neighborhood.
+These standardized neighborhood level names are built on the combination
+of 2010 census tracts, and also nest into larger PUMA regions across New
+York City. The 1995 dataset Street Tree Survey also has NTA regions
+brought from the 2010 census for comparison. Many of our auxiliary
+datasets for comparison on sociodemographic or environmental health data
+also have 2010 NTA codes.</p>
+<p>The second resolution of interest was zipcode / ZCTA, but this data
+resolution has a few inconsistencies that would need to be cleaned. The
+tree survey splits zipcode into two columns - “postcode” and associated
+“zip_city” neighborhood name, but some of these neighborhoods are
+specific while others are broader borough names of different scales.</p>
+<p>To potentially standardize this, we have found:</p>
+<ul>
+<li><p>Raw zip code ids (ZCTA) for standardizing NYC and Neighborhood
+Names Provided by NYCHealth: <a href="https://nychealth.github.io/covid-maps/modzcta-geo/about.html">https://nychealth.github.io/covid-maps/modzcta-geo/about.html</a></p></li>
+<li><p>We could match the neighborhood names associated with these ZCTA
+codes using joins, and then group tree data by these cleaned ZCTA
+neighborhood names.</p></li>
+</ul>
+<p>The Street Tree survey appears to be collected citywide every 10
+years, and the primary dataset of interest was 2015 data. Previous
+surveys from 2005 and 1995 are also available and could be used for
+comparison overtime. We are currently exploring what local
+sociodemographic datasets are available at neighborhood resolution to
+think about how tree health and abundance associates with variables like
+household income, ethnic demographic, surveyed mental wellbeing,
+etc.</p>
+<p><strong>Main Dataset (NYC Street Tree Survey):</strong></p>
+<ul>
+<li>2015 Street Trees: <a href="https://data.cityofnewyork.us/Environment/2015-Street-Tree-Census-Tree-Data/uvpi-gqnh">https://data.cityofnewyork.us/Environment/2015-Street-Tree-Census-Tree-Data/uvpi-gqnh</a>
+<ul>
+<li>2005 <a href="https://data.cityofnewyork.us/Environment/2005-Street-Tree-Census/29bw-z7pj">https://data.cityofnewyork.us/Environment/2005-Street-Tree-Census/29bw-z7pj</a></li>
+<li>1995 <a href="https://data.cityofnewyork.us/Environment/1995-Street-Tree-Census/kyad-zm4j">https://data.cityofnewyork.us/Environment/1995-Street-Tree-Census/kyad-zm4j</a></li>
+</ul></li>
+</ul>
+<p><em>Primary NTA Level Datasets for Sociodemographics and
+Environmental Health:</em></p>
+<ul>
+<li>NYC Population Breakdown from 2010 Census NTA
+<ul>
+<li><a href="https://www.nyc.gov/site/planning/planning-level/nyc-population/census-2010.page">https://www.nyc.gov/site/planning/planning-level/nyc-population/census-2010.page</a></li>
+<li><a href="https://www.nyc.gov/site/planning/data-maps/open-data/census-download-metadata.page">https://www.nyc.gov/site/planning/data-maps/open-data/census-download-metadata.page</a></li>
+</ul></li>
+<li>NYC Department of Environmental Health NTA Metrics:
+<ul>
+<li><a href="https://a816-dohbesp.nyc.gov/IndicatorPublic/beta/data-stories/geographies/">https://a816-dohbesp.nyc.gov/IndicatorPublic/beta/data-stories/geographies/</a></li>
+<li>Asthma Emergency Visits in NYC <a href="https://a816-dohbesp.nyc.gov/IndicatorPublic/beta/data-explorer/asthma/?id=2384#display=summary">https://a816-dohbesp.nyc.gov/IndicatorPublic/beta/data-explorer/asthma/?id=2384#display=summary</a></li>
+</ul></li>
+</ul>
+<p><em>Additional Comparative Datasets (Supplemental Depending on the
+needs of our Research Questions):</em></p>
+<ul>
+<li><p>US Census/ ACS demographic data by County: <a href="https://data.census.gov/table/ACSDP1Y2022.DP05?q=demographic&amp;g=050XX00US36005,36047,36061,36081,3608">https://data.census.gov/table/ACSDP1Y2022.DP05?q=demographic&amp;g=050XX00US36005,36047,36061,36081,3608</a></p>
+<ul>
+<li>By Zip Code: <a href="https://data.census.gov/table/ACSDP5Y2021.DP05?g=040XX00US36$8600000">https://data.census.gov/table/ACSDP5Y2021.DP05?g=040XX00US36$8600000</a></li>
+</ul></li>
+<li><p>Demograpic Youth data by Zip Code: <a href="https://data.cityofnewyork.us/City-Government/Demographic-Statistics-By-Zip-Code/kku6-nxdu">https://data.cityofnewyork.us/City-Government/Demographic-Statistics-By-Zip-Code/kku6-nxdu</a></p></li>
+<li><p>2015 Community Health profile (has percentages of diff outcomes
+for each borough): <a href="https://www.nyc.gov/site/doh/data/data-publications/profiles-2015-community-health-profiles.page">https://www.nyc.gov/site/doh/data/data-publications/profiles-2015-community-health-profiles.page</a></p></li>
+<li><p>Environmental Health Data Portal: <a href="https://a816-dohbesp.nyc.gov/IndicatorPublic/beta/data-explorer/">https://a816-dohbesp.nyc.gov/IndicatorPublic/beta/data-explorer/</a></p></li>
+<li><p>Neighborhood name matching / conversion across other resolutions:
+PUMA, Council District, Census Tracts, Neighborhood Tracking Area</p>
+<ul>
+<li><a href="https://guides.newman.baruch.cuny.edu/nyc_data/nbhoods">https://guides.newman.baruch.cuny.edu/nyc_data/nbhoods</a></li>
+<li><a href="https://a816-dohbesp.nyc.gov/IndicatorPublic/beta/data-stories/geographies/">https://a816-dohbesp.nyc.gov/IndicatorPublic/beta/data-stories/geographies/</a></li>
+</ul></li>
+</ul>
+<h2 id="planned-analyses--visualizations--coding-challenges">Planned
+analyses / visualizations / coding challenges</h2>
+<h3 id="analyses-and-visualizations">Analyses and visualizations</h3>
+<h4 id="overall-tree-distributions-in-nyc">Overall tree distributions in
+NYC</h4>
+<ul>
+<li>EDA: Summary statistics (mean, median, standard deviation, minimum,
+maximum) for various metrics like tree size (measured by Diameter at
+Breast Height, DBH, sometimes seen as a proxy for tree age) and health,
+both overall and segmented by borough and neighborhood.</li>
+<li>Distributions: Bar charts will visualize frequency counts for
+categorical variables like tree species, and histograms as well as
+violin plots will be used to explore distributions (sometimes faceted by
+borough) and identify outliers.</li>
+<li>Species Analysis and Biodiversity: Identify the most common tree
+species across different neighborhoods and boroughs, assessing their
+health and distribution. Additionally, we will assess biodiversity by
+counting different species, and analyzing species richness and evenness.
+This can then be used to correlate with health and environmental
+variables.</li>
+<li>Tree Status: Assess whether trees being along or offset from the
+curb or protected by the guardrail are related to their health, damage
+amount, or whether they are alive. Sneakers amount by borough visualized
+by a bar chart, both with the gross number of sneakers in the trees and
+with a normalized value.</li>
+<li>Additional Visualizations: Latitude/longitude maps of various tree
+variables such as tree health across NYC. Latitude longitude plot of top
+tree species colored by species. Tree density by neighborhood. Stacked
+bars for tree species/health/relative sidewalk position by neighborhood
+or borough.</li>
+</ul>
+<h4 id="sociodemographic-associations">Sociodemographic
+associations</h4>
+<ul>
+<li>Correlation and Exploratory Analysis: Examine the relationships
+between tree variables (density, health, species prevalence) and
+sociodemographic factors (such as population density). Example: tree
+density and poverty level.</li>
+<li>Visualizations: Scatterplots illustrating the relationship between
+tree density and demographic variables like population density, with
+color or size variations to represent different demographic or
+health-related outcomes.</li>
+</ul>
+<h4 id="health-outcomes">Health outcomes</h4>
+<ul>
+<li>Public Health Correlations: Investigate the link between tree
+presence and public health outcomes such as asthma by correlating tree
+density or health with emergency room asthma visits per neighborhood
+unit.
+<ul>
+<li>Tree species compared to emergency room asthma visits as well as
+asthma prevalence (certain tree species may exacerbate allergies,
+leading to asthma attacks).</li>
+<li>Association between heat vulnerability index and tree density,
+including a corresponding box plot.</li>
+<li>Regression on physical activity data and tree density, including a
+visualization with a scatterplot and regression line.</li>
+</ul></li>
+<li>Environmental Impact Analysis: Assess how tree density or health
+correlates with environmental factors like air quality or temperature
+(data pending).</li>
+</ul>
+<h3 id="coding-challenges">Coding challenges</h3>
+<ul>
+<li>Data Integration: Merging datasets with different location
+descriptions (ZIP code, neighborhood name, latitude/longitude) into a
+coherent format, which may be different for different analyses.</li>
+<li>Time Windows: Dealing with tree data collected every ten years and
+sociodemographic data collected annually, requiring aggregation or
+alignment.</li>
+<li>Data Wrangling: Ensuring that comparisons like tree density are
+meaningful by adjusting for area size differences across
+neighborhoods.</li>
+</ul>
+<h2 id="planned-timeline">Planned timeline</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Dates</th>
+<th>Tasks</th>
+<th>Due Dates</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Oct 30 - Nov 5</td>
+<td>Brainstorm project ideas</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td>Nov 6 - Nov 12</td>
+<td>Finalize dataset and draft proposal</td>
+<td>Nov 8</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Finalize proposal</td>
+<td>Nov 10</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Proposal due</td>
+<td><strong>Nov 11</strong></td>
+</tr>
+<tr class="odd">
+<td>Nov 13 - Nov 19</td>
+<td>Project review meeting</td>
+<td>TBD</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Divide up the work</td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Create ‘foundation’ documents</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Start data tidying and manipulation</td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td>Nov 20 - Nov 26</td>
+<td>Finalize data tidying and manipulation</td>
+<td>Nov 26</td>
+</tr>
+<tr class="even">
+<td>Nov 27 - Dec 3</td>
+<td>Start data analyses and visualizations</td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Start building the website</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Draft the report</td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Video script and/or slides</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td>Dec 4 - Dec 10</td>
+<td>Record video</td>
+<td>Dec 4</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Finalize all components</td>
+<td>Dec 8</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Project due</td>
+<td><strong>Dec 9</strong></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>- Written report</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>- Webpage</td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>- Explanatory video</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>- Peer assessment</td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td>Dec 11 - Dec 17</td>
+<td>Prepare for class discussion</td>
+<td>Dec 11</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>In-class discussion of projects</td>
+<td><strong>Dec 14</strong></td>
+</tr>
+</tbody>
+</table>
+
+</body>
+</html>
