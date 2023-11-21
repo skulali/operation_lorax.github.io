@@ -1,9 +1,125 @@
 ---
-title: "About"
+title: "Grace's Work"
 ---
 
-### About this site
+### Project Goals 
+wanting to look closer at relationship between tree dataset and socio-demographic dataset. 
 
-Sometimes you need to say a bit about the site -- how it was made, where it's hosted, where the source code can be found. 
 
-If this is for a project or analysis, I recommend giving some details about the R package versions that you used to create the content.
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+```{r tree Data Import}
+tree_2015_raw = 
+  read_csv("large_tree_data/2015_tree_raw.csv", na = c("", "NA", "Unknown")) |> 
+  janitor::clean_names() |> 
+  select(tree_id, status, health, spc_common, nta)
+```
+
+```{r, dem data import}
+pop_race_2010 = readxl::read_excel("small_data/pop_race2010_nta.xlsx", skip = 6, col_names = FALSE, na = "NA") |> 
+  rename(
+   "borough" = "...1" ,
+   "census_FIPS" = "...2",
+   "nta" = "...3",
+   "nta_name" = "...4",
+   "total_population" = "...5",
+   "white_nonhis" = "...6",
+   "black_nonhis" = "...7",
+   "am_ind_alaska_nonhis" = "...8",
+   "asian_nonhis" = "...9",
+   "hawaii_pac_isl_nonhis" = "...10",
+   "other_nonhis" = "...11",
+   "two_races" = "...12",
+   "hispanic_any_race" = "...13"
+  )
+```
+
+```{r, merge}
+all_data = left_join(tree_2015_raw, pop_race_2010, by = "nta")
+```
+
+Total Number of Trees in each borough
+```{r}
+number_tree = 
+  all_data |> 
+  group_by(borough) |> 
+  summarize(n_trees = n_distinct(tree_id)) |> 
+  mutate(borough = fct_reorder(borough, n_trees))
+
+ggplot(data = number_tree, aes(x = borough, y = n_trees, fill = borough)) + geom_bar(stat = 'identity') + geom_text(aes(label = n_trees), size = 3, vjust = -1)
+```
+
+Trees in Manhattan by NTA 
+```{r}
+mhtn_number_tree = 
+  all_data |> 
+  filter(borough == "Manhattan") |> 
+  group_by(nta_name) |> 
+  summarize(n_trees = n_distinct(tree_id),
+            n_population = (sum(total_population)/100000)) |> 
+  pivot_longer(
+    n_trees:n_population,
+    names_to = "type",
+    names_prefix = "n_",
+    values_to = "total"
+  )
+  
+
+ggplot(mhtn_number_tree, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = 'identity', position = 'dodge')+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
+```
+
+Manhattan Trees and Proportion of Race 
+```{r}
+pop_proportion = 
+  all_data |> 
+  filter(borough == "Manhattan") |> 
+  group_by(nta_name) |> 
+  summarize(n_trees = n_distinct(tree_id),
+            n_white = (sum(white_nonhis)/100000),
+            n_black = (sum(black_nonhis)/100000),
+            n_asian = (sum(asian_nonhis)/10000),
+            n_other = (sum(other_nonhis)/1000),
+            n_hispanic = (sum(hispanic_any_race)/100000),
+            ) |> 
+  pivot_longer(
+    n_trees:n_hispanic,
+    names_to = "type",
+    names_prefix = "n_",
+    values_to = "total"
+  )
+  
+
+ggplot(pop_proportion, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = 'identity', position = 'dodge')+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
+```
+
+Manhattan Trees per NTA and Race per Total Pop
+```{r}
+number_mhtn = 
+  all_data |> 
+  filter(borough == "Manhattan") |> 
+  summarize(n_trees = n_distinct(tree_id))
+
+percentages = 
+  all_data |> 
+  filter(borough == "Manhattan") |> 
+  group_by(nta_name) |> 
+  summarize(n_trees = (n_distinct(tree_id)/65669),
+            n_white = (sum(white_nonhis)/sum(total_population)),
+            n_black = (sum(black_nonhis)/sum(total_population)),
+            n_asian = (sum(asian_nonhis)/sum(total_population)),
+            n_other = (sum(other_nonhis)/sum(total_population)),
+            n_hispanic = (sum(hispanic_any_race)/sum(total_population)),
+            ) |> 
+  pivot_longer(
+    n_trees:n_hispanic,
+    names_to = "type",
+    names_prefix = "n_",
+    values_to = "total"
+  )
+  
+
+ggplot(percentages, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = 'identity', position = 'dodge')+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+

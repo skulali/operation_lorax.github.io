@@ -11,7 +11,7 @@
 
 
 
-<title>About</title>
+<title>Grace’s Work</title>
 
 <script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -289,17 +289,134 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">About</h1>
+<h1 class="title toc-ignore">Grace’s Work</h1>
 
 </div>
 
 
-<div id="about-this-site" class="section level3">
-<h3>About this site</h3>
-<p>Sometimes you need to say a bit about the site – how it was made,
-where it’s hosted, where the source code can be found.</p>
-<p>If this is for a project or analysis, I recommend giving some details
-about the R package versions that you used to create the content.</p>
+<div id="project-goals" class="section level3">
+<h3>Project Goals</h3>
+<p>wanting to look closer at relationship between tree dataset and
+socio-demographic dataset.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre class="r"><code>tree_2015_raw = 
+  read_csv(&quot;large_tree_data/2015_tree_raw.csv&quot;, na = c(&quot;&quot;, &quot;NA&quot;, &quot;Unknown&quot;)) |&gt; 
+  janitor::clean_names() |&gt; 
+  select(tree_id, status, health, spc_common, nta)</code></pre>
+<pre><code>## Rows: 683788 Columns: 45
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (26): created_at, curb_loc, status, health, spc_latin, spc_common, stewa...
+## dbl (19): tree_id, block_id, tree_dbh, stump_diam, postcode, community board...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>pop_race_2010 = readxl::read_excel(&quot;small_data/pop_race2010_nta.xlsx&quot;, skip = 6, col_names = FALSE, na = &quot;NA&quot;) |&gt; 
+  rename(
+   &quot;borough&quot; = &quot;...1&quot; ,
+   &quot;census_FIPS&quot; = &quot;...2&quot;,
+   &quot;nta&quot; = &quot;...3&quot;,
+   &quot;nta_name&quot; = &quot;...4&quot;,
+   &quot;total_population&quot; = &quot;...5&quot;,
+   &quot;white_nonhis&quot; = &quot;...6&quot;,
+   &quot;black_nonhis&quot; = &quot;...7&quot;,
+   &quot;am_ind_alaska_nonhis&quot; = &quot;...8&quot;,
+   &quot;asian_nonhis&quot; = &quot;...9&quot;,
+   &quot;hawaii_pac_isl_nonhis&quot; = &quot;...10&quot;,
+   &quot;other_nonhis&quot; = &quot;...11&quot;,
+   &quot;two_races&quot; = &quot;...12&quot;,
+   &quot;hispanic_any_race&quot; = &quot;...13&quot;
+  )</code></pre>
+<pre><code>## New names:
+## • `` -&gt; `...1`
+## • `` -&gt; `...2`
+## • `` -&gt; `...3`
+## • `` -&gt; `...4`
+## • `` -&gt; `...5`
+## • `` -&gt; `...6`
+## • `` -&gt; `...7`
+## • `` -&gt; `...8`
+## • `` -&gt; `...9`
+## • `` -&gt; `...10`
+## • `` -&gt; `...11`
+## • `` -&gt; `...12`
+## • `` -&gt; `...13`</code></pre>
+<pre class="r"><code>all_data = left_join(tree_2015_raw, pop_race_2010, by = &quot;nta&quot;)</code></pre>
+<p>Total Number of Trees in each borough</p>
+<pre class="r"><code>number_tree = 
+  all_data |&gt; 
+  group_by(borough) |&gt; 
+  summarize(n_trees = n_distinct(tree_id)) |&gt; 
+  mutate(borough = fct_reorder(borough, n_trees))
+
+ggplot(data = number_tree, aes(x = borough, y = n_trees, fill = borough)) + geom_bar(stat = &#39;identity&#39;) + geom_text(aes(label = n_trees), size = 3, vjust = -1)</code></pre>
+<p><img src="grace_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Trees in Manhattan by NTA</p>
+<pre class="r"><code>mhtn_number_tree = 
+  all_data |&gt; 
+  filter(borough == &quot;Manhattan&quot;) |&gt; 
+  group_by(nta_name) |&gt; 
+  summarize(n_trees = n_distinct(tree_id),
+            n_population = (sum(total_population)/100000)) |&gt; 
+  pivot_longer(
+    n_trees:n_population,
+    names_to = &quot;type&quot;,
+    names_prefix = &quot;n_&quot;,
+    values_to = &quot;total&quot;
+  )
+  
+
+ggplot(mhtn_number_tree, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = &#39;identity&#39;, position = &#39;dodge&#39;)+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) </code></pre>
+<p><img src="grace_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Manhattan Trees and Proportion of Race</p>
+<pre class="r"><code>pop_proportion = 
+  all_data |&gt; 
+  filter(borough == &quot;Manhattan&quot;) |&gt; 
+  group_by(nta_name) |&gt; 
+  summarize(n_trees = n_distinct(tree_id),
+            n_white = (sum(white_nonhis)/100000),
+            n_black = (sum(black_nonhis)/100000),
+            n_asian = (sum(asian_nonhis)/10000),
+            n_other = (sum(other_nonhis)/1000),
+            n_hispanic = (sum(hispanic_any_race)/100000),
+            ) |&gt; 
+  pivot_longer(
+    n_trees:n_hispanic,
+    names_to = &quot;type&quot;,
+    names_prefix = &quot;n_&quot;,
+    values_to = &quot;total&quot;
+  )
+  
+
+ggplot(pop_proportion, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = &#39;identity&#39;, position = &#39;dodge&#39;)+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) </code></pre>
+<p><img src="grace_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Manhattan Trees per NTA and Race per Total Pop</p>
+<pre class="r"><code>number_mhtn = 
+  all_data |&gt; 
+  filter(borough == &quot;Manhattan&quot;) |&gt; 
+  summarize(n_trees = n_distinct(tree_id))
+
+percentages = 
+  all_data |&gt; 
+  filter(borough == &quot;Manhattan&quot;) |&gt; 
+  group_by(nta_name) |&gt; 
+  summarize(n_trees = (n_distinct(tree_id)/65669),
+            n_white = (sum(white_nonhis)/sum(total_population)),
+            n_black = (sum(black_nonhis)/sum(total_population)),
+            n_asian = (sum(asian_nonhis)/sum(total_population)),
+            n_other = (sum(other_nonhis)/sum(total_population)),
+            n_hispanic = (sum(hispanic_any_race)/sum(total_population)),
+            ) |&gt; 
+  pivot_longer(
+    n_trees:n_hispanic,
+    names_to = &quot;type&quot;,
+    names_prefix = &quot;n_&quot;,
+    values_to = &quot;total&quot;
+  )
+  
+
+ggplot(percentages, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = &#39;identity&#39;, position = &#39;dodge&#39;)+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))</code></pre>
+<p><img src="grace_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
 
 
