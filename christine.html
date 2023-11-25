@@ -11,9 +11,9 @@
 
 
 
-<title>About</title>
+<title>Christine’s Sandbox</title>
 
-<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -289,18 +289,193 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">About</h1>
+<h1 class="title toc-ignore">Christine’s Sandbox</h1>
 
 </div>
 
 
-<div id="about-this-site" class="section level3">
-<h3>About this site</h3>
-<p>Sometimes you need to say a bit about the site – how it was made,
-where it’s hosted, where the source code can be found.</p>
-<p>If this is for a project or analysis, I recommend giving some details
-about the R package versions that you used to create the content.</p>
-</div>
+<p>Load tidyverse and tree data</p>
+<pre class="r"><code>#tree_alive_test &lt;- trees_2015 |&gt; 
+#  filter(status == &quot;Alive&quot;) |&gt; 
+#  count(status)
+
+# Most common tree species in NYC
+
+#trees_2015 %&gt;% 
+#  drop_na() %&gt;% 
+#  group_by(spc_common, borough) %&gt;%
+#  count(spc_common) %&gt;% 
+#  arrange(desc(n)) %&gt;% 
+#  pivot_wider(names_from = borough, values_from = n) %&gt;% 
+#  head(n = 10) %&gt;% 
+#  ggplot(aes(x = spc_common, y = n)) +
+#  geom_col() +
+#  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+
+# Find top 10 trees overall
+top_trees_nyc &lt;- trees_2015 %&gt;% 
+  drop_na() %&gt;%   
+  group_by(spc_common) %&gt;%
+  count(spc_common) %&gt;% 
+  arrange(desc(n)) %&gt;% 
+  head(n = 10) %&gt;% 
+ # select(spc_common) %&gt;% 
+  pull(spc_common)
+
+# Plot the top ten NYC trees in each Borough and Average Overall
+ trees_2015 %&gt;% 
+    drop_na() %&gt;% 
+    group_by(spc_common, borough) %&gt;%
+    count(spc_common) %&gt;% 
+  #  filter(spc_common %in% pull(top_trees_data, spc_common)) %&gt;% 
+    filter(spc_common %in% top_trees_nyc) %&gt;% 
+    pivot_wider(names_from = borough, values_from = n) %&gt;% 
+    mutate(`All Boroughs` = mean(Bronx:`Staten Island`)) %&gt;% 
+  #  mutate(`Max` = max(Bronx:`Staten Island`)) %&gt;% 
+    select(spc_common, `All Boroughs`, everything()) %&gt;% 
+    #maybe stop here and print out that table 
+    pivot_longer(cols = `All Boroughs`:`Staten Island`) %&gt;% 
+    ggplot(aes(x = reorder(spc_common, value), y = value, fill = spc_common)) +
+    geom_bar(stat = &quot;identity&quot;) +
+    facet_wrap(~ name) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    labs(x = &quot;Tree Species&quot;, 
+         y = &quot;Count&quot;, 
+         title = &quot;Top Ten NYC Trees Overall and in Each NYC Borough&quot;)</code></pre>
+<p><img src="christine_files/figure-html/top_ten_species-1.png" width="672" /></p>
+<pre class="r"><code># Top ten trees in each borough
+trees_2015 %&gt;%
+  drop_na() %&gt;%
+  group_by(borough, spc_common) %&gt;%
+  count() %&gt;%
+  arrange(borough, desc(n)) %&gt;%
+  group_by(borough) %&gt;%
+  slice_max(n = 10, order_by = n) %&gt;% 
+  select(-n) %&gt;% 
+ # group_by(borough) %&gt;% 
+  pivot_wider(names_from = borough, values_from = spc_common) %&gt;% 
+  unnest(cols = c(Bronx, Brooklyn, Manhattan, Queens, `Staten Island`)) %&gt;% 
+  mutate(Rank = row_number()) %&gt;% 
+  select(Rank, everything()) %&gt;% 
+  knitr::kable()</code></pre>
+<pre><code>## Warning: Values from `spc_common` are not uniquely identified; output will contain
+## list-cols.
+## • Use `values_fn = list` to suppress this warning.
+## • Use `values_fn = {summary_fun}` to summarise duplicates.
+## • Use the following dplyr code to identify duplicates.
+##   {data} %&gt;%
+##   dplyr::group_by(borough) %&gt;%
+##   dplyr::summarise(n = dplyr::n(), .groups = &quot;drop&quot;) %&gt;%
+##   dplyr::filter(n &gt; 1L)</code></pre>
+<table style="width:100%;">
+<colgroup>
+<col width="5%" />
+<col width="19%" />
+<col width="19%" />
+<col width="19%" />
+<col width="19%" />
+<col width="18%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">Rank</th>
+<th align="left">Bronx</th>
+<th align="left">Brooklyn</th>
+<th align="left">Manhattan</th>
+<th align="left">Queens</th>
+<th align="left">Staten Island</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">honeylocust</td>
+<td align="left">London planetree</td>
+<td align="left">honeylocust</td>
+<td align="left">London planetree</td>
+<td align="left">Callery pear</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">London planetree</td>
+<td align="left">honeylocust</td>
+<td align="left">Callery pear</td>
+<td align="left">pin oak</td>
+<td align="left">London planetree</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">pin oak</td>
+<td align="left">pin oak</td>
+<td align="left">ginkgo</td>
+<td align="left">honeylocust</td>
+<td align="left">red maple</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">Callery pear</td>
+<td align="left">Japanese zelkova</td>
+<td align="left">pin oak</td>
+<td align="left">Norway maple</td>
+<td align="left">pin oak</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">Japanese zelkova</td>
+<td align="left">Callery pear</td>
+<td align="left">Sophora</td>
+<td align="left">Callery pear</td>
+<td align="left">cherry</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">cherry</td>
+<td align="left">littleleaf linden</td>
+<td align="left">London planetree</td>
+<td align="left">cherry</td>
+<td align="left">sweetgum</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="left">littleleaf linden</td>
+<td align="left">Norway maple</td>
+<td align="left">Japanese zelkova</td>
+<td align="left">littleleaf linden</td>
+<td align="left">honeylocust</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="left">Norway maple</td>
+<td align="left">Sophora</td>
+<td align="left">littleleaf linden</td>
+<td align="left">Japanese zelkova</td>
+<td align="left">Norway maple</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="left">ginkgo</td>
+<td align="left">cherry</td>
+<td align="left">American elm</td>
+<td align="left">green ash</td>
+<td align="left">silver maple</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="left">Sophora</td>
+<td align="left">ginkgo</td>
+<td align="left">American linden</td>
+<td align="left">silver maple</td>
+<td align="left">maple</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>trees_with_shoes &lt;- trees_2015 %&gt;% 
+  filter(brch_shoe == &quot;Yes&quot;) 
+
+trees_with_shoes %&gt;% 
+  ggplot(aes(x = borough)) +
+  geom_bar()</code></pre>
+<p><img src="christine_files/figure-html/shoes-1.png" width="672" /></p>
 
 
 

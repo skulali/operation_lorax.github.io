@@ -1,9 +1,99 @@
 ---
-title: "About"
+title: "Christine's Sandbox"
+output: github_document
 ---
 
-### About this site
+Load tidyverse and tree data
 
-Sometimes you need to say a bit about the site -- how it was made, where it's hosted, where the source code can be found. 
+```{r, message=FALSE, echo=FALSE}
+library(tidyverse)
+trees_2015 <- read_csv("large_tree_data/2015_tree_raw.csv", na = c("", "NA", "Unknown")) |> 
+  janitor::clean_names()
+```
 
-If this is for a project or analysis, I recommend giving some details about the R package versions that you used to create the content.
+
+```{r top_ten_species}
+#tree_alive_test <- trees_2015 |> 
+#  filter(status == "Alive") |> 
+#  count(status)
+
+# Most common tree species in NYC
+
+#trees_2015 %>% 
+#  drop_na() %>% 
+#  group_by(spc_common, borough) %>%
+#  count(spc_common) %>% 
+#  arrange(desc(n)) %>% 
+#  pivot_wider(names_from = borough, values_from = n) %>% 
+#  head(n = 10) %>% 
+#  ggplot(aes(x = spc_common, y = n)) +
+#  geom_col() +
+#  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+
+# Find top 10 trees overall
+top_trees_nyc <- trees_2015 %>% 
+  drop_na() %>%   
+  group_by(spc_common) %>%
+  count(spc_common) %>% 
+  arrange(desc(n)) %>% 
+  head(n = 10) %>% 
+ # select(spc_common) %>% 
+  pull(spc_common)
+
+# Plot the top ten NYC trees in each Borough and Average Overall
+ trees_2015 %>% 
+    drop_na() %>% 
+    group_by(spc_common, borough) %>%
+    count(spc_common) %>% 
+  #  filter(spc_common %in% pull(top_trees_data, spc_common)) %>% 
+    filter(spc_common %in% top_trees_nyc) %>% 
+    pivot_wider(names_from = borough, values_from = n) %>% 
+    mutate(`All Boroughs` = mean(Bronx:`Staten Island`)) %>% 
+  #  mutate(`Max` = max(Bronx:`Staten Island`)) %>% 
+    select(spc_common, `All Boroughs`, everything()) %>% 
+    #maybe stop here and print out that table 
+    pivot_longer(cols = `All Boroughs`:`Staten Island`) %>% 
+    ggplot(aes(x = reorder(spc_common, value), y = value, fill = spc_common)) +
+    geom_bar(stat = "identity") +
+    facet_wrap(~ name) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    labs(x = "Tree Species", 
+         y = "Count", 
+         title = "Top Ten NYC Trees Overall and in Each NYC Borough")
+```
+
+
+```{r top_in_each_borough_table}
+# Top ten trees in each borough
+trees_2015 %>%
+  drop_na() %>%
+  group_by(borough, spc_common) %>%
+  count() %>%
+  arrange(borough, desc(n)) %>%
+  group_by(borough) %>%
+  slice_max(n = 10, order_by = n) %>% 
+  select(-n) %>% 
+ # group_by(borough) %>% 
+  pivot_wider(names_from = borough, values_from = spc_common) %>% 
+  unnest(cols = c(Bronx, Brooklyn, Manhattan, Queens, `Staten Island`)) %>% 
+  mutate(Rank = row_number()) %>% 
+  select(Rank, everything()) %>% 
+  knitr::kable()
+
+```
+
+
+```{r shoes}
+trees_with_shoes <- trees_2015 %>% 
+  filter(brch_shoe == "Yes") 
+
+trees_with_shoes %>% 
+  ggplot(aes(x = borough)) +
+  geom_bar()
+
+
+
+
+
+```
+
