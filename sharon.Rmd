@@ -40,18 +40,28 @@ tm_shape(zip_nyc) +
 
 ```{r}
 # Join trees data with sf object
-trees_zip <- merge(zip_nyc, trees_2015, 
+trees_zip <- 
+  merge(zip_nyc, trees_2015, 
                         by.x = "MODZCTA",
-                        by.y = "postcode")
+                        by.y = "postcode") |> 
+  mutate(status = case_match(
+    health,
+    "Good" ~ 3,
+    "Fair" ~ 2,
+    "Poor" ~ 1
+  ))
 ```
 
 ```{r}
-#tm_shape(trees_zip) +   
-#  tm_polygons(col = "health",
-            #  style = "quantile",
-            #  n = 4,
-            #  palette = "Blues",
-            #  border.col = "black")
+trees_zip |> 
+  drop_na() |> 
+  filter(borough == "Manhattan") |> 
+  tm_shape() +   
+  tm_polygons(col = "status",
+              style = "equal",
+              n = 3,
+              palette = "Blues",
+              border.col = "black")
 ```
 
 
