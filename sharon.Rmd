@@ -2,8 +2,91 @@
 title: "About"
 ---
 
-### About this site
+# SetUp
 
-Sometimes you need to say a bit about the site -- how it was made, where it's hosted, where the source code can be found. 
+```{r}
+# loading the necessary packages
 
-If this is for a project or analysis, I recommend giving some details about the R package versions that you used to create the content.
+library(tidyverse)
+library(plotly)
+library(sf)
+library(tmap)
+library(tmaptools)
+library(shinyjs)
+```
+
+# Tree Health
+
+```{r}
+# importing the data
+
+trees_2015 =
+  read_csv("large_tree_data/2015_tree_raw.csv", na = c("", "NA", "Unknown")) |> 
+  janitor::clean_names()
+```
+
+```{r}
+# map based on tree health
+
+#trees_2015 |>
+   #plot_ly(
+     #  x = ~longitude, y = ~latitude, color = ~health, text = ~spc_common,
+     #  type = "scatter", mode = "markers", alpha = 0.5)
+```
+
+```{r}
+#scatter_ggplot = 
+  #trees_2015 |>
+  #top_n(n = 50) |> 
+  #ggplot(aes(x = latitude, y = longitude, color = health)) +
+  #geom_point(alpha = 0.25) +
+  #coord_cartesian()
+
+#ggplotly(scatter_ggplot)
+```
+
+
+```{r}
+#class(trees_2015)
+#class(trees_2015_sf)
+
+#trees_2015_sf =
+ # trees_2015 |> 
+  #st_as_sf(coords = c("longitude", "latitude")) |> 
+#  st_set_crs(4269) |> 
+ # st_cast(trees_2015, "MULTILINESTRING") |> 
+  #st_cast("POLYGON")
+
+#trees_sf = 
+ # trees_2015 |>
+#  st_as_sf(coords = c("longitude", "latitude")) |> 
+ # pull(geometry) |> 
+#  st_cast("POLYGON")
+
+#boro_sf =
+  #trees_2015 |> 
+  #st_as_sf(coords = c("longitude", "latitude")) |> 
+  #group_by(borough) |>  
+  #summarise() |> 
+ # st_cast("POLYGON")
+
+#plot(boro_sf)
+```
+
+```{r}
+# by borough
+
+#boro_sf |> 
+  #ggplot() + 
+  #geom_sf() 
+
+#data <- as_Spatial(trees_2015_sf)
+
+#tm_shape(trees_2015_sf) +   
+#  tm_polygons(col = "health",
+            #  style = "quantile",
+            #  n = 4,
+            #  palette = "Blues",
+            #  border.col = "black")
+```
+
