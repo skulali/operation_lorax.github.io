@@ -294,12 +294,125 @@ $(document).ready(function () {
 </div>
 
 
-<div id="about-this-site" class="section level3">
-<h3>About this site</h3>
-<p>Sometimes you need to say a bit about the site – how it was made,
-where it’s hosted, where the source code can be found.</p>
-<p>If this is for a project or analysis, I recommend giving some details
-about the R package versions that you used to create the content.</p>
+<div id="setup" class="section level1">
+<h1>SetUp</h1>
+<pre class="r"><code># loading the necessary packages
+
+library(tidyverse)</code></pre>
+<pre><code>## Warning: package &#39;tidyverse&#39; was built under R version 4.3.2</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.3     ✔ readr     2.1.4
+## ✔ forcats   1.0.0     ✔ stringr   1.5.0
+## ✔ ggplot2   3.4.3     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+## ✔ purrr     1.0.2     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<pre class="r"><code>library(plotly)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plotly&#39;
+## 
+## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     last_plot
+## 
+## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter
+## 
+## The following object is masked from &#39;package:graphics&#39;:
+## 
+##     layout</code></pre>
+<pre class="r"><code>library(sf)</code></pre>
+<pre><code>## Warning: package &#39;sf&#39; was built under R version 4.3.2</code></pre>
+<pre><code>## Linking to GEOS 3.11.2, GDAL 3.7.2, PROJ 9.3.0; sf_use_s2() is TRUE</code></pre>
+<pre class="r"><code>library(tmap)</code></pre>
+<pre><code>## Warning: package &#39;tmap&#39; was built under R version 4.3.2</code></pre>
+<pre><code>## The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,
+## which was just loaded, will retire in October 2023.
+## Please refer to R-spatial evolution reports for details, especially
+## https://r-spatial.org/r/2023/05/15/evolution4.html.
+## It may be desirable to make the sf package available;
+## package maintainers should consider adding sf to Suggests:.
+## The sp package is now running under evolution status 2
+##      (status 2 uses the sf package in place of rgdal)
+## Breaking News: tmap 3.x is retiring. Please test v4, e.g. with
+## remotes::install_github(&#39;r-tmap/tmap&#39;)</code></pre>
+<pre class="r"><code>library(tmaptools)
+library(shinyjs)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;shinyjs&#39;
+## 
+## The following object is masked from &#39;package:lubridate&#39;:
+## 
+##     show
+## 
+## The following objects are masked from &#39;package:methods&#39;:
+## 
+##     removeClass, show</code></pre>
+</div>
+<div id="tree-health" class="section level1">
+<h1>Tree Health</h1>
+<pre class="r"><code># importing the data
+
+trees_2015 =
+  read_csv(&quot;large_tree_data/2015_tree_raw.csv&quot;, na = c(&quot;&quot;, &quot;NA&quot;, &quot;Unknown&quot;)) |&gt; 
+  janitor::clean_names()</code></pre>
+<pre><code>## Rows: 683788 Columns: 45
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (26): created_at, curb_loc, status, health, spc_latin, spc_common, stewa...
+## dbl (19): tree_id, block_id, tree_dbh, stump_diam, postcode, community board...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code># map based on tree health
+
+#trees_2015 |&gt;
+  # sample(50, replace = T) |&gt; 
+  # plot_ly(
+      # x = ~latitude, y = ~longitude, color = ~health, text = ~spc_common,
+      # type = &quot;scatter&quot;, mode = &quot;markers&quot;, alpha = 0.5)</code></pre>
+<pre class="r"><code>#scatter_ggplot = 
+  #trees_2015 |&gt;
+  #top_n(n = 50) |&gt; 
+  #ggplot(aes(x = latitude, y = longitude, color = health)) +
+  #geom_point(alpha = 0.25) +
+  #coord_cartesian()
+
+#ggplotly(scatter_ggplot)</code></pre>
+<pre class="r"><code>#class(trees_2015)
+#class(trees_2015_sf)
+
+#trees_2015_sf =
+  #trees_2015 |&gt; 
+  #st_as_sf(coords = c(&quot;longitude&quot;, &quot;latitude&quot;)) |&gt; 
+  #st_set_crs(4269)
+
+#boro_sf =
+  #trees_2015 |&gt; 
+  #st_as_sf(coords = c(&quot;longitude&quot;, &quot;latitude&quot;)) |&gt; 
+  #group_by(borough) |&gt;  
+  #summarise() |&gt; 
+  #st_cast(&quot;POLYGON&quot;)
+
+#plot(boro_sf)</code></pre>
+<pre class="r"><code># by borough
+
+#boro_sf |&gt; 
+  #ggplot() + 
+  #geom_sf() 
+
+#data &lt;- as_Spatial(trees_2015)
+
+#tm_shape(trees_2015_sf) +   
+  #tm_polygons(col = &quot;health&quot;,
+              #style = &quot;quantile&quot;,
+              #n = 4,
+              #palette = &quot;Blues&quot;,
+              #border.col = &quot;black&quot;)</code></pre>
 </div>
 
 
