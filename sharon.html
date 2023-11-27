@@ -299,6 +299,7 @@ $(document).ready(function () {
 <pre class="r"><code># loading the necessary packages
 
 library(tidyverse)</code></pre>
+<pre><code>## Warning: package &#39;tidyverse&#39; was built under R version 4.3.2</code></pre>
 <pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ## ✔ dplyr     1.1.3     ✔ readr     2.1.4
 ## ✔ forcats   1.0.0     ✔ stringr   1.5.0
@@ -325,8 +326,10 @@ library(tidyverse)</code></pre>
 ## 
 ##     layout</code></pre>
 <pre class="r"><code>library(sf)</code></pre>
-<pre><code>## Linking to GEOS 3.11.0, GDAL 3.5.3, PROJ 9.1.0; sf_use_s2() is TRUE</code></pre>
+<pre><code>## Warning: package &#39;sf&#39; was built under R version 4.3.2</code></pre>
+<pre><code>## Linking to GEOS 3.11.2, GDAL 3.7.2, PROJ 9.3.0; sf_use_s2() is TRUE</code></pre>
 <pre class="r"><code>library(tmap)</code></pre>
+<pre><code>## Warning: package &#39;tmap&#39; was built under R version 4.3.2</code></pre>
 <pre><code>## The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,
 ## which was just loaded, will retire in October 2023.
 ## Please refer to R-spatial evolution reports for details, especially
@@ -349,6 +352,13 @@ library(shinyjs)</code></pre>
 ## The following objects are masked from &#39;package:methods&#39;:
 ## 
 ##     removeClass, show</code></pre>
+<pre class="r"><code>library(cowplot)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;cowplot&#39;
+## 
+## The following object is masked from &#39;package:lubridate&#39;:
+## 
+##     stamp</code></pre>
 </div>
 <div id="tree-health" class="section level1">
 <h1>Tree Health</h1>
@@ -365,6 +375,59 @@ trees_2015 =
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code># Read-in shapefile 
+zip_nyc &lt;- st_read(&quot;small_data/MODZCTA_2010.shp&quot;)</code></pre>
+<pre><code>## Reading layer `MODZCTA_2010&#39; from data source 
+##   `C:\Users\Kulal\OneDrive - Columbia University Irving Medical Center\Fall 2023\Data Science\P8105\p8105_final\small_data\MODZCTA_2010.shp&#39; 
+##   using driver `ESRI Shapefile&#39;
+## Simple feature collection with 178 features and 2 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 913176 ymin: 120122 xmax: 1067382 ymax: 272844
+## Projected CRS: Lambert_Conformal_Conic</code></pre>
+<pre class="r"><code>str(zip_nyc)</code></pre>
+<pre><code>## Classes &#39;sf&#39; and &#39;data.frame&#39;:   178 obs. of  3 variables:
+##  $ MODZCTA : chr  &quot;10001&quot; &quot;10002&quot; &quot;10003&quot; &quot;10004&quot; ...
+##  $ label   : chr  &quot;10001, 10118&quot; &quot;10002&quot; &quot;10003&quot; &quot;10004&quot; ...
+##  $ geometry:sfc_MULTIPOLYGON of length 178; first list element: List of 1
+##   ..$ :List of 1
+##   .. ..$ : num [1:84, 1:2] 987646 987522 987296 987334 986752 ...
+##   ..- attr(*, &quot;class&quot;)= chr [1:3] &quot;XY&quot; &quot;MULTIPOLYGON&quot; &quot;sfg&quot;
+##  - attr(*, &quot;sf_column&quot;)= chr &quot;geometry&quot;
+##  - attr(*, &quot;agr&quot;)= Factor w/ 3 levels &quot;constant&quot;,&quot;aggregate&quot;,..: NA NA
+##   ..- attr(*, &quot;names&quot;)= chr [1:2] &quot;MODZCTA&quot; &quot;label&quot;</code></pre>
+<pre class="r"><code>glimpse(zip_nyc)</code></pre>
+<pre><code>## Rows: 178
+## Columns: 3
+## $ MODZCTA  &lt;chr&gt; &quot;10001&quot;, &quot;10002&quot;, &quot;10003&quot;, &quot;10004&quot;, &quot;10005&quot;, &quot;10006&quot;, &quot;10007&quot;…
+## $ label    &lt;chr&gt; &quot;10001, 10118&quot;, &quot;10002&quot;, &quot;10003&quot;, &quot;10004&quot;, &quot;10005&quot;, &quot;10006&quot;, …
+## $ geometry &lt;MULTIPOLYGON [US_survey_foot]&gt; MULTIPOLYGON (((987646 2103..., MUL…</code></pre>
+<pre class="r"><code>head(zip_nyc)</code></pre>
+<pre><code>## Simple feature collection with 6 features and 2 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 979262 ymin: 194224 xmax: 991592 ymax: 216072
+## Projected CRS: Lambert_Conformal_Conic
+##   MODZCTA        label                       geometry
+## 1   10001 10001, 10118 MULTIPOLYGON (((987646 2103...
+## 2   10002        10002 MULTIPOLYGON (((985342 1976...
+## 3   10003        10003 MULTIPOLYGON (((987412 2026...
+## 4   10004        10004 MULTIPOLYGON (((982030 1972...
+## 5   10005        10005 MULTIPOLYGON (((982126 1954...
+## 6   10006        10006 MULTIPOLYGON (((980782 1967...</code></pre>
+<pre class="r"><code>tm_shape(zip_nyc) +
+  tm_polygons()</code></pre>
+<p><img src="sharon_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code># Join trees data with sf object
+trees_zip &lt;- merge(zip_nyc, trees_2015, 
+                        by.x = &quot;MODZCTA&quot;,
+                        by.y = &quot;postcode&quot;)</code></pre>
+<pre class="r"><code>#tm_shape(trees_zip) +   
+#  tm_polygons(col = &quot;health&quot;,
+            #  style = &quot;quantile&quot;,
+            #  n = 4,
+            #  palette = &quot;Blues&quot;,
+            #  border.col = &quot;black&quot;)</code></pre>
 <pre class="r"><code># map based on tree health
 
 #trees_2015 |&gt;

@@ -13,6 +13,7 @@ library(sf)
 library(tmap)
 library(tmaptools)
 library(shinyjs)
+library(cowplot)
 ```
 
 # Tree Health
@@ -24,6 +25,36 @@ trees_2015 =
   read_csv("large_tree_data/2015_tree_raw.csv", na = c("", "NA", "Unknown")) |> 
   janitor::clean_names()
 ```
+
+```{r}
+# Read-in shapefile 
+zip_nyc <- st_read("small_data/MODZCTA_2010.shp")
+
+str(zip_nyc)
+glimpse(zip_nyc)
+head(zip_nyc)
+
+tm_shape(zip_nyc) +
+  tm_polygons()
+```
+
+```{r}
+# Join trees data with sf object
+trees_zip <- merge(zip_nyc, trees_2015, 
+                        by.x = "MODZCTA",
+                        by.y = "postcode")
+```
+
+```{r}
+#tm_shape(trees_zip) +   
+#  tm_polygons(col = "health",
+            #  style = "quantile",
+            #  n = 4,
+            #  palette = "Blues",
+            #  border.col = "black")
+```
+
+
 
 ```{r}
 # map based on tree health
