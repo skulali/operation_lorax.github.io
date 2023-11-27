@@ -655,6 +655,239 @@ ED adult rate</caption>
 <p><img src="steph_files/figure-html/unnamed-chunk-8-8.png" width="90%" /></p>
 </div>
 </div>
+<div id="asthma-emergency-dept-age-4-and-younger-2014-2016"
+class="section level2">
+<h2>Asthma Emergency Dept Age 4 and younger 2014-2016</h2>
+<div id="load-asthma-emergency-dept-age-4-and-younger-2014-2016"
+class="section level3">
+<h3>load Asthma Emergency Dept Age 4 and younger 2014-2016</h3>
+<pre class="r"><code>asthma_ed_child_raw &lt;-
+  read_csv(&quot;small_data/NYC EH Data Portal_Asthma emergency department visits_4 and under.csv&quot;) |&gt; 
+  janitor::clean_names()</code></pre>
+<pre><code>## Rows: 194 Columns: 7
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (5): Time, GeoType, Geography, Average annual rate per 10,000, Number
+## dbl (2): GeoID, GeoRank
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>asthma_ed_child_clean &lt;- asthma_ed_child_raw |&gt; 
+  rename(nta_name = geography) |&gt; 
+  filter(geo_type == &quot;NTA2010&quot; &amp; time == &quot;2014-2016&quot;) |&gt; 
+  select(nta_name, average_annual_rate_per_10_000, number)</code></pre>
+</div>
+<div
+id="summarize-trees-per-acre-by-nta-and-asthma-emergency-dept-child"
+class="section level3">
+<h3>Summarize trees per acre by nta and asthma emergency dept child</h3>
+<p>checked and no NAs are present</p>
+<pre class="r"><code>trees_and_asthma_ed_child &lt;- left_join(trees_per_acre_df, asthma_ed_child_clean, by = &quot;nta_name&quot;)
+
+sum(is.na(trees_and_asthma_ed_child))</code></pre>
+<pre><code>## [1] 0</code></pre>
+</div>
+<div
+id="tables-and-graphs-of-trees-per-acre-and-asthma-ed-child-and-num-trees-working"
+class="section level3">
+<h3>Tables and Graphs of trees per acre and asthma ED child and num
+trees WORKING</h3>
+<pre class="r"><code>trees_and_asthma_ed_child |&gt; 
+  select(nta_name, num_trees, total_acres, trees_per_acre, average_annual_rate_per_10_000) |&gt; 
+  arrange(desc(trees_per_acre)) |&gt; 
+  filter(min_rank(desc(trees_per_acre)) &lt; 11) |&gt; 
+  knitr::kable(digits = 2, caption = &quot;Top 10 neighborhoods with most trees per acre and their asthma ED child rate&quot;)</code></pre>
+<table>
+<caption>Top 10 neighborhoods with most trees per acre and their asthma
+ED child rate</caption>
+<colgroup>
+<col width="32%" />
+<col width="9%" />
+<col width="11%" />
+<col width="14%" />
+<col width="30%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">nta_name</th>
+<th align="right">num_trees</th>
+<th align="right">total_acres</th>
+<th align="right">trees_per_acre</th>
+<th align="left">average_annual_rate_per_10_000</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Upper East Side-Carnegie Hill</td>
+<td align="right">4540</td>
+<td align="right">460.66</td>
+<td align="right">9.86</td>
+<td align="left">34.4</td>
+</tr>
+<tr class="even">
+<td align="left">Central Harlem South</td>
+<td align="right">2581</td>
+<td align="right">331.39</td>
+<td align="right">7.79</td>
+<td align="left">433.0</td>
+</tr>
+<tr class="odd">
+<td align="left">Brooklyn Heights-Cobble Hill</td>
+<td align="right">1718</td>
+<td align="right">235.86</td>
+<td align="right">7.28</td>
+<td align="left">56.6</td>
+</tr>
+<tr class="even">
+<td align="left">Upper West Side</td>
+<td align="right">5723</td>
+<td align="right">791.29</td>
+<td align="right">7.23</td>
+<td align="left">144.6</td>
+</tr>
+<tr class="odd">
+<td align="left">Fordham South</td>
+<td align="right">1002</td>
+<td align="right">144.63</td>
+<td align="right">6.93</td>
+<td align="left">564.5</td>
+</tr>
+<tr class="even">
+<td align="left">Windsor Terrace</td>
+<td align="right">2227</td>
+<td align="right">322.38</td>
+<td align="right">6.91</td>
+<td align="left">47.2</td>
+</tr>
+<tr class="odd">
+<td align="left">Yorkville</td>
+<td align="right">2133</td>
+<td align="right">319.14</td>
+<td align="right">6.68</td>
+<td align="left">80.9</td>
+</tr>
+<tr class="even">
+<td align="left">Gramercy</td>
+<td align="right">1125</td>
+<td align="right">171.71</td>
+<td align="right">6.55</td>
+<td align="left">42.9*</td>
+</tr>
+<tr class="odd">
+<td align="left">Auburndale</td>
+<td align="right">5119</td>
+<td align="right">785.35</td>
+<td align="right">6.52</td>
+<td align="left">56.1</td>
+</tr>
+<tr class="even">
+<td align="left">East New York (Pennsylvania Ave)</td>
+<td align="right">2892</td>
+<td align="right">446.05</td>
+<td align="right">6.48</td>
+<td align="left">378.0</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>trees_and_asthma_ed_child |&gt; 
+  select(nta_name, num_trees, total_acres, trees_per_acre, average_annual_rate_per_10_000) |&gt; 
+  arrange((trees_per_acre)) |&gt; 
+  filter(min_rank(trees_per_acre) &lt; 11) |&gt; 
+  knitr::kable(digits = 2, caption = &quot;Top 10 neighborhoods with least trees per acre and their asthma ED child rate&quot;)</code></pre>
+<table>
+<caption>Top 10 neighborhoods with least trees per acre and their asthma
+ED child rate</caption>
+<colgroup>
+<col width="42%" />
+<col width="8%" />
+<col width="10%" />
+<col width="12%" />
+<col width="26%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">nta_name</th>
+<th align="right">num_trees</th>
+<th align="right">total_acres</th>
+<th align="right">trees_per_acre</th>
+<th align="left">average_annual_rate_per_10_000</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">New Springville-Bloomfield-Travis</td>
+<td align="right">8142</td>
+<td align="right">7083.27</td>
+<td align="right">1.15</td>
+<td align="left">70.9</td>
+</tr>
+<tr class="even">
+<td align="left">Seagate-Coney Island</td>
+<td align="right">1317</td>
+<td align="right">851.49</td>
+<td align="right">1.55</td>
+<td align="left">366.9</td>
+</tr>
+<tr class="odd">
+<td align="left">Midtown-Midtown South</td>
+<td align="right">1120</td>
+<td align="right">692.81</td>
+<td align="right">1.62</td>
+<td align="left">76.1</td>
+</tr>
+<tr class="even">
+<td align="left">North Riverdale-Fieldston-Riverdale</td>
+<td align="right">1919</td>
+<td align="right">1139.68</td>
+<td align="right">1.68</td>
+<td align="left">64.7</td>
+</tr>
+<tr class="odd">
+<td align="left">Mariner’s Harbor-Arlington-Port Ivory-Graniteville</td>
+<td align="right">3591</td>
+<td align="right">2090.79</td>
+<td align="right">1.72</td>
+<td align="left">264.9</td>
+</tr>
+<tr class="even">
+<td align="left">Gravesend</td>
+<td align="right">1324</td>
+<td align="right">731.83</td>
+<td align="right">1.81</td>
+<td align="left">129.3</td>
+</tr>
+<tr class="odd">
+<td align="left">Hammels-Arverne-Edgemere</td>
+<td align="right">2911</td>
+<td align="right">1474.08</td>
+<td align="right">1.97</td>
+<td align="left">251.7</td>
+</tr>
+<tr class="even">
+<td align="left">Grasmere-Arrochar-Ft. Wadsworth</td>
+<td align="right">2084</td>
+<td align="right">986.63</td>
+<td align="right">2.11</td>
+<td align="left">97.1</td>
+</tr>
+<tr class="odd">
+<td align="left">Hunters Point-Sunnyside-West Maspeth</td>
+<td align="right">5031</td>
+<td align="right">2340.44</td>
+<td align="right">2.15</td>
+<td align="left">64.8</td>
+</tr>
+<tr class="even">
+<td align="left">West Brighton</td>
+<td align="right">455</td>
+<td align="right">201.25</td>
+<td align="right">2.26</td>
+<td align="left">68.2*</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 
 
