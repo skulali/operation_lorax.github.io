@@ -2,8 +2,113 @@
 title: "About"
 ---
 
-### About this site
+# SetUp
 
-Sometimes you need to say a bit about the site -- how it was made, where it's hosted, where the source code can be found. 
+```{r}
+# loading the necessary packages
 
-If this is for a project or analysis, I recommend giving some details about the R package versions that you used to create the content.
+library(tidyverse)
+library(plotly)
+library(sf)
+library(tmap)
+library(tmaptools)
+library(shinyjs)
+library(cowplot)
+```
+
+# Tree Health
+
+```{r}
+# importing the data
+
+trees_2015 =
+  read_csv("large_tree_data/2015_tree_raw.csv", na = c("", "NA", "Unknown")) |> 
+  janitor::clean_names()
+```
+
+```{r}
+# reading in the nyc shapefile 
+
+zip_nyc <- st_read("small_data/MODZCTA_2010.shp")
+
+str(zip_nyc)
+glimpse(zip_nyc)
+head(zip_nyc)
+
+tm_shape(zip_nyc) +
+  tm_polygons()
+```
+
+```{r}
+# joining the trees data with sf object
+trees_zip <- 
+  merge(zip_nyc, trees_2015, 
+                        by.x = "MODZCTA",
+                        by.y = "postcode") |> 
+  janitor::clean_names()
+```
+
+```{r}
+# map of tree health in Manhattan
+
+trees_zip |> 
+  drop_na() |> 
+  filter(borough == "Manhattan") |> 
+  tm_shape() +   
+  tm_polygons(col = "health",
+              style = "equal",
+              n = 3,
+              palette = "viridis",
+              border.col = "black",
+              title = "Tree Heath by Zip Codes in Manhattan")
+```
+
+```{r}
+# map of tree health in Brooklyn
+
+#trees_zip |> 
+  #drop_na() |> 
+  #filter(borough == "Brooklyn") |> 
+  #tm_shape() +   
+  #tm_polygons(col = "health",
+              #style = "equal",
+              #n = 3,
+              #palette = "Blues",
+              #border.col = "black",
+              #title = "Tree Heath by Zip Codes in Brooklyn")
+```
+
+
+
+```{r}
+#trees_zip |> 
+  #drop_na() |> 
+  #tm_shape() +   
+  #tm_polygons(col = "health",
+              #style = "equal",
+              #n = 3,
+              #palette = "Blues",
+              #border.col = "black",
+              #title = "Tree Heath by Zip Codes in Brooklyn")
+```
+
+```{r}
+# map based on tree health
+
+#trees_2015 |>
+   #plot_ly(
+     #  x = ~longitude, y = ~latitude, color = ~health, text = ~spc_common,
+     #  type = "scatter", mode = "markers", alpha = 0.5)
+```
+
+```{r}
+#scatter_ggplot = 
+  #trees_2015 |>
+  #top_n(n = 50) |> 
+  #ggplot(aes(x = latitude, y = longitude, color = health)) +
+  #geom_point(alpha = 0.25) +
+  #coord_cartesian()
+
+#ggplotly(scatter_ggplot)
+```
+
