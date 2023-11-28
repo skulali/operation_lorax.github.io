@@ -27,7 +27,8 @@ trees_2015 =
 ```
 
 ```{r}
-# Read-in shapefile 
+# reading in the nyc shapefile 
+
 zip_nyc <- st_read("small_data/MODZCTA_2010.shp")
 
 str(zip_nyc)
@@ -39,32 +40,57 @@ tm_shape(zip_nyc) +
 ```
 
 ```{r}
-# Join trees data with sf object
+# joining the trees data with sf object
 trees_zip <- 
   merge(zip_nyc, trees_2015, 
                         by.x = "MODZCTA",
                         by.y = "postcode") |> 
-  mutate(status = case_match(
-    health,
-    "Good" ~ 3,
-    "Fair" ~ 2,
-    "Poor" ~ 1
-  ))
+  janitor::clean_names()
 ```
 
 ```{r}
+# map of tree health in Manhattan
+
 trees_zip |> 
   drop_na() |> 
   filter(borough == "Manhattan") |> 
   tm_shape() +   
-  tm_polygons(col = "status",
+  tm_polygons(col = "health",
               style = "equal",
               n = 3,
-              palette = "Blues",
-              border.col = "black")
+              palette = "viridis",
+              border.col = "black",
+              title = "Tree Heath by Zip Codes in Manhattan")
+```
+
+```{r}
+# map of tree health in Brooklyn
+
+#trees_zip |> 
+  #drop_na() |> 
+  #filter(borough == "Brooklyn") |> 
+  #tm_shape() +   
+  #tm_polygons(col = "health",
+              #style = "equal",
+              #n = 3,
+              #palette = "Blues",
+              #border.col = "black",
+              #title = "Tree Heath by Zip Codes in Brooklyn")
 ```
 
 
+
+```{r}
+#trees_zip |> 
+  #drop_na() |> 
+  #tm_shape() +   
+  #tm_polygons(col = "health",
+              #style = "equal",
+              #n = 3,
+              #palette = "Blues",
+              #border.col = "black",
+              #title = "Tree Heath by Zip Codes in Brooklyn")
+```
 
 ```{r}
 # map based on tree health
@@ -84,50 +110,5 @@ trees_zip |>
   #coord_cartesian()
 
 #ggplotly(scatter_ggplot)
-```
-
-
-```{r}
-#class(trees_2015)
-#class(trees_2015_sf)
-
-#trees_2015_sf =
- # trees_2015 |> 
-  #st_as_sf(coords = c("longitude", "latitude")) |> 
-#  st_set_crs(4269) |> 
- # st_cast(trees_2015, "MULTILINESTRING") |> 
-  #st_cast("POLYGON")
-
-#trees_sf = 
- # trees_2015 |>
-#  st_as_sf(coords = c("longitude", "latitude")) |> 
- # pull(geometry) |> 
-#  st_cast("POLYGON")
-
-#boro_sf =
-  #trees_2015 |> 
-  #st_as_sf(coords = c("longitude", "latitude")) |> 
-  #group_by(borough) |>  
-  #summarise() |> 
- # st_cast("POLYGON")
-
-#plot(boro_sf)
-```
-
-```{r}
-# by borough
-
-#boro_sf |> 
-  #ggplot() + 
-  #geom_sf() 
-
-#data <- as_Spatial(trees_2015_sf)
-
-#tm_shape(trees_2015_sf) +   
-#  tm_polygons(col = "health",
-            #  style = "quantile",
-            #  n = 4,
-            #  palette = "Blues",
-            #  border.col = "black")
 ```
 

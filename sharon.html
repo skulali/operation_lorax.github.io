@@ -299,6 +299,7 @@ $(document).ready(function () {
 <pre class="r"><code># loading the necessary packages
 
 library(tidyverse)</code></pre>
+<pre><code>## Warning: package &#39;tidyverse&#39; was built under R version 4.3.2</code></pre>
 <pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ## ✔ dplyr     1.1.3     ✔ readr     2.1.4
 ## ✔ forcats   1.0.0     ✔ stringr   1.5.0
@@ -325,8 +326,10 @@ library(tidyverse)</code></pre>
 ## 
 ##     layout</code></pre>
 <pre class="r"><code>library(sf)</code></pre>
-<pre><code>## Linking to GEOS 3.11.0, GDAL 3.5.3, PROJ 9.1.0; sf_use_s2() is TRUE</code></pre>
+<pre><code>## Warning: package &#39;sf&#39; was built under R version 4.3.2</code></pre>
+<pre><code>## Linking to GEOS 3.11.2, GDAL 3.7.2, PROJ 9.3.0; sf_use_s2() is TRUE</code></pre>
 <pre class="r"><code>library(tmap)</code></pre>
+<pre><code>## Warning: package &#39;tmap&#39; was built under R version 4.3.2</code></pre>
 <pre><code>## The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,
 ## which was just loaded, will retire in October 2023.
 ## Please refer to R-spatial evolution reports for details, especially
@@ -372,10 +375,11 @@ trees_2015 =
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code># Read-in shapefile 
+<pre class="r"><code># reading in the nyc shapefile 
+
 zip_nyc &lt;- st_read(&quot;small_data/MODZCTA_2010.shp&quot;)</code></pre>
 <pre><code>## Reading layer `MODZCTA_2010&#39; from data source 
-##   `/Users/gracesantos/Desktop/p8105/p8105_final/small_data/MODZCTA_2010.shp&#39; 
+##   `C:\Users\Kulal\OneDrive - Columbia University Irving Medical Center\Fall 2023\Data Science\P8105\p8105_final\small_data\MODZCTA_2010.shp&#39; 
 ##   using driver `ESRI Shapefile&#39;
 ## Simple feature collection with 178 features and 2 fields
 ## Geometry type: MULTIPOLYGON
@@ -415,28 +419,47 @@ zip_nyc &lt;- st_read(&quot;small_data/MODZCTA_2010.shp&quot;)</code></pre>
 <pre class="r"><code>tm_shape(zip_nyc) +
   tm_polygons()</code></pre>
 <p><img src="sharon_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<pre class="r"><code># Join trees data with sf object
+<pre class="r"><code># joining the trees data with sf object
 trees_zip &lt;- 
   merge(zip_nyc, trees_2015, 
                         by.x = &quot;MODZCTA&quot;,
                         by.y = &quot;postcode&quot;) |&gt; 
-  mutate(status = case_match(
-    health,
-    &quot;Good&quot; ~ 3,
-    &quot;Fair&quot; ~ 2,
-    &quot;Poor&quot; ~ 1
-  ))</code></pre>
-<pre class="r"><code>trees_zip |&gt; 
+  janitor::clean_names()</code></pre>
+<pre class="r"><code># map of tree health in Manhattan
+
+trees_zip |&gt; 
   drop_na() |&gt; 
   filter(borough == &quot;Manhattan&quot;) |&gt; 
   tm_shape() +   
-  tm_polygons(col = &quot;status&quot;,
+  tm_polygons(col = &quot;health&quot;,
+              style = &quot;equal&quot;,
+              n = 3,
+              palette = &quot;viridis&quot;,
+              border.col = &quot;black&quot;,
+              title = &quot;Tree Heath by Zip Codes in Manhattan&quot;)</code></pre>
+<p><img src="sharon_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code># map of tree health in Brooklyn
+
+trees_zip |&gt; 
+  drop_na() |&gt; 
+  filter(borough == &quot;Brooklyn&quot;) |&gt; 
+  tm_shape() +   
+  tm_polygons(col = &quot;health&quot;,
               style = &quot;equal&quot;,
               n = 3,
               palette = &quot;Blues&quot;,
-              border.col = &quot;black&quot;)</code></pre>
-<pre><code>## Legend labels were too wide. The labels have been resized to 0.55, 0.55, 0.55. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.</code></pre>
-<p><img src="sharon_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+              border.col = &quot;black&quot;,
+              title = &quot;Tree Heath by Zip Codes in Brooklyn&quot;)</code></pre>
+<p><img src="sharon_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>#trees_zip |&gt; 
+  #drop_na() |&gt; 
+  #tm_shape() +   
+  #tm_polygons(col = &quot;health&quot;,
+              #style = &quot;equal&quot;,
+              #n = 3,
+              #palette = &quot;Blues&quot;,
+              #border.col = &quot;black&quot;,
+              #title = &quot;Tree Heath by Zip Codes in Brooklyn&quot;)</code></pre>
 <pre class="r"><code># map based on tree health
 
 #trees_2015 |&gt;
