@@ -4,6 +4,10 @@ title: "About"
 
 # SetUp
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 0beb04c68e554d9a192b1e1a6fa386052202c73e
 ```{r}
 # loading the necessary packages
 
@@ -54,6 +58,11 @@ trees_zip <-
 trees_zip |> 
   drop_na() |> 
   filter(borough == "Manhattan") |> 
+<<<<<<< HEAD
+=======
+  group_by(modzcta, health) |> 
+  summarise() |> 
+>>>>>>> 0beb04c68e554d9a192b1e1a6fa386052202c73e
   tm_shape() +   
   tm_polygons(col = "health",
               style = "equal",
@@ -111,4 +120,10 @@ trees_zip |>
 
 #ggplotly(scatter_ggplot)
 ```
+<<<<<<< HEAD
+=======
+=======
+Sometimes you need to say a bit about the site -- how it was made, where it's hosted, where the source code can be found. 
+>>>>>>> 588763935ab266c74eb8c1562370b23d228694d7
+>>>>>>> 0beb04c68e554d9a192b1e1a6fa386052202c73e
 
