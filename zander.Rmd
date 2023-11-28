@@ -1,9 +1,57 @@
 ---
-title: "About"
+title: "Zander's Brainstorming Page"
 ---
 
-### About this site
+### Tree Distribution, Ecological Variables, and Health Relationships
 
-Sometimes you need to say a bit about the site -- how it was made, where it's hosted, where the source code can be found. 
+```{r Page Settings, message = FALSE}
+library(tidyverse)
+library(patchwork)
+library(plotly)
 
-If this is for a project or analysis, I recommend giving some details about the R package versions that you used to create the content.
+theme_set(theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
+```{r Exploring DBH Values}
+
+trees_2015_cleaned = read_csv("large_tree_data/tree_2015_cleaned.csv")
+
+trees_dbh = trees_2015_cleaned |> 
+  drop_na(tree_dbh) |> 
+  group_by(borough, nta_name) |> 
+  summarize(
+    n_obs = n(),
+    avg_dbh = mean(tree_dbh))
+
+```
+
+```{r}
+borough_dbh = trees_2015_cleaned |> 
+  drop_na(tree_dbh) |> 
+  group_by(borough) |> 
+  mutate(borough_dbh = mean(tree_dbh))
+
+borough_dbh |> 
+ggplot(aes(x = borough, y = tree_dbh, fill = borough)) + geom_boxplot()
+
+borough_dbh
+```
+
+```{r}
+neighborhood_dbh = trees_2015_cleaned |> 
+  drop_na(tree_dbh) |> 
+  group_by(nta_name) |> 
+  mutate(nta_dbh = mean(tree_dbh))
+
+neighborhood_dbh |> 
+ggplot(aes(x = nta_name, y = nta_dbh, fill = borough)) + geom_col()
+```
+
