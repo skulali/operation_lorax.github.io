@@ -294,8 +294,8 @@ $(document).ready(function () {
 </div>
 
 
-<div id="setup" class="section level1">
-<h1>SetUp</h1>
+<div id="about-this-site" class="section level3">
+<h3>About this site</h3>
 <pre class="r"><code># loading the necessary packages
 
 library(tidyverse)</code></pre>
@@ -427,30 +427,30 @@ trees_zip &lt;-
   janitor::clean_names()</code></pre>
 <pre class="r"><code># map of tree health in Manhattan
 
-trees_zip |&gt; 
-  drop_na() |&gt; 
-  filter(borough == &quot;Manhattan&quot;) |&gt; 
-  tm_shape() +   
-  tm_polygons(col = &quot;health&quot;,
-              style = &quot;equal&quot;,
-              n = 3,
-              palette = &quot;viridis&quot;,
-              border.col = &quot;black&quot;,
-              title = &quot;Tree Heath by Zip Codes in Manhattan&quot;)</code></pre>
-<p><img src="sharon_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+#trees_zip |&gt; 
+  #drop_na() |&gt; 
+  #filter(borough == &quot;Manhattan&quot;) |&gt; 
+  #group_by(modzcta, health) |&gt; 
+  #summarise() |&gt; 
+  #tm_shape() +   
+  #tm_polygons(col = &quot;health&quot;,
+              #style = &quot;equal&quot;,
+              #n = 3,
+              #palette = &quot;viridis&quot;,
+              #border.col = &quot;black&quot;,
+              #title = &quot;Tree Heath by Zip Codes in Manhattan&quot;)</code></pre>
 <pre class="r"><code># map of tree health in Brooklyn
 
-trees_zip |&gt; 
-  drop_na() |&gt; 
-  filter(borough == &quot;Brooklyn&quot;) |&gt; 
-  tm_shape() +   
-  tm_polygons(col = &quot;health&quot;,
-              style = &quot;equal&quot;,
-              n = 3,
-              palette = &quot;Blues&quot;,
-              border.col = &quot;black&quot;,
-              title = &quot;Tree Heath by Zip Codes in Brooklyn&quot;)</code></pre>
-<p><img src="sharon_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+#trees_zip |&gt; 
+  #drop_na() |&gt; 
+  #filter(borough == &quot;Brooklyn&quot;) |&gt; 
+  #tm_shape() +   
+  #tm_polygons(col = &quot;health&quot;,
+              #style = &quot;equal&quot;,
+              #n = 3,
+              #palette = &quot;Blues&quot;,
+              #border.col = &quot;black&quot;,
+              #title = &quot;Tree Heath by Zip Codes in Brooklyn&quot;)</code></pre>
 <pre class="r"><code>#trees_zip |&gt; 
   #drop_na() |&gt; 
   #tm_shape() +   
@@ -474,44 +474,6 @@ trees_zip |&gt;
   #coord_cartesian()
 
 #ggplotly(scatter_ggplot)</code></pre>
-<pre class="r"><code>#class(trees_2015)
-#class(trees_2015_sf)
-
-#trees_2015_sf =
- # trees_2015 |&gt; 
-  #st_as_sf(coords = c(&quot;longitude&quot;, &quot;latitude&quot;)) |&gt; 
-#  st_set_crs(4269) |&gt; 
- # st_cast(trees_2015, &quot;MULTILINESTRING&quot;) |&gt; 
-  #st_cast(&quot;POLYGON&quot;)
-
-#trees_sf = 
- # trees_2015 |&gt;
-#  st_as_sf(coords = c(&quot;longitude&quot;, &quot;latitude&quot;)) |&gt; 
- # pull(geometry) |&gt; 
-#  st_cast(&quot;POLYGON&quot;)
-
-#boro_sf =
-  #trees_2015 |&gt; 
-  #st_as_sf(coords = c(&quot;longitude&quot;, &quot;latitude&quot;)) |&gt; 
-  #group_by(borough) |&gt;  
-  #summarise() |&gt; 
- # st_cast(&quot;POLYGON&quot;)
-
-#plot(boro_sf)</code></pre>
-<pre class="r"><code># by borough
-
-#boro_sf |&gt; 
-  #ggplot() + 
-  #geom_sf() 
-
-#data &lt;- as_Spatial(trees_2015_sf)
-
-#tm_shape(trees_2015_sf) +   
-#  tm_polygons(col = &quot;health&quot;,
-            #  style = &quot;quantile&quot;,
-            #  n = 4,
-            #  palette = &quot;Blues&quot;,
-            #  border.col = &quot;black&quot;)</code></pre>
 </div>
 
 
