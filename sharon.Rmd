@@ -4,7 +4,6 @@ title: "About"
 
 ### About this site
 
-<<<<<<< HEAD
 ```{r}
 # loading the necessary packages
 
@@ -114,8 +113,3 @@ trees_zip |>
 
 #ggplotly(scatter_ggplot)
 ```
-=======
-Sometimes you need to say a bit about the site -- how it was made, where it's hosted, where the source code can be found. 
->>>>>>> 588763935ab266c74eb8c1562370b23d228694d7
-
-If this is for a project or analysis, I recommend giving some details about the R package versions that you used to create the content.
