@@ -8,16 +8,6 @@ wanting to look closer at relationship between tree dataset and socio-demographi
 
 ```{r, message = FALSE}
 library(tidyverse)
-
-theme_set(theme_minimal() + theme(legend.position = "bottom"))
-
-options(
-  ggplot2.continuous.colour = "viridis",
-  ggplot2.continuous.fill = "viridis"
-)
-
-scale_colour_discrete = scale_colour_viridis_d
-scale_fill_discrete = scale_fill_viridis_d
 ```
 
 ```{r tree Data Import}
@@ -43,39 +33,8 @@ pop_race_2010 = readxl::read_excel("small_data/pop_race2010_nta.xlsx", skip = 6,
    "other_nonhis" = "...11",
    "two_races" = "...12",
    "hispanic_any_race" = "...13"
-  ) |> 
-  drop_na()
-```
-
-Distribution of Race by Borough
-```{r}
-dem_race = 
-  pop_race_2010 |> 
-  group_by(borough) |> 
-  summarize(white = sum(white_nonhis),
-            black = sum(black_nonhis),
-            asian = sum(asian_nonhis),
-            am_ind_alaska = sum(am_ind_alaska_nonhis),
-            hawaii_pac_island = sum(hawaii_pac_isl_nonhis),
-            other = sum(other_nonhis),
-            hispanic_all_races = sum(hispanic_any_race),
-            two_races = sum(two_races)
-            ) |> 
-  pivot_longer(
-    white:two_races,
-    names_to = "race",
-    values_to = "n"
-  ) |> 
-   mutate(borough = fct_reorder(borough, n)) 
-
-ggplot(data = dem_race, aes(x = borough, y = n, fill = race)) + geom_bar(stat = 'identity') + geom_text(aes(label = n), size = 3, fontface = "bold", position = position_stack(vjust = 0.5)) + 
-  labs(
-    title = "Population of Borough by Race",
-    x = "Borough",
-    y = "Total Population"
   )
 ```
-
 
 ```{r, merge}
 all_data = left_join(tree_2015_raw, pop_race_2010, by = "nta")
@@ -89,49 +48,8 @@ number_tree =
   summarize(n_trees = n_distinct(tree_id)) |> 
   mutate(borough = fct_reorder(borough, n_trees))
 
-ggplot(data = number_tree, aes(x = borough, y = n_trees, fill = borough)) + geom_bar(stat = 'identity') + geom_text(aes(label = n_trees), size = 3, vjust = -1) + 
-  labs(
-    title = "Number of Trees in each Borough",
-    x = "Borough",
-    y = "Total Number of Trees"
-  )
+ggplot(data = number_tree, aes(x = borough, y = n_trees, fill = borough)) + geom_bar(stat = 'identity') + geom_text(aes(label = n_trees), size = 3, vjust = -1)
 ```
-
-Queens Trees by Species
-```{r}
-#prevalent trees (n > 500)
-queens_prev_trees = 
-  all_data |> 
-  filter(borough == "Queens") |>
-  count(spc_common) |> 
-  filter(n > 500) |> 
-  mutate(spc_common = fct_reorder(spc_common, n))
-
-ggplot(data = queens_prev_trees, aes(x = spc_common, y = n, fill = spc_common)) + geom_bar(stat = 'identity') + theme(legend.position = "none", axis.text.x = element_text(angle = 65, hjust=1)) + 
-  labs(
-    title = "Species of Trees in Queens (>500 trees)",
-    x = "Species (common name)",
-    y = "Total Number of Trees"
-  )
-```
-
-```{r}
-#rare trees (n < 500)
-queens_rare_trees = 
-  all_data |> 
-  filter(borough == "Queens") |>
-  count(spc_common) |> 
-  filter(n < 500) |> 
-  mutate(spc_common = fct_reorder(spc_common, n))
-
-ggplot(data = queens_rare_trees, aes(x = spc_common, y = n, fill = spc_common)) + geom_bar(stat = 'identity') + theme(legend.position = "none", axis.text.x = element_text(angle = 65, hjust=1)) + 
-  labs(
-    title = "Species of Trees in Queens (<500 trees)",
-    x = "Species (common name)",
-    y = "Total Number of Trees"
-  )
-```
-
 
 Trees in Manhattan by NTA 
 ```{r}
@@ -146,16 +64,10 @@ mhtn_number_tree =
     names_to = "type",
     names_prefix = "n_",
     values_to = "total"
-  ) |> 
-   mutate(nta_name = fct_reorder(nta_name, total))
+  )
   
 
-ggplot(mhtn_number_tree, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = 'identity', position = 'dodge')+ theme(axis.text.x = element_text(angle = 65, hjust=1)) + 
-  labs(
-    title = "Number of Trees in Manhattan by NTA",
-    x = "Neighborhood Tabulation Area",
-    y = "Total Number of Trees"
-  )
+ggplot(mhtn_number_tree, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = 'identity', position = 'dodge')+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
 ```
 
 Manhattan Trees and Proportion of Race 
@@ -168,26 +80,18 @@ pop_proportion =
             n_white = (sum(white_nonhis)/100000),
             n_black = (sum(black_nonhis)/100000),
             n_asian = (sum(asian_nonhis)/10000),
-            n_pacific_islander = (sum(hawaii_pac_isl_nonhis)/1000),
-            n_amer_ind = (sum(am_ind_alaska_nonhis)/1000),
             n_other = (sum(other_nonhis)/1000),
             n_hispanic = (sum(hispanic_any_race)/100000),
-            n_two_races = (sum(two_races)/1000)
             ) |> 
   pivot_longer(
-    n_trees:n_two_races,
+    n_trees:n_hispanic,
     names_to = "type",
     names_prefix = "n_",
     values_to = "total"
   )
   
 
-ggplot(pop_proportion, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = 'identity', position = 'dodge')+ theme(axis.text.x = element_text(angle = 65, hjust=1)) + 
-  labs(
-    title = "Manhattan Population by Race and Trees",
-    x = "Neighborhood Tabulation Area",
-    y = "Totals"
-  )
+ggplot(pop_proportion, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = 'identity', position = 'dodge')+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
 ```
 
 Manhattan Trees per NTA and Race per Total Pop
@@ -205,25 +109,17 @@ percentages =
             n_white = (sum(white_nonhis)/sum(total_population)),
             n_black = (sum(black_nonhis)/sum(total_population)),
             n_asian = (sum(asian_nonhis)/sum(total_population)),
-            n_pacific_islander = (sum(hawaii_pac_isl_nonhis)/sum(total_population)),
-            n_amer_ind = (sum(am_ind_alaska_nonhis)/sum(total_population)),
             n_other = (sum(other_nonhis)/sum(total_population)),
             n_hispanic = (sum(hispanic_any_race)/sum(total_population)),
-            n_two_races = (sum(two_races)/sum(total_population))
             ) |> 
   pivot_longer(
-    n_trees:n_two_races,
+    n_trees:n_hispanic,
     names_to = "type",
     names_prefix = "n_",
     values_to = "total"
   )
   
 
-ggplot(percentages, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = 'identity', position = 'dodge')+ theme(axis.text.x = element_text(angle = 65, hjust=1)) + 
-  labs(
-    title = "Manhattan Population and Trees by Percent of Whole",
-    x = "Neighborhood Tabulation Area",
-    y = "Total Percentages"
-  )
+ggplot(percentages, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = 'identity', position = 'dodge')+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 ```
 

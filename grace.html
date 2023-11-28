@@ -298,17 +298,7 @@ $(document).ready(function () {
 <h3>Project Goals</h3>
 <p>wanting to look closer at relationship between tree dataset and
 socio-demographic dataset.</p>
-<pre class="r"><code>library(tidyverse)
-
-theme_set(theme_minimal() + theme(legend.position = &quot;bottom&quot;))
-
-options(
-  ggplot2.continuous.colour = &quot;viridis&quot;,
-  ggplot2.continuous.fill = &quot;viridis&quot;
-)
-
-scale_colour_discrete = scale_colour_viridis_d
-scale_fill_discrete = scale_fill_viridis_d</code></pre>
+<pre class="r"><code>library(tidyverse)</code></pre>
 <pre class="r"><code>tree_2015_raw = 
   read_csv(&quot;large_tree_data/2015_tree_raw.csv&quot;, na = c(&quot;&quot;, &quot;NA&quot;, &quot;Unknown&quot;)) |&gt; 
   janitor::clean_names() |&gt; 
@@ -336,8 +326,7 @@ scale_fill_discrete = scale_fill_viridis_d</code></pre>
    &quot;other_nonhis&quot; = &quot;...11&quot;,
    &quot;two_races&quot; = &quot;...12&quot;,
    &quot;hispanic_any_race&quot; = &quot;...13&quot;
-  ) |&gt; 
-  drop_na()</code></pre>
+  )</code></pre>
 <pre><code>## New names:
 ## • `` -&gt; `...1`
 ## • `` -&gt; `...2`
@@ -352,33 +341,6 @@ scale_fill_discrete = scale_fill_viridis_d</code></pre>
 ## • `` -&gt; `...11`
 ## • `` -&gt; `...12`
 ## • `` -&gt; `...13`</code></pre>
-<p>Distribution of Race by Borough</p>
-<pre class="r"><code>dem_race = 
-  pop_race_2010 |&gt; 
-  group_by(borough) |&gt; 
-  summarize(white = sum(white_nonhis),
-            black = sum(black_nonhis),
-            asian = sum(asian_nonhis),
-            am_ind_alaska = sum(am_ind_alaska_nonhis),
-            hawaii_pac_island = sum(hawaii_pac_isl_nonhis),
-            other = sum(other_nonhis),
-            hispanic_all_races = sum(hispanic_any_race),
-            two_races = sum(two_races)
-            ) |&gt; 
-  pivot_longer(
-    white:two_races,
-    names_to = &quot;race&quot;,
-    values_to = &quot;n&quot;
-  ) |&gt; 
-   mutate(borough = fct_reorder(borough, n)) 
-
-ggplot(data = dem_race, aes(x = borough, y = n, fill = race)) + geom_bar(stat = &#39;identity&#39;) + geom_text(aes(label = n), size = 3, fontface = &quot;bold&quot;, position = position_stack(vjust = 0.5)) + 
-  labs(
-    title = &quot;Population of Borough by Race&quot;,
-    x = &quot;Borough&quot;,
-    y = &quot;Total Population&quot;
-  )</code></pre>
-<p><img src="grace_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <pre class="r"><code>all_data = left_join(tree_2015_raw, pop_race_2010, by = &quot;nta&quot;)</code></pre>
 <p>Total Number of Trees in each borough</p>
 <pre class="r"><code>number_tree = 
@@ -387,44 +349,8 @@ ggplot(data = dem_race, aes(x = borough, y = n, fill = race)) + geom_bar(stat = 
   summarize(n_trees = n_distinct(tree_id)) |&gt; 
   mutate(borough = fct_reorder(borough, n_trees))
 
-ggplot(data = number_tree, aes(x = borough, y = n_trees, fill = borough)) + geom_bar(stat = &#39;identity&#39;) + geom_text(aes(label = n_trees), size = 3, vjust = -1) + 
-  labs(
-    title = &quot;Number of Trees in each Borough&quot;,
-    x = &quot;Borough&quot;,
-    y = &quot;Total Number of Trees&quot;
-  )</code></pre>
-<p><img src="grace_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>Queens Trees by Species</p>
-<pre class="r"><code>#prevalent trees (n &gt; 500)
-queens_prev_trees = 
-  all_data |&gt; 
-  filter(borough == &quot;Queens&quot;) |&gt;
-  count(spc_common) |&gt; 
-  filter(n &gt; 500) |&gt; 
-  mutate(spc_common = fct_reorder(spc_common, n))
-
-ggplot(data = queens_prev_trees, aes(x = spc_common, y = n, fill = spc_common)) + geom_bar(stat = &#39;identity&#39;) + theme(legend.position = &quot;none&quot;, axis.text.x = element_text(angle = 65, hjust=1)) + 
-  labs(
-    title = &quot;Species of Trees in Queens (&gt;500 trees)&quot;,
-    x = &quot;Species (common name)&quot;,
-    y = &quot;Total Number of Trees&quot;
-  )</code></pre>
-<p><img src="grace_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<pre class="r"><code>#rare trees (n &lt; 500)
-queens_rare_trees = 
-  all_data |&gt; 
-  filter(borough == &quot;Queens&quot;) |&gt;
-  count(spc_common) |&gt; 
-  filter(n &lt; 500) |&gt; 
-  mutate(spc_common = fct_reorder(spc_common, n))
-
-ggplot(data = queens_rare_trees, aes(x = spc_common, y = n, fill = spc_common)) + geom_bar(stat = &#39;identity&#39;) + theme(legend.position = &quot;none&quot;, axis.text.x = element_text(angle = 65, hjust=1)) + 
-  labs(
-    title = &quot;Species of Trees in Queens (&lt;500 trees)&quot;,
-    x = &quot;Species (common name)&quot;,
-    y = &quot;Total Number of Trees&quot;
-  )</code></pre>
-<p><img src="grace_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+ggplot(data = number_tree, aes(x = borough, y = n_trees, fill = borough)) + geom_bar(stat = &#39;identity&#39;) + geom_text(aes(label = n_trees), size = 3, vjust = -1)</code></pre>
+<p><img src="grace_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>Trees in Manhattan by NTA</p>
 <pre class="r"><code>mhtn_number_tree = 
   all_data |&gt; 
@@ -437,17 +363,11 @@ ggplot(data = queens_rare_trees, aes(x = spc_common, y = n, fill = spc_common)) 
     names_to = &quot;type&quot;,
     names_prefix = &quot;n_&quot;,
     values_to = &quot;total&quot;
-  ) |&gt; 
-   mutate(nta_name = fct_reorder(nta_name, total))
+  )
   
 
-ggplot(mhtn_number_tree, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = &#39;identity&#39;, position = &#39;dodge&#39;)+ theme(axis.text.x = element_text(angle = 65, hjust=1)) + 
-  labs(
-    title = &quot;Number of Trees in Manhattan by NTA&quot;,
-    x = &quot;Neighborhood Tabulation Area&quot;,
-    y = &quot;Total Number of Trees&quot;
-  )</code></pre>
-<p><img src="grace_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+ggplot(mhtn_number_tree, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = &#39;identity&#39;, position = &#39;dodge&#39;)+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) </code></pre>
+<p><img src="grace_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>Manhattan Trees and Proportion of Race</p>
 <pre class="r"><code>pop_proportion = 
   all_data |&gt; 
@@ -457,27 +377,19 @@ ggplot(mhtn_number_tree, aes(x = nta_name, y = total, fill = type)) + geom_bar(s
             n_white = (sum(white_nonhis)/100000),
             n_black = (sum(black_nonhis)/100000),
             n_asian = (sum(asian_nonhis)/10000),
-            n_pacific_islander = (sum(hawaii_pac_isl_nonhis)/1000),
-            n_amer_ind = (sum(am_ind_alaska_nonhis)/1000),
             n_other = (sum(other_nonhis)/1000),
             n_hispanic = (sum(hispanic_any_race)/100000),
-            n_two_races = (sum(two_races)/1000)
             ) |&gt; 
   pivot_longer(
-    n_trees:n_two_races,
+    n_trees:n_hispanic,
     names_to = &quot;type&quot;,
     names_prefix = &quot;n_&quot;,
     values_to = &quot;total&quot;
   )
   
 
-ggplot(pop_proportion, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = &#39;identity&#39;, position = &#39;dodge&#39;)+ theme(axis.text.x = element_text(angle = 65, hjust=1)) + 
-  labs(
-    title = &quot;Manhattan Population by Race and Trees&quot;,
-    x = &quot;Neighborhood Tabulation Area&quot;,
-    y = &quot;Totals&quot;
-  )</code></pre>
-<p><img src="grace_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+ggplot(pop_proportion, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = &#39;identity&#39;, position = &#39;dodge&#39;)+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) </code></pre>
+<p><img src="grace_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>Manhattan Trees per NTA and Race per Total Pop</p>
 <pre class="r"><code>number_mhtn = 
   all_data |&gt; 
@@ -492,27 +404,19 @@ percentages =
             n_white = (sum(white_nonhis)/sum(total_population)),
             n_black = (sum(black_nonhis)/sum(total_population)),
             n_asian = (sum(asian_nonhis)/sum(total_population)),
-            n_pacific_islander = (sum(hawaii_pac_isl_nonhis)/sum(total_population)),
-            n_amer_ind = (sum(am_ind_alaska_nonhis)/sum(total_population)),
             n_other = (sum(other_nonhis)/sum(total_population)),
             n_hispanic = (sum(hispanic_any_race)/sum(total_population)),
-            n_two_races = (sum(two_races)/sum(total_population))
             ) |&gt; 
   pivot_longer(
-    n_trees:n_two_races,
+    n_trees:n_hispanic,
     names_to = &quot;type&quot;,
     names_prefix = &quot;n_&quot;,
     values_to = &quot;total&quot;
   )
   
 
-ggplot(percentages, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = &#39;identity&#39;, position = &#39;dodge&#39;)+ theme(axis.text.x = element_text(angle = 65, hjust=1)) + 
-  labs(
-    title = &quot;Manhattan Population and Trees by Percent of Whole&quot;,
-    x = &quot;Neighborhood Tabulation Area&quot;,
-    y = &quot;Total Percentages&quot;
-  )</code></pre>
-<p><img src="grace_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+ggplot(percentages, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = &#39;identity&#39;, position = &#39;dodge&#39;)+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))</code></pre>
+<p><img src="grace_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
 
 
