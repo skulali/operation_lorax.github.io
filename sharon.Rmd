@@ -54,6 +54,8 @@ trees_zip <-
 trees_zip |> 
   drop_na() |> 
   filter(borough == "Manhattan") |> 
+  group_by(modzcta, health) |> 
+  summarise() |> 
   tm_shape() +   
   tm_polygons(col = "health",
               style = "equal",
