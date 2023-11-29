@@ -68,7 +68,7 @@ dem_race =
   ) |> 
    mutate(borough = fct_reorder(borough, n)) 
 
-ggplot(data = dem_race, aes(x = borough, y = n, fill = race)) + geom_bar(stat = 'identity') + geom_text(aes(label = n), size = 3, fontface = "bold", position = position_stack(vjust = 0.5)) + 
+ggplot(data = dem_race, aes(x = borough, y = n, fill = race)) + geom_bar(stat = 'identity', position = 'dodge')  + 
   labs(
     title = "Population of Borough by Race",
     x = "Borough",
@@ -158,39 +158,8 @@ ggplot(mhtn_number_tree, aes(x = nta_name, y = total, fill = type)) + geom_bar(s
   )
 ```
 
-Manhattan Trees and Proportion of Race 
-```{r}
-pop_proportion = 
-  all_data |> 
-  filter(borough == "Manhattan") |> 
-  group_by(nta_name) |> 
-  summarize(n_trees = n_distinct(tree_id),
-            n_white = (sum(white_nonhis)/100000),
-            n_black = (sum(black_nonhis)/100000),
-            n_asian = (sum(asian_nonhis)/10000),
-            n_pacific_islander = (sum(hawaii_pac_isl_nonhis)/1000),
-            n_amer_ind = (sum(am_ind_alaska_nonhis)/1000),
-            n_other = (sum(other_nonhis)/1000),
-            n_hispanic = (sum(hispanic_any_race)/100000),
-            n_two_races = (sum(two_races)/1000)
-            ) |> 
-  pivot_longer(
-    n_trees:n_two_races,
-    names_to = "type",
-    names_prefix = "n_",
-    values_to = "total"
-  )
-  
 
-ggplot(pop_proportion, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = 'identity', position = 'dodge')+ theme(axis.text.x = element_text(angle = 65, hjust=1)) + 
-  labs(
-    title = "Manhattan Population by Race and Trees",
-    x = "Neighborhood Tabulation Area",
-    y = "Totals"
-  )
-```
-
-Manhattan Trees per NTA and Race per Total Pop
+Manhattan Trees and Population Demographics by NTA 
 ```{r}
 number_mhtn = 
   all_data |> 
@@ -201,29 +170,39 @@ percentages =
   all_data |> 
   filter(borough == "Manhattan") |> 
   group_by(nta_name) |> 
-  summarize(n_trees = (n_distinct(tree_id)/65669),
-            n_white = (sum(white_nonhis)/sum(total_population)),
-            n_black = (sum(black_nonhis)/sum(total_population)),
-            n_asian = (sum(asian_nonhis)/sum(total_population)),
-            n_pacific_islander = (sum(hawaii_pac_isl_nonhis)/sum(total_population)),
-            n_amer_ind = (sum(am_ind_alaska_nonhis)/sum(total_population)),
-            n_other = (sum(other_nonhis)/sum(total_population)),
-            n_hispanic = (sum(hispanic_any_race)/sum(total_population)),
-            n_two_races = (sum(two_races)/sum(total_population))
-            ) |> 
-  pivot_longer(
-    n_trees:n_two_races,
-    names_to = "type",
-    names_prefix = "n_",
-    values_to = "total"
-  )
-  
+  summarize(n_trees = n_distinct(tree_id),
+            n_white = (sum(white_nonhis)/sum(total_population)*100),
+            n_black = (sum(black_nonhis)/sum(total_population)*100),
+            n_asian = (sum(asian_nonhis)/sum(total_population)*100),
+            n_pacific_islander = (sum(hawaii_pac_isl_nonhis)/sum(total_population)*100),
+            n_amer_ind = (sum(am_ind_alaska_nonhis)/sum(total_population)*100),
+            n_other = (sum(other_nonhis)/sum(total_population)*100),
+            n_hispanic = (sum(hispanic_any_race)/sum(total_population)*100),
+            n_two_races = (sum(two_races)/sum(total_population)*100)
+            ) 
 
-ggplot(percentages, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = 'identity', position = 'dodge')+ theme(axis.text.x = element_text(angle = 65, hjust=1)) + 
-  labs(
-    title = "Manhattan Population and Trees by Percent of Whole",
-    x = "Neighborhood Tabulation Area",
-    y = "Total Percentages"
-  )
+percentages |> 
+ knitr::kable(digits = 3)
+```
+
+Trees and Population Demographics by Borough 
+ 
+```{r}
+borough_data = 
+  all_data |> 
+  group_by(borough) |> 
+  summarize(n_trees = n_distinct(tree_id),
+            n_white = (sum(white_nonhis)/sum(total_population)*100),
+            n_black = (sum(black_nonhis)/sum(total_population)*100),
+            n_asian = (sum(asian_nonhis)/sum(total_population)*100),
+            n_pacific_islander = (sum(hawaii_pac_isl_nonhis)/sum(total_population)*100),
+            n_amer_ind = (sum(am_ind_alaska_nonhis)/sum(total_population)*100),
+            n_other = (sum(other_nonhis)/sum(total_population)*100),
+            n_hispanic = (sum(hispanic_any_race)/sum(total_population)*100),
+            n_two_races = (sum(two_races)/sum(total_population)*100)
+            ) 
+
+borough_data |> 
+ knitr::kable(digits = 3)
 ```
 

@@ -372,7 +372,7 @@ scale_fill_discrete = scale_fill_viridis_d</code></pre>
   ) |&gt; 
    mutate(borough = fct_reorder(borough, n)) 
 
-ggplot(data = dem_race, aes(x = borough, y = n, fill = race)) + geom_bar(stat = &#39;identity&#39;) + geom_text(aes(label = n), size = 3, fontface = &quot;bold&quot;, position = position_stack(vjust = 0.5)) + 
+ggplot(data = dem_race, aes(x = borough, y = n, fill = race)) + geom_bar(stat = &#39;identity&#39;, position = &#39;dodge&#39;)  + 
   labs(
     title = &quot;Population of Borough by Race&quot;,
     x = &quot;Borough&quot;,
@@ -448,37 +448,7 @@ ggplot(mhtn_number_tree, aes(x = nta_name, y = total, fill = type)) + geom_bar(s
     y = &quot;Total Number of Trees&quot;
   )</code></pre>
 <p><img src="grace_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<p>Manhattan Trees and Proportion of Race</p>
-<pre class="r"><code>pop_proportion = 
-  all_data |&gt; 
-  filter(borough == &quot;Manhattan&quot;) |&gt; 
-  group_by(nta_name) |&gt; 
-  summarize(n_trees = n_distinct(tree_id),
-            n_white = (sum(white_nonhis)/100000),
-            n_black = (sum(black_nonhis)/100000),
-            n_asian = (sum(asian_nonhis)/10000),
-            n_pacific_islander = (sum(hawaii_pac_isl_nonhis)/1000),
-            n_amer_ind = (sum(am_ind_alaska_nonhis)/1000),
-            n_other = (sum(other_nonhis)/1000),
-            n_hispanic = (sum(hispanic_any_race)/100000),
-            n_two_races = (sum(two_races)/1000)
-            ) |&gt; 
-  pivot_longer(
-    n_trees:n_two_races,
-    names_to = &quot;type&quot;,
-    names_prefix = &quot;n_&quot;,
-    values_to = &quot;total&quot;
-  )
-  
-
-ggplot(pop_proportion, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = &#39;identity&#39;, position = &#39;dodge&#39;)+ theme(axis.text.x = element_text(angle = 65, hjust=1)) + 
-  labs(
-    title = &quot;Manhattan Population by Race and Trees&quot;,
-    x = &quot;Neighborhood Tabulation Area&quot;,
-    y = &quot;Totals&quot;
-  )</code></pre>
-<p><img src="grace_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<p>Manhattan Trees per NTA and Race per Total Pop</p>
+<p>Manhattan Trees and Population Demographics by NTA</p>
 <pre class="r"><code>number_mhtn = 
   all_data |&gt; 
   filter(borough == &quot;Manhattan&quot;) |&gt; 
@@ -488,31 +458,492 @@ percentages =
   all_data |&gt; 
   filter(borough == &quot;Manhattan&quot;) |&gt; 
   group_by(nta_name) |&gt; 
-  summarize(n_trees = (n_distinct(tree_id)/65669),
-            n_white = (sum(white_nonhis)/sum(total_population)),
-            n_black = (sum(black_nonhis)/sum(total_population)),
-            n_asian = (sum(asian_nonhis)/sum(total_population)),
-            n_pacific_islander = (sum(hawaii_pac_isl_nonhis)/sum(total_population)),
-            n_amer_ind = (sum(am_ind_alaska_nonhis)/sum(total_population)),
-            n_other = (sum(other_nonhis)/sum(total_population)),
-            n_hispanic = (sum(hispanic_any_race)/sum(total_population)),
-            n_two_races = (sum(two_races)/sum(total_population))
-            ) |&gt; 
-  pivot_longer(
-    n_trees:n_two_races,
-    names_to = &quot;type&quot;,
-    names_prefix = &quot;n_&quot;,
-    values_to = &quot;total&quot;
-  )
-  
+  summarize(n_trees = n_distinct(tree_id),
+            n_white = (sum(white_nonhis)/sum(total_population)*100),
+            n_black = (sum(black_nonhis)/sum(total_population)*100),
+            n_asian = (sum(asian_nonhis)/sum(total_population)*100),
+            n_pacific_islander = (sum(hawaii_pac_isl_nonhis)/sum(total_population)*100),
+            n_amer_ind = (sum(am_ind_alaska_nonhis)/sum(total_population)*100),
+            n_other = (sum(other_nonhis)/sum(total_population)*100),
+            n_hispanic = (sum(hispanic_any_race)/sum(total_population)*100),
+            n_two_races = (sum(two_races)/sum(total_population)*100)
+            ) 
 
-ggplot(percentages, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = &#39;identity&#39;, position = &#39;dodge&#39;)+ theme(axis.text.x = element_text(angle = 65, hjust=1)) + 
-  labs(
-    title = &quot;Manhattan Population and Trees by Percent of Whole&quot;,
-    x = &quot;Neighborhood Tabulation Area&quot;,
-    y = &quot;Total Percentages&quot;
-  )</code></pre>
-<p><img src="grace_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+percentages |&gt; 
+ knitr::kable(digits = 3)</code></pre>
+<table>
+<colgroup>
+<col width="32%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="13%" />
+<col width="8%" />
+<col width="5%" />
+<col width="8%" />
+<col width="8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">nta_name</th>
+<th align="right">n_trees</th>
+<th align="right">n_white</th>
+<th align="right">n_black</th>
+<th align="right">n_asian</th>
+<th align="right">n_pacific_islander</th>
+<th align="right">n_amer_ind</th>
+<th align="right">n_other</th>
+<th align="right">n_hispanic</th>
+<th align="right">n_two_races</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Battery Park City-Lower Manhattan</td>
+<td align="right">1311</td>
+<td align="right">65.405</td>
+<td align="right">3.244</td>
+<td align="right">20.192</td>
+<td align="right">0.043</td>
+<td align="right">0.088</td>
+<td align="right">0.385</td>
+<td align="right">7.695</td>
+<td align="right">2.947</td>
+</tr>
+<tr class="even">
+<td align="left">Central Harlem North-Polo Grounds</td>
+<td align="right">3515</td>
+<td align="right">5.770</td>
+<td align="right">67.073</td>
+<td align="right">1.731</td>
+<td align="right">0.027</td>
+<td align="right">0.340</td>
+<td align="right">0.259</td>
+<td align="right">22.831</td>
+<td align="right">1.969</td>
+</tr>
+<tr class="odd">
+<td align="left">Central Harlem South</td>
+<td align="right">2670</td>
+<td align="right">16.085</td>
+<td align="right">55.877</td>
+<td align="right">3.541</td>
+<td align="right">0.060</td>
+<td align="right">0.256</td>
+<td align="right">0.408</td>
+<td align="right">21.080</td>
+<td align="right">2.695</td>
+</tr>
+<tr class="even">
+<td align="left">Chinatown</td>
+<td align="right">1474</td>
+<td align="right">16.339</td>
+<td align="right">4.776</td>
+<td align="right">63.872</td>
+<td align="right">0.023</td>
+<td align="right">0.079</td>
+<td align="right">0.157</td>
+<td align="right">13.419</td>
+<td align="right">1.336</td>
+</tr>
+<tr class="odd">
+<td align="left">Clinton</td>
+<td align="right">2008</td>
+<td align="right">56.427</td>
+<td align="right">6.253</td>
+<td align="right">15.007</td>
+<td align="right">0.068</td>
+<td align="right">0.153</td>
+<td align="right">0.394</td>
+<td align="right">19.347</td>
+<td align="right">2.352</td>
+</tr>
+<tr class="even">
+<td align="left">East Harlem North</td>
+<td align="right">2591</td>
+<td align="right">6.784</td>
+<td align="right">35.549</td>
+<td align="right">3.044</td>
+<td align="right">0.016</td>
+<td align="right">0.221</td>
+<td align="right">0.319</td>
+<td align="right">52.743</td>
+<td align="right">1.325</td>
+</tr>
+<tr class="odd">
+<td align="left">East Harlem South</td>
+<td align="right">2014</td>
+<td align="right">17.395</td>
+<td align="right">24.571</td>
+<td align="right">8.293</td>
+<td align="right">0.095</td>
+<td align="right">0.166</td>
+<td align="right">0.376</td>
+<td align="right">47.492</td>
+<td align="right">1.611</td>
+</tr>
+<tr class="even">
+<td align="left">East Village</td>
+<td align="right">1575</td>
+<td align="right">65.452</td>
+<td align="right">3.949</td>
+<td align="right">14.863</td>
+<td align="right">0.050</td>
+<td align="right">0.145</td>
+<td align="right">0.412</td>
+<td align="right">12.378</td>
+<td align="right">2.751</td>
+</tr>
+<tr class="odd">
+<td align="left">Gramercy</td>
+<td align="right">1172</td>
+<td align="right">73.685</td>
+<td align="right">3.298</td>
+<td align="right">13.363</td>
+<td align="right">0.036</td>
+<td align="right">0.068</td>
+<td align="right">0.275</td>
+<td align="right">7.228</td>
+<td align="right">2.047</td>
+</tr>
+<tr class="even">
+<td align="left">Hamilton Heights</td>
+<td align="right">2407</td>
+<td align="right">10.897</td>
+<td align="right">32.246</td>
+<td align="right">2.199</td>
+<td align="right">0.031</td>
+<td align="right">0.245</td>
+<td align="right">0.367</td>
+<td align="right">52.193</td>
+<td align="right">1.822</td>
+</tr>
+<tr class="odd">
+<td align="left">Hudson Yards-Chelsea-Flat Iron-Union Square</td>
+<td align="right">2988</td>
+<td align="right">65.091</td>
+<td align="right">5.726</td>
+<td align="right">11.785</td>
+<td align="right">0.030</td>
+<td align="right">0.133</td>
+<td align="right">0.372</td>
+<td align="right">14.602</td>
+<td align="right">2.262</td>
+</tr>
+<tr class="even">
+<td align="left">Lenox Hill-Roosevelt Island</td>
+<td align="right">2327</td>
+<td align="right">75.313</td>
+<td align="right">4.421</td>
+<td align="right">10.609</td>
+<td align="right">0.076</td>
+<td align="right">0.071</td>
+<td align="right">0.324</td>
+<td align="right">7.258</td>
+<td align="right">1.929</td>
+</tr>
+<tr class="odd">
+<td align="left">Lincoln Square</td>
+<td align="right">2065</td>
+<td align="right">73.351</td>
+<td align="right">4.407</td>
+<td align="right">11.248</td>
+<td align="right">0.023</td>
+<td align="right">0.094</td>
+<td align="right">0.285</td>
+<td align="right">8.647</td>
+<td align="right">1.945</td>
+</tr>
+<tr class="even">
+<td align="left">Lower East Side</td>
+<td align="right">1943</td>
+<td align="right">22.552</td>
+<td align="right">10.871</td>
+<td align="right">24.900</td>
+<td align="right">0.018</td>
+<td align="right">0.195</td>
+<td align="right">0.262</td>
+<td align="right">39.571</td>
+<td align="right">1.632</td>
+</tr>
+<tr class="odd">
+<td align="left">Manhattanville</td>
+<td align="right">913</td>
+<td align="right">7.451</td>
+<td align="right">25.786</td>
+<td align="right">2.161</td>
+<td align="right">0.022</td>
+<td align="right">0.336</td>
+<td align="right">0.331</td>
+<td align="right">62.802</td>
+<td align="right">1.111</td>
+</tr>
+<tr class="even">
+<td align="left">Marble Hill-Inwood</td>
+<td align="right">1754</td>
+<td align="right">15.103</td>
+<td align="right">9.068</td>
+<td align="right">1.891</td>
+<td align="right">0.011</td>
+<td align="right">0.137</td>
+<td align="right">0.383</td>
+<td align="right">72.428</td>
+<td align="right">0.980</td>
+</tr>
+<tr class="odd">
+<td align="left">Midtown-Midtown South</td>
+<td align="right">1196</td>
+<td align="right">64.097</td>
+<td align="right">4.576</td>
+<td align="right">20.754</td>
+<td align="right">0.028</td>
+<td align="right">0.119</td>
+<td align="right">0.321</td>
+<td align="right">8.117</td>
+<td align="right">1.987</td>
+</tr>
+<tr class="even">
+<td align="left">Morningside Heights</td>
+<td align="right">2751</td>
+<td align="right">46.041</td>
+<td align="right">13.623</td>
+<td align="right">13.342</td>
+<td align="right">0.054</td>
+<td align="right">0.188</td>
+<td align="right">0.363</td>
+<td align="right">23.521</td>
+<td align="right">2.870</td>
+</tr>
+<tr class="odd">
+<td align="left">Murray Hill-Kips Bay</td>
+<td align="right">1746</td>
+<td align="right">66.647</td>
+<td align="right">4.775</td>
+<td align="right">16.225</td>
+<td align="right">0.032</td>
+<td align="right">0.108</td>
+<td align="right">0.357</td>
+<td align="right">9.870</td>
+<td align="right">1.987</td>
+</tr>
+<tr class="even">
+<td align="left">SoHo-TriBeCa-Civic Center-Little Italy</td>
+<td align="right">2215</td>
+<td align="right">66.094</td>
+<td align="right">2.185</td>
+<td align="right">22.175</td>
+<td align="right">0.026</td>
+<td align="right">0.070</td>
+<td align="right">0.400</td>
+<td align="right">6.481</td>
+<td align="right">2.569</td>
+</tr>
+<tr class="odd">
+<td align="left">Stuyvesant Town-Cooper Village</td>
+<td align="right">447</td>
+<td align="right">74.113</td>
+<td align="right">3.568</td>
+<td align="right">12.647</td>
+<td align="right">0.029</td>
+<td align="right">0.109</td>
+<td align="right">0.299</td>
+<td align="right">6.675</td>
+<td align="right">2.561</td>
+</tr>
+<tr class="even">
+<td align="left">Turtle Bay-East Midtown</td>
+<td align="right">2253</td>
+<td align="right">77.053</td>
+<td align="right">2.091</td>
+<td align="right">12.990</td>
+<td align="right">0.041</td>
+<td align="right">0.045</td>
+<td align="right">0.359</td>
+<td align="right">5.772</td>
+<td align="right">1.649</td>
+</tr>
+<tr class="odd">
+<td align="left">Upper East Side-Carnegie Hill</td>
+<td align="right">4673</td>
+<td align="right">87.648</td>
+<td align="right">1.093</td>
+<td align="right">4.986</td>
+<td align="right">0.020</td>
+<td align="right">0.029</td>
+<td align="right">0.214</td>
+<td align="right">4.630</td>
+<td align="right">1.379</td>
+</tr>
+<tr class="even">
+<td align="left">Upper West Side</td>
+<td align="right">5881</td>
+<td align="right">67.709</td>
+<td align="right">8.420</td>
+<td align="right">5.959</td>
+<td align="right">0.026</td>
+<td align="right">0.103</td>
+<td align="right">0.336</td>
+<td align="right">15.460</td>
+<td align="right">1.988</td>
+</tr>
+<tr class="odd">
+<td align="left">Washington Heights North</td>
+<td align="right">2684</td>
+<td align="right">25.776</td>
+<td align="right">4.078</td>
+<td align="right">2.534</td>
+<td align="right">0.015</td>
+<td align="right">0.086</td>
+<td align="right">0.317</td>
+<td align="right">66.149</td>
+<td align="right">1.044</td>
+</tr>
+<tr class="even">
+<td align="left">Washington Heights South</td>
+<td align="right">2990</td>
+<td align="right">11.252</td>
+<td align="right">10.454</td>
+<td align="right">2.727</td>
+<td align="right">0.006</td>
+<td align="right">0.144</td>
+<td align="right">0.360</td>
+<td align="right">74.056</td>
+<td align="right">1.001</td>
+</tr>
+<tr class="odd">
+<td align="left">West Village</td>
+<td align="right">3837</td>
+<td align="right">80.891</td>
+<td align="right">2.023</td>
+<td align="right">8.153</td>
+<td align="right">0.030</td>
+<td align="right">0.075</td>
+<td align="right">0.353</td>
+<td align="right">6.062</td>
+<td align="right">2.413</td>
+</tr>
+<tr class="even">
+<td align="left">Yorkville</td>
+<td align="right">2269</td>
+<td align="right">75.996</td>
+<td align="right">3.667</td>
+<td align="right">9.271</td>
+<td align="right">0.032</td>
+<td align="right">0.065</td>
+<td align="right">0.277</td>
+<td align="right">8.810</td>
+<td align="right">1.881</td>
+</tr>
+</tbody>
+</table>
+<p>Trees and Population Demographics by Borough</p>
+<pre class="r"><code>borough_data = 
+  all_data |&gt; 
+  group_by(borough) |&gt; 
+  summarize(n_trees = n_distinct(tree_id),
+            n_white = (sum(white_nonhis)/sum(total_population)*100),
+            n_black = (sum(black_nonhis)/sum(total_population)*100),
+            n_asian = (sum(asian_nonhis)/sum(total_population)*100),
+            n_pacific_islander = (sum(hawaii_pac_isl_nonhis)/sum(total_population)*100),
+            n_amer_ind = (sum(am_ind_alaska_nonhis)/sum(total_population)*100),
+            n_other = (sum(other_nonhis)/sum(total_population)*100),
+            n_hispanic = (sum(hispanic_any_race)/sum(total_population)*100),
+            n_two_races = (sum(two_races)/sum(total_population)*100)
+            ) 
+
+borough_data |&gt; 
+ knitr::kable(digits = 3)</code></pre>
+<table>
+<colgroup>
+<col width="13%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="17%" />
+<col width="10%" />
+<col width="7%" />
+<col width="10%" />
+<col width="11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">borough</th>
+<th align="right">n_trees</th>
+<th align="right">n_white</th>
+<th align="right">n_black</th>
+<th align="right">n_asian</th>
+<th align="right">n_pacific_islander</th>
+<th align="right">n_amer_ind</th>
+<th align="right">n_other</th>
+<th align="right">n_hispanic</th>
+<th align="right">n_two_races</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bronx</td>
+<td align="right">84957</td>
+<td align="right">12.822</td>
+<td align="right">30.587</td>
+<td align="right">3.344</td>
+<td align="right">0.029</td>
+<td align="right">0.257</td>
+<td align="right">0.644</td>
+<td align="right">51.134</td>
+<td align="right">1.184</td>
+</tr>
+<tr class="even">
+<td align="left">Brooklyn</td>
+<td align="right">177320</td>
+<td align="right">34.907</td>
+<td align="right">33.734</td>
+<td align="right">9.613</td>
+<td align="right">0.025</td>
+<td align="right">0.187</td>
+<td align="right">0.439</td>
+<td align="right">19.492</td>
+<td align="right">1.603</td>
+</tr>
+<tr class="odd">
+<td align="left">Manhattan</td>
+<td align="right">65669</td>
+<td align="right">50.647</td>
+<td align="right">13.477</td>
+<td align="right">9.221</td>
+<td align="right">0.032</td>
+<td align="right">0.132</td>
+<td align="right">0.327</td>
+<td align="right">24.282</td>
+<td align="right">1.883</td>
+</tr>
+<tr class="even">
+<td align="left">Queens</td>
+<td align="right">250524</td>
+<td align="right">29.844</td>
+<td align="right">17.488</td>
+<td align="right">22.621</td>
+<td align="right">0.051</td>
+<td align="right">0.303</td>
+<td align="right">1.601</td>
+<td align="right">25.421</td>
+<td align="right">2.671</td>
+</tr>
+<tr class="odd">
+<td align="left">Staten Island</td>
+<td align="right">105318</td>
+<td align="right">71.685</td>
+<td align="right">6.017</td>
+<td align="right">6.866</td>
+<td align="right">0.030</td>
+<td align="right">0.122</td>
+<td align="right">0.190</td>
+<td align="right">13.858</td>
+<td align="right">1.233</td>
+</tr>
+</tbody>
+</table>
 </div>
 
 
