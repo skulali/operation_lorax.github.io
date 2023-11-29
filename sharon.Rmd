@@ -48,68 +48,125 @@ trees_zip <-
 ```
 
 ```{r}
+# getting borough names
+
+trees_zip |> 
+  pull(borough) |> 
+  unique()
+
+trees_zip |> 
+  pull(nta_name) |> 
+  unique()
+```
+
+```{r}
 # map of tree health in Manhattan
 
-#trees_zip |> 
-  #drop_na() |> 
-  #filter(borough == "Manhattan") |> 
-  #group_by(modzcta, health) |> 
-  #summarise() |> 
-  #tm_shape() +   
-  #tm_polygons(col = "health",
-              #style = "equal",
-              #n = 3,
-              #palette = "viridis",
-              #border.col = "black",
-              #title = "Tree Heath by Zip Codes in Manhattan")
+trees_zip |> 
+  drop_na() |> 
+  filter(borough == "Manhattan",
+         status == "Alive") |>
+  tm_shape() +   
+  tm_polygons(col = "health",
+              style = "equal",
+              n = 3,
+              palette = "viridis",
+              border.col = "black",
+              title = "Tree Heath by Zip Codes in Manhattan")
 ```
 
 ```{r}
 # map of tree health in Brooklyn
 
-#trees_zip |> 
-  #drop_na() |> 
-  #filter(borough == "Brooklyn") |> 
-  #tm_shape() +   
-  #tm_polygons(col = "health",
-              #style = "equal",
-              #n = 3,
-              #palette = "Blues",
-              #border.col = "black",
-              #title = "Tree Heath by Zip Codes in Brooklyn")
-```
-
-
-
-```{r}
-#trees_zip |> 
-  #drop_na() |> 
-  #tm_shape() +   
-  #tm_polygons(col = "health",
-              #style = "equal",
-              #n = 3,
-              #palette = "Blues",
-              #border.col = "black",
-              #title = "Tree Heath by Zip Codes in Brooklyn")
+trees_zip |> 
+  drop_na() |> 
+  filter(borough == "Brooklyn",
+          status == "Alive") |> 
+  tm_shape() +   
+  tm_polygons(col = "health",
+              style = "equal",
+              n = 3,
+              palette = "viridis",
+              border.col = "black",
+              title = "Tree Heath by Zip Codes in Brooklyn")
 ```
 
 ```{r}
-# map based on tree health
+# map of tree health in Queens
 
-#trees_2015 |>
-   #plot_ly(
-     #  x = ~longitude, y = ~latitude, color = ~health, text = ~spc_common,
-     #  type = "scatter", mode = "markers", alpha = 0.5)
+trees_zip |> 
+  drop_na() |> 
+  filter(borough == "Queens",
+         status == "Alive") |>
+  tm_shape() +   
+  tm_polygons(col = "health",
+              style = "equal",
+              n = 3,
+              palette = "viridis",
+              border.col = "black",
+              title = "Tree Heath by Zip Codes in Queens")
 ```
 
 ```{r}
-#scatter_ggplot = 
-  #trees_2015 |>
-  #top_n(n = 50) |> 
-  #ggplot(aes(x = latitude, y = longitude, color = health)) +
-  #geom_point(alpha = 0.25) +
-  #coord_cartesian()
+# map of tree health in Bronx
 
-#ggplotly(scatter_ggplot)
+trees_zip |> 
+  drop_na() |> 
+  filter(borough == "Bronx",
+         status == "Alive") |>
+  tm_shape() +   
+  tm_polygons(col = "health",
+              style = "equal",
+              n = 3,
+              palette = "viridis",
+              border.col = "black",
+              title = "Tree Heath by Zip Codes in Bronx")
 ```
+
+```{r}
+# map of tree health in Staten Island
+
+trees_zip |> 
+  drop_na() |> 
+  filter(borough == "Staten Island",
+         status == "Alive") |>
+  tm_shape() +   
+  tm_polygons(col = "health",
+              style = "equal",
+              n = 3,
+              palette = "viridis",
+              border.col = "black",
+              title = "Tree Heath by Zip Codes in Staten Island")
+```
+
+```{r}
+# map of tree health in Washington Heights
+
+trees_zip |> 
+  drop_na() |> 
+  filter(borough == "Manhattan",
+         status == "Alive",
+         nta_name == c("Washington Heights South", "Washington Heights North")) |>
+  tm_shape() +   
+  tm_polygons(col = "health",
+              style = "equal",
+              n = 3,
+              palette = "viridis",
+              border.col = "black",
+              title = "Tree Heath by Zip Codes in Washington Heights")
+```
+
+```{r}
+# interactive map based on tree health in Washington Heights
+
+trees_2015 |>
+  drop_na() |> 
+  filter(borough == "Manhattan",
+         status == "Alive",
+         nta_name == c("Washington Heights South", "Washington Heights North")) |>
+   plot_ly(
+       x = ~longitude, y = ~latitude, color = ~health, text = ~spc_common,
+       type = "scatter", mode = "markers", alpha = 0.5)
+```
+
 
