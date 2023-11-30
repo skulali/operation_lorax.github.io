@@ -137,7 +137,7 @@ trees_and_asthma_ed_adult |>
   plot_ly(data = _, x = ~num_trees, y = ~average_annual_age_adjusted_rate_per_10_000,
           text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>number of trees: ", num_trees, "<br>rate of adult asthma ED visits: ", average_annual_age_adjusted_rate_per_10_000),
           color = ~nta_name) |> 
-    layout(title = "Trees per acre and rate of adult asthma ED visits by neighborhood")
+    layout(title = "Number of trees and rate of adult asthma ED visits by neighborhood")
 
 cor(pull(trees_and_asthma_ed_adult, num_trees), pull(trees_and_asthma_ed_adult, average_annual_age_adjusted_rate_per_10_000))
 
@@ -145,7 +145,7 @@ trees_and_asthma_ed_adult |>
   plot_ly(data = _, x = ~num_trees, y = ~average_annual_rate_per_10_000,
           text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>number of trees: ", num_trees, "<br>rate of adult asthma ED visits: ", average_annual_rate_per_10_000),
           color = ~nta_name) |> 
-    layout(title = "Trees per acre and rate of adult asthma ED visits by neighborhood")
+    layout(title = "Number of trees and rate of adult asthma ED visits by neighborhood")
 
 cor(pull(trees_and_asthma_ed_adult, num_trees), pull(trees_and_asthma_ed_adult, average_annual_rate_per_10_000))
 
@@ -200,7 +200,7 @@ trees_and_asthma_hosp_adult |>
   plot_ly(data = _, x = ~num_trees, y = ~average_annual_age_adjusted_rate_per_10_000,
           text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>number of trees: ", num_trees, "<br>rate of adult asthma hospitalizations: ", average_annual_age_adjusted_rate_per_10_000),
           color = ~nta_name) |> 
-    layout(title = "Trees per acre and rate of adult asthma hospitalizations by neighborhood")
+    layout(title = "Number of trees and rate of adult asthma hospitalizations by neighborhood")
 
 cor(pull(trees_and_asthma_hosp_adult, num_trees), pull(trees_and_asthma_hosp_adult, average_annual_age_adjusted_rate_per_10_000))
 
@@ -208,7 +208,7 @@ trees_and_asthma_hosp_adult |>
   plot_ly(data = _, x = ~num_trees, y = ~average_annual_rate_per_10_000,
           text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>number of trees: ", num_trees, "<br>rate of adult asthma hospitalizations: ", average_annual_rate_per_10_000),
           color = ~nta_name) |> 
-    layout(title = "Trees per acre and rate of adult asthma hospitalizations by neighborhood")
+    layout(title = "Number of trees and rate of adult asthma hospitalizations by neighborhood")
 
 cor(pull(trees_and_asthma_hosp_adult, num_trees), pull(trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
 
@@ -216,12 +216,53 @@ cor(pull(trees_and_asthma_hosp_adult, num_trees), pull(trees_and_asthma_hosp_adu
 
 ```
 
+## Neighborhood Poverty 2013-2017
+### load Neighborhood Poverty 2013-2017
+
+```{r}
+poverty_raw <-
+  read_csv("large_tree_data/NYC EH Data Portal - Neighborhood poverty.csv") |> 
+  janitor::clean_names()
+
+poverty_clean <- poverty_raw |> 
+  rename(nta_name = geography, poverty_percent = percent) |> 
+  filter(geo_type == "NTA2010" & time == "2013-17") |> 
+  select(nta_name, poverty_percent)
 
 
+```
+
+### Summarize trees per acre by nta and percent poverty
+checked and no NAs are present
+```{r}
+trees_and_poverty <- left_join(trees_per_acre_df, poverty_clean, by = "nta_name")
+
+m1 <- sum(is.na(trees_and_poverty))
+
+```
+
+### Tables and Graphs of trees per acre and asthma
+when looking at histograms of x and y values most are skewed; can't do a test of significance
+```{r}
+trees_and_poverty |> 
+  plot_ly(data = _, x = ~trees_per_acre, y = ~poverty_percent,
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>trees per acre: ", trees_per_acre, "<br>%people whose income is below poverty line: ", poverty_percent),
+          color = ~nta_name) |> 
+    layout(title = "Trees per acre and percentage of poverty by neighborhood")
 
 
+cor(pull(trees_and_poverty, trees_per_acre), pull(trees_and_poverty, poverty_percent))
+
+trees_and_poverty |> 
+  plot_ly(data = _, x = ~num_trees, y = ~poverty_percent,
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>number of trees: ", num_trees, "<br>%people whose income is below poverty line: ", poverty_percent),
+          color = ~nta_name) |> 
+    layout(title = "Number of trees and percentage of poverty by neighborhood")
 
 
+cor(pull(trees_and_poverty, num_trees), pull(trees_and_poverty, poverty_percent))
+
+```
 
 
 
