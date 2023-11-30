@@ -179,7 +179,9 @@ percentages =
             n_other = (sum(other_nonhis)/sum(total_population)*100),
             n_hispanic = (sum(hispanic_any_race)/sum(total_population)*100),
             n_two_races = (sum(two_races)/sum(total_population)*100)
-            ) 
+            ) |> 
+  mutate(n_trees = as.numeric(n_trees)) |> 
+  arrange(desc(n_trees))
 
 percentages |> 
  knitr::kable(digits = 3)
@@ -200,7 +202,9 @@ borough_data =
             n_other = (sum(other_nonhis)/sum(total_population)*100),
             n_hispanic = (sum(hispanic_any_race)/sum(total_population)*100),
             n_two_races = (sum(two_races)/sum(total_population)*100)
-            ) 
+            ) |> 
+  mutate(n_trees = as.numeric(n_trees)) |> 
+  arrange(desc(n_trees))
 
 borough_data |> 
  knitr::kable(digits = 3)
