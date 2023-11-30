@@ -6,8 +6,12 @@ title: "Zander's Brainstorming Page"
 
 ```{r Page Settings, message = FALSE}
 library(tidyverse)
+library(ggridges)
 library(patchwork)
 library(plotly)
+library(sf)
+library(tmap)
+library(tmaptools)
 
 theme_set(theme(legend.position = "bottom"))
 
@@ -28,8 +32,17 @@ trees_dbh = trees_2015_cleaned |>
   drop_na(tree_dbh) |> 
   group_by(borough, nta_name) |> 
   summarize(
-    n_obs = n(),
-    avg_dbh = mean(tree_dbh))
+    n_trees = n(),
+    avg_dbh = mean(tree_dbh)) |> 
+  arrange(desc(avg_dbh))
+
+large_tree_table = trees_dbh |> 
+  ungroup() |> 
+  filter(n_trees > 100) |> 
+  filter(min_rank(desc(avg_dbh)) < 11) |> 
+  knitr::kable(digits = 2, caption = "Top 10 Neighborhoods wth the Highest Average DBH Across Local Street Trees")
+
+large_tree_table
 
 ```
 
@@ -53,5 +66,51 @@ neighborhood_dbh = trees_2015_cleaned |>
 
 neighborhood_dbh |> 
 ggplot(aes(x = nta_name, y = nta_dbh, fill = borough)) + geom_col()
+
 ```
+
+# Spatially Mapping Neighborhood DBH Values Across NYC
+
+```{r Importing Shapefile for Data Join}
+#Reading in Shapefile
+nyc_nta = st_read("large_tree_data/nyc_nta_mapdata/geo_export_e924b274-8b6e-427d-87c0-92bfde8ce30a.shp")
+
+glimpse(nyc_nta)
+head(nyc_nta)
+
+tm_shape(nyc_nta) +
+  tm_polygons()
+
+```
+
+```{r Creating DBH Join layer as new small dataframe, Joining}
+
+nta_dbh_summarized = trees_2015_cleaned |> 
+  drop_na(tree_dbh) |> 
+  group_by(nta) |> 
+  summarize(
+    trees_per_nta = n(),
+    avg_dbh = mean(tree_dbh))
+
+nta_dbh_spatial = merge(nyc_nta, nta_dbh_summarized, 
+                        by.x = "ntacode",
+                        by.y = "nta")
+```
+
+```{r Visualizing DBH Data Test 1}
+
+#Fast to render using the summarized df instead of full tree csv dataframe, but noticing some NTA's are missing from the Street Tree Data Census 188/195 are present
+
+#Missing NTA Values appear to be park green spaces? How can I fix or color them a different shade. Is it fine to have these gaps?
+
+tm_shape(nta_dbh_spatial) +
+  tm_polygons(col = "avg_dbh",
+              style = "quantile",
+              n = 5,
+              palette = "YlGn",
+              border.col = "black",
+              title = "Average Tree DBH Across NYC Neighborhoods")
+```
+
+
 
