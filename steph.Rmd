@@ -106,46 +106,54 @@ when looking at histograms of x and y values most are skewed; can't do a test of
 no to weak linear association
 ```{r}
 trees_and_asthma_ed_adult |> 
-  select(nta_name, borough, num_trees, total_acres, trees_per_acre, average_annual_age_adjusted_rate_per_10_000) |> 
-  arrange(desc(trees_per_acre)) |> 
-  filter(min_rank(desc(trees_per_acre)) < 11) |> 
-  knitr::kable(digits = 2, caption = "Top 10 neighborhoods with most trees per acre and their asthma ED adult rate")
-
-trees_and_asthma_ed_adult |> 
-  select(nta_name, borough, num_trees, total_acres, trees_per_acre, average_annual_age_adjusted_rate_per_10_000) |> 
-  arrange((trees_per_acre)) |> 
-  filter(min_rank(trees_per_acre) < 11) |> 
-  knitr::kable(digits = 2, caption = "Top 10 neighborhoods with least trees per acre and their asthma ED adult rate")
-
-trees_and_asthma_ed_adult |> 
-  plot_ly(data = _, x = ~average_annual_age_adjusted_rate_per_10_000, y = ~ trees_per_acre,
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>rate of adult asthma ED visits: ", average_annual_age_adjusted_rate_per_10_000, "<br>tree per acre: ", trees_per_acre),
-          color = ~nta_name) |> 
-  layout(title = "Trees per acre and rate of adult asthma ED visits by neighborhood")
+  plot_ly(data = _, x = ~trees_per_acre, y = ~ average_annual_age_adjusted_rate_per_10_000, 
+          color = ~nta_name, 
+          type = "scatter",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>tree per acre: ", trees_per_acre, 
+                        "<br>rate of adult asthma ED visits: ", average_annual_age_adjusted_rate_per_10_000)) |> 
+  layout(title = "Trees per acre and rate of adult asthma emergency department visits <br> by neighborhood", 
+         xaxis = list(title = 'Number of trees per acre'),
+         yaxis = list(title = 'Average annual age-adjusted rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         legend = list(title=list(text='Neighborhood')))
 
 cor(pull(trees_and_asthma_ed_adult, trees_per_acre), pull(trees_and_asthma_ed_adult, average_annual_age_adjusted_rate_per_10_000))
 
 trees_and_asthma_ed_adult |> 
-  plot_ly(data = _, x = ~average_annual_rate_per_10_000, y = ~ trees_per_acre,
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>rate of adult asthma ED visits: ", average_annual_rate_per_10_000, "<br>tree per acre: ", trees_per_acre),
-          color = ~nta_name) |> 
-    layout(title = "Trees per acre and rate of adult asthma ED visits by neighborhood")
+  plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
+          color = ~nta_name, 
+          type = "scatter", 
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>tree per acre: ", trees_per_acre, 
+                        "<br>rate of adult asthma ED visits: ", average_annual_rate_per_10_000)) |> 
+    layout(title = "Trees per acre and rate of adult asthma emergency department visits <br> by neighborhood",
+           xaxis = list(title = 'Number of trees per acre'),
+           yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
+           legend = list(title=list(text='Neighborhood')))
 
 cor(pull(trees_and_asthma_ed_adult, trees_per_acre), pull(trees_and_asthma_ed_adult, average_annual_rate_per_10_000))
 
 trees_and_asthma_ed_adult |> 
-  plot_ly(data = _, x = ~average_annual_age_adjusted_rate_per_10_000, y = ~num_trees,
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>rate of adult asthma ED visits: ", average_annual_age_adjusted_rate_per_10_000, "<br>number of trees: ", num_trees),
-          color = ~nta_name) |> 
-    layout(title = "Number of trees and rate of adult asthma ED visits by neighborhood")
+  plot_ly(data = _, x = ~num_trees, y = ~average_annual_age_adjusted_rate_per_10_000,
+          color = ~nta_name, 
+          type = "scatter", 
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>number of trees: ", num_trees,
+                        "<br>rate of adult asthma ED visits: ", average_annual_age_adjusted_rate_per_10_000)) |>
+  layout(title = "Number of trees and rate of adult asthma emergency department visits <br> by neighborhood",
+         xaxis = list(title = 'Total number of trees'),
+         yaxis = list(title = 'Average annual age-adjusted rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         legend = list(title=list(text='Neighborhood')))
 
 cor(pull(trees_and_asthma_ed_adult, num_trees), pull(trees_and_asthma_ed_adult, average_annual_age_adjusted_rate_per_10_000))
 
 trees_and_asthma_ed_adult |> 
-  plot_ly(data = _, x = ~average_annual_rate_per_10_000, y = ~num_trees,
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>rate of adult asthma ED visits: ", average_annual_rate_per_10_000, "<br>number of trees: ", num_trees),
-          color = ~nta_name) |> 
-    layout(title = "Number of trees and rate of adult asthma ED visits by neighborhood")
+  plot_ly(data = _, x = ~num_trees, y = ~average_annual_rate_per_10_000,
+          color = ~nta_name,
+          type = "scatter", 
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>number of trees: ", num_trees, 
+                        "<br>rate of adult asthma ED visits: ", average_annual_rate_per_10_000)) |> 
+    layout(title = "Number of trees and rate of adult asthma emergency department visits <br> by neighborhood",
+         xaxis = list(title = 'Total number of trees'),
+         yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         legend = list(title=list(text='Neighborhood')))
 
 cor(pull(trees_and_asthma_ed_adult, num_trees), pull(trees_and_asthma_ed_adult, average_annual_rate_per_10_000))
 
@@ -181,34 +189,56 @@ when looking at histograms of x and y values most are skewed; can't do a test of
 
 ```{r}
 trees_and_asthma_hosp_adult |> 
-  plot_ly(data = _, x = ~average_annual_age_adjusted_rate_per_10_000, y = ~trees_per_acre, color = ~nta_name, type = "scatter",
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>rate of adult asthma hospitalizations: ", average_annual_age_adjusted_rate_per_10_000, "<br>tree per acre: ", trees_per_acre)) |> 
-  layout(title = "Trees per acre and rate of adult asthma hospitalizations by neighborhood")
+  plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_age_adjusted_rate_per_10_000, 
+          color = ~nta_name, 
+          type = "scatter",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>tree per acre: ", trees_per_acre,
+                        "<br>rate of adult asthma hospitalizations: ", average_annual_age_adjusted_rate_per_10_000)) |> 
+  layout(title = "Trees per acre and rate of adult asthma hospitalizations <br> by neighborhood",
+         xaxis = list(title = 'Number of trees per acre'),
+         yaxis = list(title = 'Average annual age-adjusted rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         legend = list(title=list(text='Neighborhood')))
 
 cor(pull(trees_and_asthma_hosp_adult, trees_per_acre), pull(trees_and_asthma_hosp_adult, average_annual_age_adjusted_rate_per_10_000))
 
 trees_and_asthma_hosp_adult |> 
-  plot_ly(data = _, x = ~average_annual_rate_per_10_000, y = ~trees_per_acre, color = ~nta_name, type = "scatter",
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>rate of adult asthma hospitalizations: ", average_annual_rate_per_10_000, "<br>tree per acre: ", trees_per_acre)) |> 
-    layout(title = "Trees per acre and rate of adult asthma hospitalizations by neighborhood")
+  plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
+          color = ~nta_name, 
+          type = "scatter",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>tree per acre: ", trees_per_acre,
+                        "<br>rate of adult asthma hospitalizations: ", average_annual_rate_per_10_000)) |> 
+  layout(title = "Trees per acre and rate of adult asthma hospitalizations <br> by neighborhood",
+         xaxis = list(title = 'Number of trees per acre'),
+         yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         legend = list(title=list(text='Neighborhood')))
 
 cor(pull(trees_and_asthma_hosp_adult, trees_per_acre), pull(trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
 
 trees_and_asthma_hosp_adult |> 
-  plot_ly(data = _, x = ~average_annual_age_adjusted_rate_per_10_000, y = ~num_trees, color = ~nta_name, type = "scatter",
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>rate of adult asthma hospitalizations: ", average_annual_age_adjusted_rate_per_10_000, "<br>number of trees: ", num_trees)) |> 
-    layout(title = "Number of trees and rate of adult asthma hospitalizations by neighborhood")
+  plot_ly(data = _, x = ~num_trees, y = ~average_annual_age_adjusted_rate_per_10_000, 
+          color = ~nta_name, 
+          type = "scatter",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>number of trees: ", num_trees,
+                        "<br>rate of adult asthma hospitalizations: ", average_annual_age_adjusted_rate_per_10_000)) |> 
+  layout(title = "Number of trees and rate of adult asthma hospitalizations <br> by neighborhood",
+         xaxis = list(title = 'Total number of trees'),
+         yaxis = list(title = 'Average annual age-adjusted rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         legend = list(title=list(text='Neighborhood')))
 
 cor(pull(trees_and_asthma_hosp_adult, num_trees), pull(trees_and_asthma_hosp_adult, average_annual_age_adjusted_rate_per_10_000))
 
 trees_and_asthma_hosp_adult |> 
-  plot_ly(data = _, x = ~average_annual_rate_per_10_000, y = ~num_trees, color = ~nta_name, type = "scatter",
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>rate of adult asthma hospitalizations: ", average_annual_rate_per_10_000, "<br>number of trees: ", num_trees)) |> 
-    layout(title = "Number of trees and rate of adult asthma hospitalizations by neighborhood")
+  plot_ly(data = _, x = ~num_trees, y = ~average_annual_rate_per_10_000, 
+          color = ~nta_name, 
+          type = "scatter",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>number of trees: ", num_trees,
+                        "<br>rate of adult asthma hospitalizations: ", average_annual_rate_per_10_000)) |> 
+  layout(title = "Number of trees and rate of adult asthma hospitalizations <br> by neighborhood",
+         xaxis = list(title = 'Total number of trees'),
+         yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         legend = list(title=list(text='Neighborhood')))
 
 cor(pull(trees_and_asthma_hosp_adult, num_trees), pull(trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
-
-
 
 ```
 
@@ -241,20 +271,28 @@ m1 <- sum(is.na(trees_and_poverty))
 when looking at histograms of x and y values most are skewed; can't do a test of significance
 ```{r}
 trees_and_poverty |> 
-  plot_ly(data = _, x = ~poverty_percent, y = ~trees_per_acre, color = ~nta_name, type = "scatter",
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>%people whose income is below 
-                        poverty line: ", poverty_percent, "<br>trees per acre: ", trees_per_acre)) |> 
-    layout(title = "Trees per acre and percentage of poverty by neighborhood")
-
+  plot_ly(data = _, x = ~poverty_percent, y = ~trees_per_acre, 
+          color = ~nta_name, 
+          type = "scatter",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>%below poverty line: ", poverty_percent, 
+                        "<br>trees per acre: ", trees_per_acre)) |> 
+    layout(title = "Percentage of people whose income is below the poverty line <br> and trees per acre by neighborhood",
+           xaxis = list(title = 'Percentage of people whose income <br> is below the poverty line'),
+           yaxis = list(title = 'Number of trees per acre'),
+           legend = list(title=list(text='Neighborhood')))
 
 cor(pull(trees_and_poverty, trees_per_acre), pull(trees_and_poverty, poverty_percent))
 
 trees_and_poverty |> 
-  plot_ly(data = _, x = ~poverty_percent, y = ~num_trees, color = ~nta_name, type = "scatter",
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>%people whose income is below 
-                        poverty line: ", poverty_percent, "<br>number of trees: ", num_trees)) |> 
-    layout(title = "Number of trees and percentage of poverty by neighborhood")
-
+  plot_ly(data = _, x = ~poverty_percent, y = ~num_trees, 
+          color = ~nta_name, 
+          type = "scatter",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>%below poverty line: ", 
+                        poverty_percent, "<br>number of trees: ", num_trees)) |> 
+    layout(title = "Percentage of people whose income is below the poverty line <br> and number of trees by neighborhood",
+           xaxis = list(title = 'Percentage of people whose income <br> is below the poverty line'),
+           yaxis = list(title = 'Total number of trees'),
+           legend = list(title=list(text='Neighborhood')))
 
 cor(pull(trees_and_poverty, num_trees), pull(trees_and_poverty, poverty_percent))
 
@@ -289,10 +327,16 @@ m2 <- sum(is.na(trees_and_education))
 when looking at histograms of x and y values most are skewed; can't do a test of significance
 ```{r}
 trees_and_education |> 
-  plot_ly(data = _, x = ~graduated_hs_percent, y = ~trees_per_acre, color = ~nta_name, type = "scatter",
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>%people who graduated HS: ", 
+  plot_ly(data = _, x = ~graduated_hs_percent, y = ~trees_per_acre, 
+          color = ~nta_name, 
+          type = "scatter",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>%graduated HS: ", 
                         graduated_hs_percent, "<br>trees per acre: ", trees_per_acre)) |> 
-    layout(title = "Trees per acre and percentage of people who graduated HS by neighborhood")
+    layout(title = "Percentage of people who obtained a high school degree <br> and trees per acre by neighborhood",
+           xaxis = list(title = 'Percentage of people whose obtained <br> a high school degree'),
+           yaxis = list(title = 'Number of trees per acre'),
+           legend = list(title=list(text='Neighborhood')))
+
 
 cor(pull(trees_and_education, trees_per_acre), pull(trees_and_education, graduated_hs_percent))
 
