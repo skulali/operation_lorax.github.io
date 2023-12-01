@@ -37,7 +37,6 @@ tree_2015_cleaned <-
   janitor::clean_names() |> 
   select(-created_at, -steward, -user_type, -st_senate, -st_assem, -state) 
 
- 
 ```
 
 # Load acres data
@@ -75,12 +74,11 @@ trees_per_acre_df <- trees_and_acres |>
   mutate(trees_per_acre = num_trees/total_acres) |> 
   arrange(desc(trees_per_acre))
 
-
 ```
 
 ## Asthma Emergency Dept Adults 2017-2019
 ### load Asthma Emergency Dept Adults 2017-2019
-```{r}
+```{r, message = FALSE}
 asthma_ed_adults_raw = 
   read_csv("small_data/NYC EH Data Portal_Asthma emergency department visits adults.csv") |> 
   janitor::clean_names()
@@ -97,7 +95,7 @@ checked and no NAs are present
 ```{r}
 trees_and_asthma_ed_adult <- left_join(trees_per_acre_df, asthma_ed_adults_clean, by = "nta_name")
 
-miss <- sum(is.na(trees_and_asthma_ed_adult))
+m0 <- sum(is.na(trees_and_asthma_ed_adult))
 
 ```
 
@@ -105,25 +103,28 @@ miss <- sum(is.na(trees_and_asthma_ed_adult))
 when looking at histograms of x and y values most are skewed; can't do a test of significance
 no to weak linear association
 ```{r}
-trees_and_asthma_ed_adult |> 
-  plot_ly(data = _, x = ~trees_per_acre, y = ~ average_annual_age_adjusted_rate_per_10_000, 
-          color = ~nta_name, 
-          type = "scatter",
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>tree per acre: ", trees_per_acre, 
-                        "<br>rate of adult asthma ED visits: ", average_annual_age_adjusted_rate_per_10_000)) |> 
-  layout(title = "Trees per acre and rate of adult asthma emergency department visits <br> by neighborhood", 
-         xaxis = list(title = 'Number of trees per acre'),
-         yaxis = list(title = 'Average annual age-adjusted rate of <br> adult asthma emergency dept visits (per 10,000)'),
-         legend = list(title=list(text='Neighborhood')))
+#trees_and_asthma_ed_adult |> 
+  #plot_ly(data = _, x = ~trees_per_acre, y = ~ average_annual_age_adjusted_rate_per_10_000, 
+          #color = ~nta_name, 
+          #type = "scatter",
+          #mode - "markers",
+          #text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>tree per acre: ", trees_per_acre, 
+                        #"<br>rate of adult asthma ED visits: ", average_annual_age_adjusted_rate_per_10_000)) |> 
+  #layout(title = "Trees per acre and rate of adult asthma emergency department visits <br> by neighborhood", 
+         #xaxis = list(title = 'Number of trees per acre'),
+         #yaxis = list(title = 'Average annual age-adjusted rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         #legend = list(title=list(text='Neighborhood')))
 
-cor(pull(trees_and_asthma_ed_adult, trees_per_acre), pull(trees_and_asthma_ed_adult, average_annual_age_adjusted_rate_per_10_000))
+#cor(pull(trees_and_asthma_ed_adult, trees_per_acre), pull(trees_and_asthma_ed_adult, average_annual_age_adjusted_rate_per_10_000))
 
 trees_and_asthma_ed_adult |> 
   plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
           color = ~nta_name, 
-          type = "scatter", 
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>tree per acre: ", trees_per_acre, 
-                        "<br>rate of adult asthma ED visits: ", average_annual_rate_per_10_000)) |> 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>tree per acre: ", trees_per_acre, "<br>rate of adult asthma ED visits: ", 
+                        average_annual_rate_per_10_000)) |> 
     layout(title = "Trees per acre and rate of adult asthma emergency department visits <br> by neighborhood",
            xaxis = list(title = 'Number of trees per acre'),
            yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
@@ -131,24 +132,27 @@ trees_and_asthma_ed_adult |>
 
 cor(pull(trees_and_asthma_ed_adult, trees_per_acre), pull(trees_and_asthma_ed_adult, average_annual_rate_per_10_000))
 
-trees_and_asthma_ed_adult |> 
-  plot_ly(data = _, x = ~num_trees, y = ~average_annual_age_adjusted_rate_per_10_000,
-          color = ~nta_name, 
-          type = "scatter", 
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>number of trees: ", num_trees,
-                        "<br>rate of adult asthma ED visits: ", average_annual_age_adjusted_rate_per_10_000)) |>
-  layout(title = "Number of trees and rate of adult asthma emergency department visits <br> by neighborhood",
-         xaxis = list(title = 'Total number of trees'),
-         yaxis = list(title = 'Average annual age-adjusted rate of <br> adult asthma emergency dept visits (per 10,000)'),
-         legend = list(title=list(text='Neighborhood')))
+#trees_and_asthma_ed_adult |> 
+  #plot_ly(data = _, x = ~num_trees, y = ~average_annual_age_adjusted_rate_per_10_000,
+          #color = ~nta_name, 
+          #type = "scatter",
+          #mode - "markers",
+          #text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>number of trees: ", num_trees,
+                        #"<br>rate of adult asthma ED visits: ", average_annual_age_adjusted_rate_per_10_000)) |>
+  #layout(title = "Number of trees and rate of adult asthma emergency department visits <br> by neighborhood",
+         #xaxis = list(title = 'Total number of trees'),
+         #yaxis = list(title = 'Average annual age-adjusted rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         #legend = list(title=list(text='Neighborhood')))
 
-cor(pull(trees_and_asthma_ed_adult, num_trees), pull(trees_and_asthma_ed_adult, average_annual_age_adjusted_rate_per_10_000))
+#cor(pull(trees_and_asthma_ed_adult, num_trees), pull(trees_and_asthma_ed_adult, average_annual_age_adjusted_rate_per_10_000))
 
 trees_and_asthma_ed_adult |> 
   plot_ly(data = _, x = ~num_trees, y = ~average_annual_rate_per_10_000,
           color = ~nta_name,
           type = "scatter", 
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>number of trees: ", num_trees, 
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>number of trees: ", num_trees, 
                         "<br>rate of adult asthma ED visits: ", average_annual_rate_per_10_000)) |> 
     layout(title = "Number of trees and rate of adult asthma emergency department visits <br> by neighborhood",
          xaxis = list(title = 'Total number of trees'),
@@ -172,7 +176,6 @@ asthma_hosp_adult_clean <- asthma_hosp_adult_raw |>
   filter(geo_type == "NTA2010" & time == "2012-2014") |> 
   select(nta_name, average_annual_age_adjusted_rate_per_10_000, average_annual_rate_per_10_000)
 
-
 ```
 
 ### Summarize trees per acre by nta and asthma hospitalizations adults
@@ -180,7 +183,7 @@ checked and no NAs are present
 ```{r}
 trees_and_asthma_hosp_adult <- left_join(trees_per_acre_df, asthma_hosp_adult_clean, by = "nta_name")
 
-m <- sum(is.na(trees_and_asthma_hosp_adult))
+m1 <- sum(is.na(trees_and_asthma_hosp_adult))
 
 ```
 
@@ -188,24 +191,27 @@ m <- sum(is.na(trees_and_asthma_hosp_adult))
 when looking at histograms of x and y values most are skewed; can't do a test of significance
 
 ```{r}
-trees_and_asthma_hosp_adult |> 
-  plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_age_adjusted_rate_per_10_000, 
-          color = ~nta_name, 
-          type = "scatter",
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>tree per acre: ", trees_per_acre,
-                        "<br>rate of adult asthma hospitalizations: ", average_annual_age_adjusted_rate_per_10_000)) |> 
-  layout(title = "Trees per acre and rate of adult asthma hospitalizations <br> by neighborhood",
-         xaxis = list(title = 'Number of trees per acre'),
-         yaxis = list(title = 'Average annual age-adjusted rate of <br> adult asthma emergency dept visits (per 10,000)'),
-         legend = list(title=list(text='Neighborhood')))
+#trees_and_asthma_hosp_adult |> 
+  #plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_age_adjusted_rate_per_10_000, 
+          #color = ~nta_name, 
+          #type = "scatter",
+          #mode - "markers",
+          #text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>tree per acre: ", trees_per_acre,
+                        #"<br>rate of adult asthma hospitalizations: ", average_annual_age_adjusted_rate_per_10_000)) |> 
+  #layout(title = "Trees per acre and rate of adult asthma hospitalizations <br> by neighborhood",
+         #xaxis = list(title = 'Number of trees per acre'),
+         #yaxis = list(title = 'Average annual age-adjusted rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         #legend = list(title=list(text='Neighborhood')))
 
-cor(pull(trees_and_asthma_hosp_adult, trees_per_acre), pull(trees_and_asthma_hosp_adult, average_annual_age_adjusted_rate_per_10_000))
+#cor(pull(trees_and_asthma_hosp_adult, trees_per_acre), pull(trees_and_asthma_hosp_adult, average_annual_age_adjusted_rate_per_10_000))
 
 trees_and_asthma_hosp_adult |> 
   plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
           color = ~nta_name, 
           type = "scatter",
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>tree per acre: ", trees_per_acre,
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>tree per acre: ", trees_per_acre,
                         "<br>rate of adult asthma hospitalizations: ", average_annual_rate_per_10_000)) |> 
   layout(title = "Trees per acre and rate of adult asthma hospitalizations <br> by neighborhood",
          xaxis = list(title = 'Number of trees per acre'),
@@ -214,23 +220,25 @@ trees_and_asthma_hosp_adult |>
 
 cor(pull(trees_and_asthma_hosp_adult, trees_per_acre), pull(trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
 
-trees_and_asthma_hosp_adult |> 
-  plot_ly(data = _, x = ~num_trees, y = ~average_annual_age_adjusted_rate_per_10_000, 
-          color = ~nta_name, 
-          type = "scatter",
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>number of trees: ", num_trees,
-                        "<br>rate of adult asthma hospitalizations: ", average_annual_age_adjusted_rate_per_10_000)) |> 
-  layout(title = "Number of trees and rate of adult asthma hospitalizations <br> by neighborhood",
-         xaxis = list(title = 'Total number of trees'),
-         yaxis = list(title = 'Average annual age-adjusted rate of <br> adult asthma emergency dept visits (per 10,000)'),
-         legend = list(title=list(text='Neighborhood')))
+#trees_and_asthma_hosp_adult |> 
+  #plot_ly(data = _, x = ~num_trees, y = ~average_annual_age_adjusted_rate_per_10_000, 
+          #color = ~nta_name, 
+          #type = "scatter",
+          #mode = "markers",
+          #text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>number of trees: ", num_trees,
+                        #"<br>rate of adult asthma hospitalizations: ", average_annual_age_adjusted_rate_per_10_000)) |> 
+  #layout(title = "Number of trees and rate of adult asthma hospitalizations <br> by neighborhood",
+         #xaxis = list(title = 'Total number of trees'),
+         #yaxis = list(title = 'Average annual age-adjusted rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         #legend = list(title=list(text='Neighborhood')))
 
-cor(pull(trees_and_asthma_hosp_adult, num_trees), pull(trees_and_asthma_hosp_adult, average_annual_age_adjusted_rate_per_10_000))
+#cor(pull(trees_and_asthma_hosp_adult, num_trees), pull(trees_and_asthma_hosp_adult, average_annual_age_adjusted_rate_per_10_000))
 
 trees_and_asthma_hosp_adult |> 
   plot_ly(data = _, x = ~num_trees, y = ~average_annual_rate_per_10_000, 
           color = ~nta_name, 
           type = "scatter",
+          mode = "markers",
           text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>number of trees: ", num_trees,
                         "<br>rate of adult asthma hospitalizations: ", average_annual_rate_per_10_000)) |> 
   layout(title = "Number of trees and rate of adult asthma hospitalizations <br> by neighborhood",
@@ -245,7 +253,7 @@ cor(pull(trees_and_asthma_hosp_adult, num_trees), pull(trees_and_asthma_hosp_adu
 ## Neighborhood Poverty 2013-2017
 ### load Neighborhood Poverty 2013-2017
 
-```{r}
+```{r, message = FALSE}
 poverty_raw <-
   read_csv("large_tree_data/NYC EH Data Portal - Neighborhood poverty.csv") |> 
   janitor::clean_names()
@@ -255,7 +263,6 @@ poverty_clean <- poverty_raw |>
   filter(geo_type == "NTA2010" & time == "2013-17") |> 
   select(nta_name, poverty_percent)
 
-
 ```
 
 ### Summarize trees per acre by nta and percent poverty
@@ -263,7 +270,7 @@ checked and no NAs are present
 ```{r}
 trees_and_poverty <- left_join(trees_per_acre_df, poverty_clean, by = "nta_name")
 
-m1 <- sum(is.na(trees_and_poverty))
+m2 <- sum(is.na(trees_and_poverty))
 
 ```
 
@@ -274,9 +281,12 @@ trees_and_poverty |>
   plot_ly(data = _, x = ~poverty_percent, y = ~trees_per_acre, 
           color = ~nta_name, 
           type = "scatter",
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>%below poverty line: ", poverty_percent, 
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>%below poverty line: ", poverty_percent, 
                         "<br>trees per acre: ", trees_per_acre)) |> 
-    layout(title = "Percentage of people whose income is below the poverty line <br> and trees per acre by neighborhood",
+    layout(title = "Percentage of people whose income is below the poverty line <br> and 
+           trees per acre by neighborhood",
            xaxis = list(title = 'Percentage of people whose income <br> is below the poverty line'),
            yaxis = list(title = 'Number of trees per acre'),
            legend = list(title=list(text='Neighborhood')))
@@ -287,9 +297,11 @@ trees_and_poverty |>
   plot_ly(data = _, x = ~poverty_percent, y = ~num_trees, 
           color = ~nta_name, 
           type = "scatter",
+          mode = "markers",
           text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>%below poverty line: ", 
                         poverty_percent, "<br>number of trees: ", num_trees)) |> 
-    layout(title = "Percentage of people whose income is below the poverty line <br> and number of trees by neighborhood",
+    layout(title = "Percentage of people whose income is below the poverty line <br> 
+           and number of trees by neighborhood",
            xaxis = list(title = 'Percentage of people whose income <br> is below the poverty line'),
            yaxis = list(title = 'Total number of trees'),
            legend = list(title=list(text='Neighborhood')))
@@ -301,7 +313,7 @@ cor(pull(trees_and_poverty, num_trees), pull(trees_and_poverty, poverty_percent)
 ## Graduated High School 2013-2017
 ### load Graduated High School 2013-2017
 
-```{r}
+```{r, message = FALSE}
 education_raw <-
   read_csv("large_tree_data/NYC EH Data Portal - Graduated high school.csv") |> 
   janitor::clean_names()
@@ -319,7 +331,7 @@ checked and no NAs are present
 ```{r}
 trees_and_education <- left_join(trees_per_acre_df, education_clean, by = "nta_name")
 
-m2 <- sum(is.na(trees_and_education))
+m3 <- sum(is.na(trees_and_education))
 
 ```
 
@@ -330,21 +342,27 @@ trees_and_education |>
   plot_ly(data = _, x = ~graduated_hs_percent, y = ~trees_per_acre, 
           color = ~nta_name, 
           type = "scatter",
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>%graduated HS: ", 
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>% graduated HS: ", 
                         graduated_hs_percent, "<br>trees per acre: ", trees_per_acre)) |> 
-    layout(title = "Percentage of people who obtained a high school degree <br> and trees per acre by neighborhood",
-           xaxis = list(title = 'Percentage of people whose obtained <br> a high school degree'),
-           yaxis = list(title = 'Number of trees per acre'),
-           legend = list(title=list(text='Neighborhood')))
-
+  layout(title = "Percentage of people who graduated high school <br> and trees per acre by neighborhood", 
+         xaxis = list(title = 'Percentage of people who graduated <br> high school (includes equivalency)'), 
+         yaxis = list(title = 'Number of trees per acre'), 
+         legend = list(title=list(text='Neighborhood')))
 
 cor(pull(trees_and_education, trees_per_acre), pull(trees_and_education, graduated_hs_percent))
 
 trees_and_education |> 
-  plot_ly(data = _, x = ~graduated_hs_percent, y = ~num_trees, color = ~nta_name, type = "scatter",
+  plot_ly(data = _, x = ~graduated_hs_percent, y = ~num_trees, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
           text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>%people who graduated HS: ", 
                         graduated_hs_percent, "<br>number of trees: ", num_trees)) |> 
-    layout(title = "Number of trees and percentage of people who graduated HS by neighborhood")
+  layout(title = "Percentage of people who graduated high school <br> and number of trees by neighborhood",
+         xaxis = list(title = 'Percentage of people who graduated <br> high school (includes equivalency)'),
+         yaxis = list(title = 'Total number of trees'),
+         legend = list(title=list(text='Neighborhood')))
 
 cor(pull(trees_and_education, num_trees), pull(trees_and_education, graduated_hs_percent))
 
@@ -380,25 +398,39 @@ trees_and_nycha <- trees_and_nycha |>
   mutate(num_development =
            ifelse(is.na(num_development), 0, num_development))
 
-m3 <- sum(is.na(trees_and_nycha))
+m4 <- sum(is.na(trees_and_nycha))
 
 ```
 
 ### Tables and Graphs of trees per acre and number of NYCHA developments
 ```{r}
 trees_and_nycha |> 
-  plot_ly(data = _, x = ~num_development, y = ~trees_per_acre, color = ~nta_name, type = "scatter",
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>number of NYCHA developments: ", 
+  plot_ly(data = _, x = ~num_development, y = ~trees_per_acre, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", 
+                        borough, "<br>number of NYCHA developments: ", 
                         num_development, "<br>trees per acre: ", trees_per_acre)) |> 
-    layout(title = "Trees per acre and number of NYCHA developments by neighborhood")
+    layout(title = "Trees per acre and number of NYCHA developments by neighborhood",
+           xaxis = list(title = 'Total number of NYCHA developments'), 
+           yaxis = list(title = 'Number of trees per acre'), 
+           legend = list(title=list(text='Neighborhood')))
 
 cor(pull(trees_and_nycha, trees_per_acre), pull(trees_and_nycha, num_development))
 
 trees_and_nycha |> 
-  plot_ly(data = _, x = ~num_development, y = ~num_trees, color = ~nta_name, type = "scatter",
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>%number of NYCHA developments: ", 
+  plot_ly(data = _, x = ~num_development, y = ~num_trees, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", 
+                        borough, "<br>%number of NYCHA developments: ", 
                         num_development, "<br>number of trees: ", num_trees)) |> 
-    layout(title = "Number of trees and number of NYCHA developments by neighborhood")
+    layout(title = "Number of trees and number of NYCHA developments by neighborhood",
+           xaxis = list(title = 'Total number of NYCHA developments'), 
+           yaxis = list(title = 'Total number of trees'), 
+           legend = list(title=list(text='Neighborhood')))
 
 cor(pull(trees_and_nycha, num_trees), pull(trees_and_nycha, num_development))
 
