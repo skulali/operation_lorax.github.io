@@ -118,22 +118,27 @@ Tree Status: Assess whether trees being along or offset from the curb or protect
 
 tree_status_df <- trees_2015 %>%
   select(curb_loc, guards, sidewalk, status, health, problems,
+         borough,
          root_stone, root_grate, root_other,
          trunk_wire, trnk_light, trnk_other,
          brch_light, brch_shoe, brch_other) %>% 
   mutate(health = fct_relevel(health, c("Good", "Fair", "Poor")),
+         borough = as.factor(borough),
+         All = as.factor("All"),
          curb_loc = case_match(curb_loc,
                                "OffsetFromCurb" ~ "Offset From Curb",
                                "OnCurb" ~ "On Curb"),
          curb_loc = as.factor(curb_loc),
          guards = as.factor(guards),
          sidewalk = case_match(sidewalk,
-                               "NoDamage" ~ "No Damage"),
+                               "NoDamage" ~ "No Damage",
+                               "Damage" ~ "Damage"),
          sidewalk = as.factor(sidewalk),
          status = as.factor(status),
          problems = as.factor(problems)
          ) %>%
   rename(`Curb Location` = curb_loc,
+         Borough = borough,
          Guards = guards,
          Sidewalk = sidewalk,
          Status = status,
@@ -192,6 +197,8 @@ effective_tree_protection <- function(df, exposure, outcome){
 effective_tree_protection(df = tree_status_df, exposure = Guards, outcome = Health)
 effective_tree_protection(df = tree_status_df, exposure = `Curb Location`, outcome = Health)
 effective_tree_protection(df = tree_status_df, exposure = Sidewalk, outcome = Health)
+effective_tree_protection(df = tree_status_df, exposure = Borough, outcome = Health)
+effective_tree_protection(df = tree_status_df, exposure = All, outcome = Health)
 
 effective_tree_protection(df = tree_status_df, exposure = Guards, outcome = `Roots with Stones`)
 effective_tree_protection(df = tree_status_df, exposure = `Curb Location`, outcome = `Roots with Stones`)
@@ -200,6 +207,8 @@ effective_tree_protection(df = tree_status_df, exposure = Sidewalk, outcome = `R
 effective_tree_protection(df = tree_status_df, exposure = Guards, outcome = `Roots in Grate`)
 effective_tree_protection(df = tree_status_df, exposure = `Curb Location`, outcome = `Roots in Grate`)
 effective_tree_protection(df = tree_status_df, exposure = Sidewalk, outcome = `Roots in Grate`)
+effective_tree_protection(df = tree_status_df, exposure = Borough, outcome = `Roots in Grate`)
+effective_tree_protection(df = tree_status_df, exposure = All, outcome = `Roots in Grate`)
 
 # Can do many more comparisons if so desired
 
