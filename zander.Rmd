@@ -26,7 +26,10 @@ scale_fill_discrete = scale_fill_viridis_d
 
 ```{r Exploring DBH Values}
 
-trees_2015_cleaned = read_csv("large_tree_data/tree_2015_cleaned.csv")
+#trees_2015_cleaned = read_csv("large_tree_data/tree_2015_cleaned.csv")
+
+trees_2015_cleaned = read_csv("large_tree_data/2015_tree_raw.csv", na = c("", "NA", "Unknown")) |> 
+  janitor::clean_names()
 
 trees_dbh = trees_2015_cleaned |> 
   drop_na(tree_dbh) |> 
