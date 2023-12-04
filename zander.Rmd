@@ -61,8 +61,14 @@ ggplot(aes(x = borough, y = tree_dbh, fill = borough)) + geom_boxplot() + scale_
     x = "Borough"
   )
   
-  
 ```
+
+```{r Plotly Version DBH Boxplot}
+borough_dbh |> 
+  filter(tree_dbh < 101) |> 
+  plot_ly(y = ~tree_dbh, color = ~borough, type = "box", colors = "viridis")
+```
+
 
 ```{r Outlier Trees}
 #70 Trees have a dbh higher than 100 inches, removed from visualization above to see boxplots better
@@ -122,7 +128,7 @@ ggplot(aes(x = nta_name, y = nta_dbh, color = borough)) + geom_point() + facet_g
 
 # Spatially Mapping Neighborhood DBH Values Across NYC
 
-```{r Importing Shapefile for Data Join}
+```{r Importing NTA Shapefile for Data Join}
 #Reading in Shapefile
 nyc_nta = st_read("large_tree_data/nyc_nta_mapdata/geo_export_e924b274-8b6e-427d-87c0-92bfde8ce30a.shp")
 
@@ -166,5 +172,128 @@ tm_shape(nta_dbh_spatial) +
   tm_legend(legend.position = c("left","center"))
 ```
 
+### Air Pollutants and Tree Distribution
+The EPA and Leading Forest Agencies discuss that one of the ecosystem benefits of urban street trees is the ability for trees to uptake fine particulate matter (PM2.5) from vehicle exhaust and local combustion through stomata uptake during photosynthesis. https://enviroatlas.epa.gov/enviroatlas/DataFactSheets/pdf/ESC/PercentparticulatematterPM25removedannuallybytreecover.pdf
+
+This content can be used in conjuction with Stephanie's Asthma and Tree Distribution data analysis
+
+PM2.5 2011-2014 Projection Data From:
+New York City Department of Health, Environment & Health Data Portal. Air quality data. Fine particles (PM 2.5). Accessed at https://a816-dohbesp.nyc.gov/IndicatorPublic/data-explorer/air-quality/ on 12/03/2023.
+These are on the level of Community District
+
+```{r Community District}
+#Reading in Shapefile
+nyc_comdist = st_read("large_tree_data/NYC Community Districts/geo_export_bd3c92bc-94de-48f3-9de3-e939473f307b.shp")
+
+glimpse(nyc_comdist)
+head(nyc_comdist)
+
+tm_shape(nyc_comdist) +
+  tm_polygons()
+```
+
+```{r Organizing PM2.5 and Tree Distribution 2015 Data for merging}
+
+nyc_finepm2015 = read_csv("small_data/nyc_pm2.5_annual2015.csv") |> 
+  janitor::clean_names() |> 
+  filter(time == "Annual Average 2015" & geo_type_desc == "Community District") |> 
+  select(geo_id, geography, avg_pm2.5 = mean_mcg_m3)
+  
+
+#In trees_2015_cleaned, community district is under "community board" id number
+trees_cd_summarized = trees_2015_cleaned |> 
+  drop_na(tree_dbh) |> 
+  mutate(health = as.factor(health)) |> 
+  group_by(community_board) |> 
+  summarize(
+    "Number of Trees" = n(),
+    avg_dbh = mean(tree_dbh),
+    health_status = mode(health))
+```
+
+```{r Merging Pm2.5 and Tree Data }
+
+nyc_comdistrict_spatial = merge(nyc_comdist, trees_cd_summarized, nyc_finepm2015,
+                        by.x = "boro_cd",
+                        by.y = "community_board")
+
+nyc_comdistrict_treesPM = merge(nyc_comdistrict_spatial, nyc_finepm2015,
+                        by.x = "boro_cd",
+                        by.y = "geo_id")
+```
+
+```{r PM2.5 Map and Number of Trees}
+tm_shape(nyc_comdistrict_treesPM) +
+  tm_polygons(col = "avg_pm2.5",
+              style = "quantile",
+              n = 5,
+              palette = "YlOrBr",
+              border.col = "black",
+              title = "Average PM2.5 Concentration (µg/m3)") +
+tm_shape(nyc_comdistrict_treesPM) +
+  tm_dots(col = "black",
+          size = "Number of Trees",
+          style = "quantile",
+          border.col = "black") +
+  tm_layout(main.title = "Average 2015 PM2.5 Concentrations across NYC Community Districts") +
+  tm_legend(legend.position = c("left","top"))
+```
+
+```{r Pm2.5 but switching out Average Tree DBH Size }
+
+#Doesnt work very well at this scale.
+tm_shape(nyc_comdistrict_treesPM) +
+  tm_polygons(col = "avg_pm2.5",
+              style = "quantile",
+              n = 5,
+              palette = "YlOrBr",
+              border.col = "black",
+              title = "Average PM2.5 Concentration (µg/m3)") +
+tm_shape(nyc_comdistrict_treesPM) +
+  tm_dots(col = "black",
+          size = "avg_dbh",
+          style = "quantile",
+          border.col = "black") +
+  tm_layout(main.title = "Average 2015 PM2.5 Concentrations across NYC Community Districts") +
+  tm_legend(legend.position = c("left","top"))
+```
+
+## Heat Stress Available Data
+How do trees impact the urban heat island effect through shading and heatstress events like hospitalizations?
+
+```{r Heat Stress Data and Merger}
+
+nyc_heatstress_2015 = read_csv("small_data/nyc_Heatstress Hospitalizations_2011-2015.csv", na = c(" ", "NA", "***")) |> 
+  janitor::clean_names() |> 
+  filter(geo_type_desc == "Community District") |> 
+  mutate(
+    average_annual_age_adjusted_rate_per_100_000 = 
+      str_replace(average_annual_age_adjusted_rate_per_100_000, "[*]$", "")) |>
+  select(geo_id, avg_heat_hospit = average_annual_age_adjusted_rate_per_100_000, heat_hospitalizations = total) |> 
+  mutate(avg_heat_hospit = as.numeric(avg_heat_hospit))
+
+nyc_comdistrict_heatstress = merge(nyc_comdistrict_treesPM, nyc_heatstress_2015,
+                        by.x = "boro_cd",
+                        by.y = "geo_id")
+
+```
+
+```{r Heat Stress Map}
+
+tm_shape(nyc_comdistrict_heatstress) +
+  tm_polygons(col = "avg_heat_hospit",
+              style = "jenks",
+              n = 5,
+              palette = "OrRd",
+              border.col = "black",
+              title = "Avg. Adjusted Hospitalization Rate per 100k") +
+tm_shape(nyc_comdistrict_treesPM) +
+  tm_dots(col = "black",
+          size = "Number of Trees",
+          style = "quantile",
+          border.col = "black") +
+  tm_layout(main.title = "Average Heatstress Hospitalization Rate across NYC Community Districts") +
+  tm_legend(legend.position = c("left","top"))
+```
 
 
