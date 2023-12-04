@@ -12,7 +12,6 @@ library(sf)
 library(tmap)
 library(tmaptools)
 library(shinyjs)
-library(cowplot)
 ```
 
 # Tree Health
