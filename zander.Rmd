@@ -40,34 +40,85 @@ large_tree_table = trees_dbh |>
   ungroup() |> 
   filter(n_trees > 100) |> 
   filter(min_rank(desc(avg_dbh)) < 11) |> 
-  knitr::kable(digits = 2, caption = "Top 10 Neighborhoods wth the Highest Average DBH Across Local Street Trees")
+  knitr::kable(digits = 2, caption= "Top 10 Neighborhoods wth the Highest Average DBH (inches) Across Local Street Trees")
 
 large_tree_table
 
 ```
 
-```{r}
+```{r Borough DBH Boxplot}
 borough_dbh = trees_2015_cleaned |> 
   drop_na(tree_dbh) |> 
   group_by(borough) |> 
   mutate(borough_dbh = mean(tree_dbh))
 
 borough_dbh |> 
-ggplot(aes(x = borough, y = tree_dbh, fill = borough)) + geom_boxplot()
-
-borough_dbh
+  filter(tree_dbh < 101) |> 
+ggplot(aes(x = borough, y = tree_dbh, fill = borough)) + geom_boxplot() + scale_y_continuous(breaks = scales::pretty_breaks(10)) +
+  labs(
+    title = "Average Tree DBH Across NYC Boroughs",
+    y = "Measured DBH (Inches)",
+    x = "Borough"
+  )
+  
+  
 ```
 
-```{r}
+```{r Outlier Trees}
+#70 Trees have a dbh higher than 100 inches, removed from visualization above to see boxplots better
+outlier_trees = borough_dbh |> 
+  filter(tree_dbh > 101) |> 
+  count(tree_dbh)
+
+outlier_trees |> 
+  knitr::kable()
+```
+
+```{r Initial Histogram}
+borough_dbh |> 
+  filter(tree_dbh < 51) |> 
+   ggplot(aes(x = tree_dbh)) + geom_histogram() + scale_y_continuous(breaks = scales::pretty_breaks(10)) + scale_x_continuous(breaks = scales::pretty_breaks(10)) + 
+   labs(
+    title = "Overall Distribution of Tree Diameters at Breast Height, New York City",
+    x = "Measured DBH (Inches)",
+    y = "Number of Trees"
+  )
+```
+
+```{r Density Plot Faceted By Borough}
+
+borough_dbh |> 
+  filter(tree_dbh < 50) |> 
+  ggplot(aes(x = tree_dbh, fill = borough)) + 
+  geom_density() + facet_grid(borough ~ .) +
+  scale_x_continuous(breaks = scales::pretty_breaks(12)) +
+  labs(
+    title = "Density Plot of All Measured Tree Diameters Below 50 inches",
+    x = "Measured DBH (Inches)",
+    y = "Density"
+  )
+
+
+```
+
+```{r NTA Average DBH }
 neighborhood_dbh = trees_2015_cleaned |> 
   drop_na(tree_dbh) |> 
   group_by(nta_name) |> 
-  mutate(nta_dbh = mean(tree_dbh))
+  mutate(nta_dbh = mean(tree_dbh)) |> 
+  ungroup() |> 
+  mutate(nta_name = fct_reorder(nta, nta_dbh))
 
 neighborhood_dbh |> 
-ggplot(aes(x = nta_name, y = nta_dbh, fill = borough)) + geom_col()
+ggplot(aes(x = nta_name, y = nta_dbh, color = borough)) + geom_point() + facet_grid(borough ~ .) + theme(axis.text.x = element_text(angle = 60)) +
+  labs(
+    title = "Average DBH By NYC Neighborhood Tabulation Area",
+    x = "NTA Neighborhood",
+    y = "Mean DBH. (Inches)"
+  )
 
 ```
+
 
 # Spatially Mapping Neighborhood DBH Values Across NYC
 
@@ -92,6 +143,7 @@ nta_dbh_summarized = trees_2015_cleaned |>
     trees_per_nta = n(),
     avg_dbh = mean(tree_dbh))
 
+
 nta_dbh_spatial = merge(nyc_nta, nta_dbh_summarized, 
                         by.x = "ntacode",
                         by.y = "nta")
@@ -109,7 +161,9 @@ tm_shape(nta_dbh_spatial) +
               n = 5,
               palette = "YlGn",
               border.col = "black",
-              title = "Average Tree DBH Across NYC Neighborhoods")
+              title = "Mean Tree DBH (Inches)") +
+  tm_layout(main.title = "Average Tree DBH Across NYC Neighborhoods") +
+  tm_legend(legend.position = c("left","center"))
 ```
 
 

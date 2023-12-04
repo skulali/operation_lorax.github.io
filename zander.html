@@ -260,7 +260,7 @@ $(document).ready(function () {
   <a href="grace.html">Grace</a>
 </li>
 <li>
-  <a href="xander.html">Xander</a>
+  <a href="zander.html">Zander</a>
 </li>
 <li>
   <a href="christine.html">Christine</a>
@@ -338,12 +338,12 @@ scale_fill_discrete = scale_fill_viridis_d</code></pre>
   ungroup() |&gt; 
   filter(n_trees &gt; 100) |&gt; 
   filter(min_rank(desc(avg_dbh)) &lt; 11) |&gt; 
-  knitr::kable(digits = 2, caption = &quot;Top 10 Neighborhoods wth the Highest Average DBH Across Local Street Trees&quot;)
+  knitr::kable(digits = 2, caption= &quot;Top 10 Neighborhoods wth the Highest Average DBH (inches) Across Local Street Trees&quot;)
 
 large_tree_table</code></pre>
 <table>
-<caption>Top 10 Neighborhoods wth the Highest Average DBH Across Local
-Street Trees</caption>
+<caption>Top 10 Neighborhoods wth the Highest Average DBH (inches)
+Across Local Street Trees</caption>
 <colgroup>
 <col width="18%" />
 <col width="61%" />
@@ -427,38 +427,418 @@ Street Trees</caption>
   mutate(borough_dbh = mean(tree_dbh))
 
 borough_dbh |&gt; 
-ggplot(aes(x = borough, y = tree_dbh, fill = borough)) + geom_boxplot()</code></pre>
-<p><img src="zander_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
-<pre class="r"><code>borough_dbh</code></pre>
-<pre><code>## # A tibble: 683,788 × 40
-## # Groups:   borough [5]
-##    tree_id block_id tree_dbh stump_diam curb_loc       status health spc_latin  
-##      &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;      
-##  1  180683   348711        3          0 OnCurb         Alive  Fair   Acer rubrum
-##  2  200540   315986       21          0 OnCurb         Alive  Fair   Quercus pa…
-##  3  204026   218365        3          0 OnCurb         Alive  Good   Gleditsia …
-##  4  204337   217969       10          0 OnCurb         Alive  Good   Gleditsia …
-##  5  189565   223043       21          0 OnCurb         Alive  Good   Tilia amer…
-##  6  190422   106099       11          0 OnCurb         Alive  Good   Gleditsia …
-##  7  190426   106099       11          0 OnCurb         Alive  Good   Gleditsia …
-##  8  208649   103940        9          0 OnCurb         Alive  Good   Tilia amer…
-##  9  209610   407443        6          0 OnCurb         Alive  Good   Gleditsia …
-## 10  192755   207508       21          0 OffsetFromCurb Alive  Fair   Platanus x…
-## # ℹ 683,778 more rows
-## # ℹ 32 more variables: spc_common &lt;chr&gt;, guards &lt;chr&gt;, sidewalk &lt;chr&gt;,
-## #   problems &lt;chr&gt;, root_stone &lt;chr&gt;, root_grate &lt;chr&gt;, root_other &lt;chr&gt;,
-## #   trunk_wire &lt;chr&gt;, trnk_light &lt;chr&gt;, trnk_other &lt;chr&gt;, brch_light &lt;chr&gt;,
-## #   brch_shoe &lt;chr&gt;, brch_other &lt;chr&gt;, address &lt;chr&gt;, postcode &lt;dbl&gt;,
-## #   zip_city &lt;chr&gt;, community_board &lt;dbl&gt;, borocode &lt;dbl&gt;, borough &lt;chr&gt;,
-## #   cncldist &lt;dbl&gt;, nta &lt;chr&gt;, nta_name &lt;chr&gt;, boro_ct &lt;dbl&gt;, latitude &lt;dbl&gt;, …</code></pre>
+  filter(tree_dbh &lt; 101) |&gt; 
+ggplot(aes(x = borough, y = tree_dbh, fill = borough)) + geom_boxplot() + scale_y_continuous(breaks = scales::pretty_breaks(10)) +
+  labs(
+    title = &quot;Average Tree DBH Across NYC Boroughs&quot;,
+    y = &quot;Measured DBH (Inches)&quot;,
+    x = &quot;Borough&quot;
+  )</code></pre>
+<p><img src="zander_files/figure-html/Borough%20DBH%20Boxplot-1.png" width="672" /></p>
+<pre class="r"><code>#70 Trees have a dbh higher than 100 inches, removed from visualization above to see boxplots better
+outlier_trees = borough_dbh |&gt; 
+  filter(tree_dbh &gt; 101) |&gt; 
+  count(tree_dbh)
+
+outlier_trees |&gt; 
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">borough</th>
+<th align="right">tree_dbh</th>
+<th align="right">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bronx</td>
+<td align="right">105</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Bronx</td>
+<td align="right">106</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Bronx</td>
+<td align="right">127</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Bronx</td>
+<td align="right">132</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Bronx</td>
+<td align="right">149</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Bronx</td>
+<td align="right">169</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Bronx</td>
+<td align="right">204</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Bronx</td>
+<td align="right">291</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Bronx</td>
+<td align="right">450</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Brooklyn</td>
+<td align="right">104</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Brooklyn</td>
+<td align="right">110</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Brooklyn</td>
+<td align="right">118</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Brooklyn</td>
+<td align="right">123</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Brooklyn</td>
+<td align="right">127</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Brooklyn</td>
+<td align="right">141</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Brooklyn</td>
+<td align="right">142</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Brooklyn</td>
+<td align="right">145</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Brooklyn</td>
+<td align="right">151</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Brooklyn</td>
+<td align="right">159</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Brooklyn</td>
+<td align="right">164</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Brooklyn</td>
+<td align="right">170</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Brooklyn</td>
+<td align="right">172</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Brooklyn</td>
+<td align="right">175</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Brooklyn</td>
+<td align="right">183</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Brooklyn</td>
+<td align="right">195</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Brooklyn</td>
+<td align="right">204</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Brooklyn</td>
+<td align="right">210</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Brooklyn</td>
+<td align="right">248</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Brooklyn</td>
+<td align="right">266</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Brooklyn</td>
+<td align="right">293</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Brooklyn</td>
+<td align="right">318</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Brooklyn</td>
+<td align="right">425</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Manhattan</td>
+<td align="right">109</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Manhattan</td>
+<td align="right">120</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Manhattan</td>
+<td align="right">199</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Manhattan</td>
+<td align="right">228</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Manhattan</td>
+<td align="right">318</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Queens</td>
+<td align="right">106</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Queens</td>
+<td align="right">109</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Queens</td>
+<td align="right">110</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Queens</td>
+<td align="right">120</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Queens</td>
+<td align="right">132</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Queens</td>
+<td align="right">139</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Queens</td>
+<td align="right">140</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Queens</td>
+<td align="right">141</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Queens</td>
+<td align="right">149</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Queens</td>
+<td align="right">165</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Queens</td>
+<td align="right">168</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Queens</td>
+<td align="right">172</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Queens</td>
+<td align="right">177</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Queens</td>
+<td align="right">181</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Queens</td>
+<td align="right">198</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Queens</td>
+<td align="right">204</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Queens</td>
+<td align="right">217</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Queens</td>
+<td align="right">261</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Queens</td>
+<td align="right">281</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Queens</td>
+<td align="right">282</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Queens</td>
+<td align="right">389</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Staten Island</td>
+<td align="right">102</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Staten Island</td>
+<td align="right">122</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Staten Island</td>
+<td align="right">123</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Staten Island</td>
+<td align="right">128</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Staten Island</td>
+<td align="right">131</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Staten Island</td>
+<td align="right">143</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Staten Island</td>
+<td align="right">147</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Staten Island</td>
+<td align="right">154</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Staten Island</td>
+<td align="right">234</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Staten Island</td>
+<td align="right">250</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Staten Island</td>
+<td align="right">255</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Staten Island</td>
+<td align="right">298</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>borough_dbh |&gt; 
+  filter(tree_dbh &lt; 51) |&gt; 
+   ggplot(aes(x = tree_dbh)) + geom_histogram() + scale_y_continuous(breaks = scales::pretty_breaks(10)) + scale_x_continuous(breaks = scales::pretty_breaks(10)) + 
+   labs(
+    title = &quot;Overall Distribution of Tree Diameters at Breast Height, New York City&quot;,
+    x = &quot;Measured DBH (Inches)&quot;,
+    y = &quot;Number of Trees&quot;
+  )</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="zander_files/figure-html/Initial%20Histogram-1.png" width="672" /></p>
+<pre class="r"><code>borough_dbh |&gt; 
+  filter(tree_dbh &lt; 50) |&gt; 
+  ggplot(aes(x = tree_dbh, fill = borough)) + 
+  geom_density() + facet_grid(borough ~ .) +
+  scale_x_continuous(breaks = scales::pretty_breaks(12)) +
+  labs(
+    title = &quot;Density Plot of All Measured Tree Diameters Below 50 inches&quot;,
+    x = &quot;Measured DBH (Inches)&quot;,
+    y = &quot;Density&quot;
+  )</code></pre>
+<p><img src="zander_files/figure-html/Density%20Plot%20Faceted%20By%20Borough-1.png" width="672" /></p>
 <pre class="r"><code>neighborhood_dbh = trees_2015_cleaned |&gt; 
   drop_na(tree_dbh) |&gt; 
   group_by(nta_name) |&gt; 
-  mutate(nta_dbh = mean(tree_dbh))
+  mutate(nta_dbh = mean(tree_dbh)) |&gt; 
+  ungroup() |&gt; 
+  mutate(nta_name = fct_reorder(nta, nta_dbh))
 
 neighborhood_dbh |&gt; 
-ggplot(aes(x = nta_name, y = nta_dbh, fill = borough)) + geom_col()</code></pre>
-<p><img src="zander_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+ggplot(aes(x = nta_name, y = nta_dbh, color = borough)) + geom_point() + facet_grid(borough ~ .) + theme(axis.text.x = element_text(angle = 60)) +
+  labs(
+    title = &quot;Average DBH By NYC Neighborhood Tabulation Area&quot;,
+    x = &quot;NTA Neighborhood&quot;,
+    y = &quot;Mean DBH. (Inches)&quot;
+  )</code></pre>
+<p><img src="zander_files/figure-html/NTA%20Average%20DBH-1.png" width="672" /></p>
 </div>
 <div id="spatially-mapping-neighborhood-dbh-values-across-nyc"
 class="section level1">
@@ -513,6 +893,7 @@ nyc_nta = st_read(&quot;large_tree_data/nyc_nta_mapdata/geo_export_e924b274-8b6e
     trees_per_nta = n(),
     avg_dbh = mean(tree_dbh))
 
+
 nta_dbh_spatial = merge(nyc_nta, nta_dbh_summarized, 
                         by.x = &quot;ntacode&quot;,
                         by.y = &quot;nta&quot;)</code></pre>
@@ -526,7 +907,9 @@ tm_shape(nta_dbh_spatial) +
               n = 5,
               palette = &quot;YlGn&quot;,
               border.col = &quot;black&quot;,
-              title = &quot;Average Tree DBH Across NYC Neighborhoods&quot;)</code></pre>
+              title = &quot;Mean Tree DBH (Inches)&quot;) +
+  tm_layout(main.title = &quot;Average Tree DBH Across NYC Neighborhoods&quot;) +
+  tm_legend(legend.position = c(&quot;left&quot;,&quot;center&quot;))</code></pre>
 <p><img src="zander_files/figure-html/Visualizing%20DBH%20Data%20Test%201-1.png" width="672" /></p>
 </div>
 
