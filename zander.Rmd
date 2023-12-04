@@ -133,7 +133,7 @@ ggplot(aes(x = nta_name, y = nta_dbh, color = borough)) + geom_point() + facet_g
 
 ```{r Importing NTA Shapefile for Data Join}
 #Reading in Shapefile
-nyc_nta = st_read("large_tree_data/nyc_nta_mapdata/geo_export_e924b274-8b6e-427d-87c0-92bfde8ce30a.shp")
+nyc_nta = st_read("small_data/geo_export_e924b274-8b6e-427d-87c0-92bfde8ce30a.shp")
 
 glimpse(nyc_nta)
 head(nyc_nta)
@@ -186,7 +186,7 @@ These are on the level of Community District
 
 ```{r Community District}
 #Reading in Shapefile
-nyc_comdist = st_read("large_tree_data/NYC Community Districts/geo_export_bd3c92bc-94de-48f3-9de3-e939473f307b.shp")
+nyc_comdist = st_read("small_data/geo_export_bd3c92bc-94de-48f3-9de3-e939473f307b.shp")
 
 glimpse(nyc_comdist)
 head(nyc_comdist)
