@@ -23,4 +23,3 @@ navbar:
       href: http://github.com/skulali/
 output:
   html_document
-    theme: minty
