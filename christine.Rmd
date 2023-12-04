@@ -1,14 +1,16 @@
 ---
 title: "Christine's Sandbox"
-output: github_document
 ---
 
 Load tidyverse and tree data
 
 ```{r, message=FALSE, echo=FALSE}
 library(tidyverse)
+library(plotly)
 trees_2015 <- read_csv("large_tree_data/2015_tree_raw.csv", na = c("", "NA", "Unknown")) |> 
-  janitor::clean_names()
+  janitor::clean_names() %>% 
+  mutate(spc_common = str_to_title(spc_common)) %>% 
+  mutate(health = fct_relevel(health, c("Good", "Fair", "Poor")))
 ```
 
 
@@ -18,47 +20,47 @@ trees_2015 <- read_csv("large_tree_data/2015_tree_raw.csv", na = c("", "NA", "Un
 #  count(status)
 
 # Most common tree species in NYC
-
-#trees_2015 %>% 
-#  drop_na() %>% 
+# 
+# trees_2015 %>%
+#  drop_na(spc_common, borough) %>%
 #  group_by(spc_common, borough) %>%
-#  count(spc_common) %>% 
-#  arrange(desc(n)) %>% 
-#  pivot_wider(names_from = borough, values_from = n) %>% 
-#  head(n = 10) %>% 
+#  count(spc_common) %>%
+#  arrange(desc(n)) %>%
+#  pivot_wider(names_from = borough, values_from = n) %>%
+#  head(n = 10) %>%
 #  ggplot(aes(x = spc_common, y = n)) +
 #  geom_col() +
-#  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+#  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 # Find top 10 trees overall
 top_trees_nyc <- trees_2015 %>% 
-  drop_na() %>%   
+  drop_na(spc_common) %>%   
   group_by(spc_common) %>%
   count(spc_common) %>% 
   arrange(desc(n)) %>% 
   head(n = 10) %>% 
- # select(spc_common) %>% 
   pull(spc_common)
 
 # Plot the top ten NYC trees in each Borough and Average Overall
  trees_2015 %>% 
-    drop_na() %>% 
+    drop_na(spc_common, borough) %>% 
     group_by(spc_common, borough) %>%
     count(spc_common) %>% 
   #  filter(spc_common %in% pull(top_trees_data, spc_common)) %>% 
     filter(spc_common %in% top_trees_nyc) %>% 
     pivot_wider(names_from = borough, values_from = n) %>% 
-    mutate(`All Boroughs` = mean(Bronx:`Staten Island`)) %>% 
+    mutate(`All Boroughs Average` = mean(Bronx:`Staten Island`)) %>% 
   #  mutate(`Max` = max(Bronx:`Staten Island`)) %>% 
-    select(spc_common, `All Boroughs`, everything()) %>% 
+    select(spc_common, `All Boroughs Average`, everything()) %>% 
     #maybe stop here and print out that table 
-    pivot_longer(cols = `All Boroughs`:`Staten Island`) %>% 
+    pivot_longer(cols = `All Boroughs Average`:`Staten Island`) %>% 
     ggplot(aes(x = reorder(spc_common, value), y = value, fill = spc_common)) +
     geom_bar(stat = "identity") +
     facet_wrap(~ name) +
     theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
     labs(x = "Tree Species", 
-         y = "Count", 
+         y = "Number of Trees", 
+         fill = "Tree Species",
          title = "Top Ten NYC Trees Overall and in Each NYC Borough")
 ```
 
@@ -82,17 +84,124 @@ trees_2015 %>%
 
 ```
 
+```{r tree_species_dot_plot}
+
+trees_2015 |>
+  drop_na() |> 
+  filter(borough == "Manhattan",
+         status == "Alive",
+         spc_common %in% top_trees_nyc) %>% 
+      #   nta_name == c("Washington Heights South", "Washington Heights North")) |>
+   plot_ly(
+       x = ~longitude, y = ~latitude, color = ~spc_common, text = ~health,
+       type = "scatter", mode = "markers", alpha = 0.5)
+
+```
+
 
 ```{r shoes}
-trees_with_shoes <- trees_2015 %>% 
-  filter(brch_shoe == "Yes") 
 
-trees_with_shoes %>% 
+trees_2015 %>% 
+  filter(brch_shoe == "Yes") %>% 
   ggplot(aes(x = borough)) +
   geom_bar()
 
+```
 
+Tree Status: Assess whether trees being along or offset from the curb or protected by the guardrail are related to their health, damage amount, or whether they are alive. Sneakers amount by borough visualized by a bar chart, both with the gross number of sneakers in the trees and with a normalized value.
 
+```{r}
+
+# Here we are going to explore whether being along or offset from the curb, or protected by a guardrail, affects the tree health, whether the trees are alive, and other tree details. We will do this statistically with chi-square tests and visualize the ratios with bar plots of the percentages. 
+
+# First get a smaller dataframe with only the relevant columns, and rename/reformat them so that the labels on the figure are nice.
+
+tree_status_df <- trees_2015 %>%
+  select(curb_loc, guards, sidewalk, status, health, problems,
+         root_stone, root_grate, root_other,
+         trunk_wire, trnk_light, trnk_other,
+         brch_light, brch_shoe, brch_other) %>% 
+  mutate(health = fct_relevel(health, c("Good", "Fair", "Poor")),
+         curb_loc = case_match(curb_loc,
+                               "OffsetFromCurb" ~ "Offset From Curb",
+                               "OnCurb" ~ "On Curb"),
+         curb_loc = as.factor(curb_loc),
+         guards = as.factor(guards),
+         sidewalk = case_match(sidewalk,
+                               "NoDamage" ~ "No Damage"),
+         sidewalk = as.factor(sidewalk),
+         status = as.factor(status),
+         problems = as.factor(problems)
+         ) %>%
+  rename(`Curb Location` = curb_loc,
+         Guards = guards,
+         Sidewalk = sidewalk,
+         Status = status,
+         Health = health,
+         Problems = problems,
+         `Roots with Stones` = root_stone, 
+         `Roots in Grate` = root_grate, 
+         `Root Problem (Other)` = root_other,
+         `Trunk has Wires` = trunk_wire, 
+         `Trunk has Lights` = trnk_light, 
+         `Trunk has Other Problem` = trnk_other,
+         `Branches have Lights` = brch_light, 
+         `Branches with Shoes` = brch_shoe, 
+         `Branches Problem (Other)` = brch_other) 
+
+# Define the function
+effective_tree_protection <- function(df, exposure, outcome){
+  
+  # Chi-Square Test
+  
+  # Make contingency table for the chi-square test
+  contingency_table <- df %>%
+    filter(!is.na({{ exposure }}), !is.na({{ outcome }})) %>%
+    group_by({{ outcome }}, {{ exposure }}) %>%
+    count({{ outcome }}, {{ exposure }}) %>% 
+    pivot_wider(names_from = {{exposure}}, values_from = n)
+  
+  # Perform the chi-square test and extract test statistic and p-value
+  chisq_test_result <- chisq.test(contingency_table[-1])
+  chi_square <- chisq_test_result$statistic
+  p_value <- chisq_test_result$p.value
+  
+  # Visualize the distribution differences 
+  
+  plot_title <- str_c("Distribution of Tree ", quo_name(enquo(outcome)), 
+                      " by ", quo_name(enquo(exposure)))
+  
+  df %>%
+    filter(!is.na({{ exposure }}), !is.na({{ outcome }})) %>%
+    group_by({{ exposure }}, {{ outcome }}) %>%
+    summarize(n = n(), .groups = 'drop') %>%
+    group_by({{ exposure }}) %>%
+    mutate(Percent = n / sum(n) * 100) %>%
+    ggplot(aes(x = {{ exposure }}, y = Percent, fill = {{ outcome }})) +
+    geom_bar(stat = 'identity', position = 'dodge') +
+    geom_text(aes(label = sprintf("%.1f%%", Percent)),
+              position = position_dodge(width = 0.9) ,
+              size = 3.5,
+              vjust = -0.3) +
+    labs(title = plot_title,
+         subtitle = sprintf("p value = %.1e (Chi-square = %.2f)", p_value, chi_square)
+         )
+    
+}
+
+effective_tree_protection(df = tree_status_df, exposure = Guards, outcome = Health)
+effective_tree_protection(df = tree_status_df, exposure = `Curb Location`, outcome = Health)
+effective_tree_protection(df = tree_status_df, exposure = Sidewalk, outcome = Health)
+
+effective_tree_protection(df = tree_status_df, exposure = Guards, outcome = `Roots with Stones`)
+effective_tree_protection(df = tree_status_df, exposure = `Curb Location`, outcome = `Roots with Stones`)
+effective_tree_protection(df = tree_status_df, exposure = Sidewalk, outcome = `Roots with Stones`)
+
+effective_tree_protection(df = tree_status_df, exposure = Guards, outcome = `Roots in Grate`)
+effective_tree_protection(df = tree_status_df, exposure = `Curb Location`, outcome = `Roots in Grate`)
+effective_tree_protection(df = tree_status_df, exposure = Sidewalk, outcome = `Roots in Grate`)
+
+# Can do many more comparisons if so desired
 
 
 ```
