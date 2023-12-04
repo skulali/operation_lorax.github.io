@@ -26,9 +26,28 @@ trees_2015 =
 ```
 
 ```{r}
+# making a smaller df
+
+trees_df = 
+  trees_2015 |> 
+  drop_na() |> 
+  group_by(postcode, borough, health) |> 
+  summarize(
+    n_trees = n())
+
+trees_df_nta = 
+  trees_2015 |> 
+  drop_na() |> 
+  group_by(nta_name, postcode, health) |> 
+  summarize(
+    n_trees = n())
+```
+
+
+```{r}
 # reading in the nyc shapefile 
 
-zip_nyc <- st_read("small_data/MODZCTA_2010.shp")
+zip_nyc = st_read("small_data/MODZCTA_2010.shp")
 
 str(zip_nyc)
 glimpse(zip_nyc)
@@ -40,14 +59,21 @@ tm_shape(zip_nyc) +
 
 ```{r}
 # joining the trees data with sf object
-trees_zip <- 
-  merge(zip_nyc, trees_2015, 
+
+trees_zip =
+  merge(zip_nyc, trees_df, 
+                        by.x = "MODZCTA",
+                        by.y = "postcode") |> 
+  janitor::clean_names()
+
+trees_nta = 
+  merge(zip_nyc, trees_df_nta, 
                         by.x = "MODZCTA",
                         by.y = "postcode") |> 
   janitor::clean_names()
 ```
 
-```{r}
+```{r, eval = F}
 # getting borough names
 
 trees_zip |> 
@@ -60,12 +86,23 @@ trees_zip |>
 ```
 
 ```{r}
+# map of tree health in all of NYC
+
+trees_zip |> 
+  tm_shape() +   
+  tm_polygons(col = "health",
+              style = "equal",
+              n = 3,
+              palette = "viridis",
+              border.col = "black",
+              title = "Tree Heath by Zip Codes in Manhattan")
+```
+
+```{r}
 # map of tree health in Manhattan
 
 trees_zip |> 
-  drop_na() |> 
-  filter(borough == "Manhattan",
-         status == "Alive") |>
+  filter(borough == "Manhattan") |> 
   tm_shape() +   
   tm_polygons(col = "health",
               style = "equal",
@@ -80,8 +117,7 @@ trees_zip |>
 
 trees_zip |> 
   drop_na() |> 
-  filter(borough == "Brooklyn",
-          status == "Alive") |> 
+  filter(borough == "Brooklyn") |> 
   tm_shape() +   
   tm_polygons(col = "health",
               style = "equal",
@@ -96,8 +132,7 @@ trees_zip |>
 
 trees_zip |> 
   drop_na() |> 
-  filter(borough == "Queens",
-         status == "Alive") |>
+  filter(borough == "Queens") |>
   tm_shape() +   
   tm_polygons(col = "health",
               style = "equal",
@@ -112,8 +147,7 @@ trees_zip |>
 
 trees_zip |> 
   drop_na() |> 
-  filter(borough == "Bronx",
-         status == "Alive") |>
+  filter(borough == "Bronx") |>
   tm_shape() +   
   tm_polygons(col = "health",
               style = "equal",
@@ -128,8 +162,7 @@ trees_zip |>
 
 trees_zip |> 
   drop_na() |> 
-  filter(borough == "Staten Island",
-         status == "Alive") |>
+  filter(borough == "Staten Island") |>
   tm_shape() +   
   tm_polygons(col = "health",
               style = "equal",
@@ -142,10 +175,9 @@ trees_zip |>
 ```{r}
 # map of tree health in Washington Heights
 
-trees_zip |> 
+trees_nta |> 
   drop_na() |> 
-  filter(borough == "Manhattan",
-         status == "Alive",
+  filter(
          nta_name == c("Washington Heights South", "Washington Heights North")) |>
   tm_shape() +   
   tm_polygons(col = "health",
@@ -161,8 +193,7 @@ trees_zip |>
 
 trees_2015 |>
   drop_na() |> 
-  filter(borough == "Manhattan",
-         status == "Alive",
+  filter(
          nta_name == c("Washington Heights South", "Washington Heights North")) |>
    plot_ly(
        x = ~longitude, y = ~latitude, color = ~health, text = ~spc_common,
