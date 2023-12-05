@@ -12,6 +12,7 @@ library(plotly)
 library(sf)
 library(tmap)
 library(tmaptools)
+library(readxl)
 
 theme_set(theme(legend.position = "bottom"))
 
@@ -149,7 +150,7 @@ nta_dbh_summarized = trees_2015_cleaned |>
   drop_na(tree_dbh) |> 
   group_by(nta) |> 
   summarize(
-    trees_per_nta = n(),
+    "Number of Trees" = n(),
     avg_dbh = mean(tree_dbh))
 
 
@@ -171,7 +172,8 @@ tm_shape(nta_dbh_spatial) +
               palette = "YlGn",
               border.col = "black",
               title = "Mean Tree DBH (Inches)") +
-  tm_layout(main.title = "Average Tree DBH Across NYC Neighborhoods") +
+  tm_layout(main.title = "Average Tree DBH Across NYC Neighborhoods",
+            title.size = 0.5) +
   tm_legend(legend.position = c("left","center"))
 ```
 
@@ -238,7 +240,7 @@ tm_shape(nyc_comdistrict_treesPM) +
           size = "Number of Trees",
           style = "quantile",
           border.col = "black") +
-  tm_layout(main.title = "Average 2015 PM2.5 Concentrations across NYC Community Districts") +
+  tm_layout(main.title = "Average 2015 PM2.5 Concentrations across NYC Community Districts", main.title.size = 0.85) +
   tm_legend(legend.position = c("left","top"))
 ```
 
@@ -257,7 +259,7 @@ tm_shape(nyc_comdistrict_treesPM) +
           size = "avg_dbh",
           style = "quantile",
           border.col = "black") +
-  tm_layout(main.title = "Average 2015 PM2.5 Concentrations across NYC Community Districts") +
+  tm_layout(main.title = "Average 2015 PM2.5 Concentrations across NYC Community Districts", main.title.size = 0.8) +
   tm_legend(legend.position = c("left","top"))
 ```
 
@@ -295,8 +297,46 @@ tm_shape(nyc_comdistrict_treesPM) +
           size = "Number of Trees",
           style = "quantile",
           border.col = "black") +
-  tm_layout(main.title = "Average Heatstress Hospitalization Rate across NYC Community Districts") +
+  tm_layout(main.title = "Average Heatstress Hospitalization Rate across NYC Community Districts", main.title.size = 0.8) +
   tm_legend(legend.position = c("left","top"))
 ```
 
+```{r Asthma Hospitalization Merge}
+asthma_hosp_adult_raw <-
+  read_csv("small_data/NYC EH Data Portal - Asthma hospitalizations adults.csv") |> 
+  janitor::clean_names()
+
+asthma_hosp_adult_clean <- asthma_hosp_adult_raw |> 
+  rename(nta_name = geography) |> 
+  filter(geo_type == "NTA2010" & time == "2012-2014") |> 
+  select(nta_name, geo_id, average_annual_age_adjusted_rate_per_10_000, average_annual_rate_per_10_000)
+
+nta_asthma_spatial = merge(nta_dbh_spatial, asthma_hosp_adult_clean, 
+                        by.x = "ntaname",
+                        by.y = "nta_name")
+```
+
+```{r Asthma Hospitalization Map Health Page}
+tm_shape(nta_asthma_spatial) +
+  tm_polygons(col = "average_annual_rate_per_10_000",
+              style = "quantile",
+              n = 5,
+              palette = "Purples",
+              border.col = "black",
+              title = "Asthma Hospitalization Rate per 10k") +
+  tm_layout(main.title = "Avg. Annual Hospitalization Rate Across NYC Neighborhoods", main.title.size = 1) +
+  tm_legend(legend.position = c("left","top"))
+```
+
+```{r Tree Count Map to Compare to Asthma }
+tm_shape(nta_asthma_spatial) +
+  tm_polygons(col = "Number of Trees",
+              style = "quantile",
+              n = 5,
+              palette = "Greens",
+              border.col = "black",
+              title = "Number of Trees per NTA") +
+  tm_layout(main.title = "Total Tree Count Across NYC Neighborhoods", main.title.size = 1) +
+  tm_legend(legend.position = c("left","top"))
+```
 
