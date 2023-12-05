@@ -12,24 +12,12 @@ navbar:
       href: health.html
     - text: "Dashboard"
       href: dashboard.html
-    - text: "Data Cleaning"
-      href: data_cleaning.html
-    - text: "Sharon"
-      href: sharon.html
-    - text: "Steph"
-      href: steph.html
-    - text: "Grace"
-      href: grace.html
-    - text: "Zander"
-      href: zander.html
-    - text: "Christine"
-      href: christine.html
     - text: "Report"
       href: report.html
     - icon: fa-envelope fa-lg
       href: mailto:<sdc2157@cumc.columbia.edu>
     - icon: fa-github fa-lg
-      href: http://github.com/skulali/
+      href: https://github.com/skulali/operation_lorax.github.io.git
 
 output:
   html_document:
