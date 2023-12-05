@@ -1,9 +1,349 @@
 ---
 title: "sociodemographic"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: cosmo
+    code_folding: hide
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+## Data Import
+
+```{r, warning = FALSE, message = FALSE}
+# loading the necessary packages
+
+library(tidyverse)
+library(readxl)
+library(plotly)
+library(sf)
+library(tmap)
+library(tmaptools)
+library(shinyjs)
+library(ggridges)
+library(patchwork)
 ```
+
+```{r tree Data Import, message = F}
+tree_2015_raw = 
+  read_csv("large_tree_data/2015_tree_raw.csv", na = c("", "NA", "Unknown")) |> 
+  janitor::clean_names() |> 
+  select(tree_id, status, health, spc_common, nta)
+
+pop_race_2010 = readxl::read_excel("small_data/pop_race2010_nta.xlsx", skip = 6, col_names = FALSE, na = "NA") |> 
+  rename(
+   "borough" = "...1" ,
+   "census_FIPS" = "...2",
+   "nta" = "...3",
+   "nta_name" = "...4",
+   "total_population" = "...5",
+   "white_nonhis" = "...6",
+   "black_nonhis" = "...7",
+   "am_ind_alaska_nonhis" = "...8",
+   "asian_nonhis" = "...9",
+   "hawaii_pac_isl_nonhis" = "...10",
+   "other_nonhis" = "...11",
+   "two_races" = "...12",
+   "hispanic_any_race" = "...13"
+  ) |> 
+  drop_na()
+
+all_data = left_join(tree_2015_raw, pop_race_2010, by = "nta")
+```
+
+```{r}
+acres_raw <- 
+  read_excel("small_data/t_pl_p5_nta.xlsx", 
+             range = "A9:J203", 
+             col_names = c("borough", "county_code", "nta", "nta_name",
+                           "total_pop_2000", "total_pop_2010", "pop_change_num",
+                           "pop_change_per", "total_acres", "persons_per_acre")
+             ) |> 
+  janitor::clean_names()
+
+acres_sub <- acres_raw |> 
+  select(nta_name, total_acres)
+```
+
+```{r, message = FALSE}
+tree_2015_cleaned <-
+  read_csv("large_tree_data/2015_tree_raw.csv", na = c("", "NA", "Unknown")) |> 
+  janitor::clean_names() |> 
+  select(-created_at, -steward, -user_type, -st_senate, -st_assem, -state) 
+```
+
+```{r}
+trees_per_nta <- tree_2015_cleaned |> 
+  select(nta_name, nta, borough, status) |> 
+  filter(status == "Alive") |> 
+  count(nta_name, borough) |> 
+  rename(num_trees = n)
+
+trees_and_acres <- left_join(trees_per_nta, acres_sub, by = "nta_name")
+
+num_missing_nta <- sum(is.na(trees_and_acres$total_acres))
+
+trees_per_acre_df <- trees_and_acres |> 
+  filter(!is.na(total_acres)) |> 
+  mutate(trees_per_acre = num_trees/total_acres) |> 
+  arrange(desc(trees_per_acre))
+```
+
+```{r}
+poverty_raw <-
+  read_csv("large_tree_data/NYC EH Data Portal - Neighborhood poverty.csv") |> 
+  janitor::clean_names()
+
+poverty_clean <- poverty_raw |> 
+  rename(nta_name = geography, poverty_percent = percent) |> 
+  filter(geo_type == "NTA2010" & time == "2013-17") |> 
+  select(nta_name, poverty_percent)
+
+trees_and_poverty <- left_join(trees_per_acre_df, poverty_clean, by = "nta_name")
+
+m2 <- sum(is.na(trees_and_poverty))
+```
+
+```{r, message = FALSE}
+education_raw <-
+  read_csv("large_tree_data/NYC EH Data Portal - Graduated high school.csv") |> 
+  janitor::clean_names()
+
+
+education_clean <- education_raw |> 
+  rename(nta_name = geography, graduated_hs_percent = percent) |> 
+  filter(geo_type == "NTA2010" & time == "2013-17") |> 
+  select(nta_name, graduated_hs_percent)
+
+trees_and_education <- left_join(trees_per_acre_df, education_clean, by = "nta_name")
+
+m3 <- sum(is.na(trees_and_education))
+```
+
+```{r}
+nycha_raw <-
+  read_csv("large_tree_data/NYCHA_Residential_Addresses_20231130.csv") |> 
+  janitor::clean_names()
+
+nycha_clean <- nycha_raw |> 
+  rename(nta_name = neighborhood_tabulation_area_name) |> 
+  select(nta_name, development) |> 
+  group_by(nta_name, development) |> 
+  distinct() |> 
+  ungroup()
+
+num_dev_nta <- nycha_clean |> 
+  count(nta_name) |> 
+  rename(num_development = n)
+
+trees_and_nycha <- left_join(trees_per_acre_df, num_dev_nta, by = "nta_name")
+
+trees_and_nycha <- trees_and_nycha |> 
+  mutate(num_development =
+           ifelse(is.na(num_development), 0, num_development))
+
+m4 <- sum(is.na(trees_and_nycha))
+```
+
+## Population
+
+Distribution of Race by Borough
+```{r}
+dem_race = 
+  pop_race_2010 |> 
+  group_by(borough) |> 
+  summarize(white = sum(white_nonhis),
+            black = sum(black_nonhis),
+            asian = sum(asian_nonhis),
+            am_ind_alaska = sum(am_ind_alaska_nonhis),
+            hawaii_pac_island = sum(hawaii_pac_isl_nonhis),
+            other = sum(other_nonhis),
+            hispanic_all_races = sum(hispanic_any_race),
+            two_races = sum(two_races)
+            ) |> 
+  pivot_longer(
+    white:two_races,
+    names_to = "race",
+    values_to = "n"
+  ) |> 
+   mutate(borough = fct_reorder(borough, n)) 
+
+ggplot(data = dem_race, aes(x = borough, y = n, fill = race)) + geom_bar(stat = 'identity', position = 'dodge')  + 
+  labs(
+    title = "Population of Borough by Race",
+    x = "Borough",
+    y = "Total Population"
+  )
+```
+
+Manhattan Trees and Population Demographics by NTA 
+```{r}
+number_mhtn = 
+  all_data |> 
+  filter(borough == "Manhattan") |> 
+  summarize(n_trees = n_distinct(tree_id))
+
+percentages = 
+  all_data |> 
+  filter(borough == "Manhattan") |> 
+  group_by(nta_name) |> 
+  summarize(n_trees = n_distinct(tree_id),
+            n_white = (sum(white_nonhis)/sum(total_population)*100),
+            n_black = (sum(black_nonhis)/sum(total_population)*100),
+            n_asian = (sum(asian_nonhis)/sum(total_population)*100),
+            n_pacific_islander = (sum(hawaii_pac_isl_nonhis)/sum(total_population)*100),
+            n_amer_ind = (sum(am_ind_alaska_nonhis)/sum(total_population)*100),
+            n_other = (sum(other_nonhis)/sum(total_population)*100),
+            n_hispanic = (sum(hispanic_any_race)/sum(total_population)*100),
+            n_two_races = (sum(two_races)/sum(total_population)*100)
+            ) |> 
+  mutate(n_trees = as.numeric(n_trees)) |> 
+  arrange(desc(n_trees))
+
+percentages |> 
+ knitr::kable(digits = 3)
+```
+
+Trees and Population Demographics by Borough 
+ 
+```{r}
+borough_data = 
+  all_data |> 
+  group_by(borough) |> 
+  summarize(n_trees = n_distinct(tree_id),
+            n_white = (sum(white_nonhis)/sum(total_population)*100),
+            n_black = (sum(black_nonhis)/sum(total_population)*100),
+            n_asian = (sum(asian_nonhis)/sum(total_population)*100),
+            n_pacific_islander = (sum(hawaii_pac_isl_nonhis)/sum(total_population)*100),
+            n_amer_ind = (sum(am_ind_alaska_nonhis)/sum(total_population)*100),
+            n_other = (sum(other_nonhis)/sum(total_population)*100),
+            n_hispanic = (sum(hispanic_any_race)/sum(total_population)*100),
+            n_two_races = (sum(two_races)/sum(total_population)*100)
+            ) |> 
+  mutate(n_trees = as.numeric(n_trees)) |> 
+  arrange(desc(n_trees))
+
+borough_data |> 
+ knitr::kable(digits = 3)
+```
+
+## Poverty
+
+```{r}
+trees_and_poverty |> 
+  plot_ly(data = _, x = ~poverty_percent, y = ~trees_per_acre, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>%below poverty line: ", poverty_percent, 
+                        "<br>trees per acre: ", trees_per_acre)) |> 
+    layout(title = "Percentage of people whose income is below the poverty line <br> and 
+           trees per acre by neighborhood",
+           xaxis = list(title = 'Percentage of people whose income <br> is below the poverty line'),
+           yaxis = list(title = 'Number of trees per acre'),
+           legend = list(title=list(text='Neighborhood')))
+```
+
+```{r}
+cor(pull(trees_and_poverty, trees_per_acre), pull(trees_and_poverty, poverty_percent))
+```
+
+```{r}
+trees_and_poverty |> 
+  plot_ly(data = _, x = ~poverty_percent, y = ~num_trees, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>%below poverty line: ", 
+                        poverty_percent, "<br>number of trees: ", num_trees)) |> 
+    layout(title = "Percentage of people whose income is below the poverty line <br> 
+           and number of trees by neighborhood",
+           xaxis = list(title = 'Percentage of people whose income <br> is below the poverty line'),
+           yaxis = list(title = 'Total number of trees'),
+           legend = list(title=list(text='Neighborhood')))
+```
+
+```{r}
+cor(pull(trees_and_poverty, num_trees), pull(trees_and_poverty, poverty_percent))
+```
+
+## Education
+
+```{r}
+trees_and_education |> 
+  plot_ly(data = _, x = ~graduated_hs_percent, y = ~trees_per_acre, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>% graduated HS: ", 
+                        graduated_hs_percent, "<br>trees per acre: ", trees_per_acre)) |> 
+  layout(title = "Percentage of people who graduated high school <br> and trees per acre by neighborhood", 
+         xaxis = list(title = 'Percentage of people who graduated <br> high school (includes equivalency)'), 
+         yaxis = list(title = 'Number of trees per acre'), 
+         legend = list(title=list(text='Neighborhood')))
+```
+
+```{r}
+cor(pull(trees_and_education, trees_per_acre), pull(trees_and_education, graduated_hs_percent))
+```
+
+```{r}
+trees_and_education |> 
+  plot_ly(data = _, x = ~graduated_hs_percent, y = ~num_trees, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>%people who graduated HS: ", 
+                        graduated_hs_percent, "<br>number of trees: ", num_trees)) |> 
+  layout(title = "Percentage of people who graduated high school <br> and number of trees by neighborhood",
+         xaxis = list(title = 'Percentage of people who graduated <br> high school (includes equivalency)'),
+         yaxis = list(title = 'Total number of trees'),
+         legend = list(title=list(text='Neighborhood')))
+```
+
+```{r}
+cor(pull(trees_and_education, num_trees), pull(trees_and_education, graduated_hs_percent))
+```
+
+## Housing
+
+```{r}
+trees_and_nycha |> 
+  plot_ly(data = _, x = ~num_development, y = ~trees_per_acre, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", 
+                        borough, "<br>number of NYCHA developments: ", 
+                        num_development, "<br>trees per acre: ", trees_per_acre)) |> 
+    layout(title = "Trees per acre and number of NYCHA developments by neighborhood",
+           xaxis = list(title = 'Total number of NYCHA developments'), 
+           yaxis = list(title = 'Number of trees per acre'), 
+           legend = list(title=list(text='Neighborhood')))
+```
+
+```{r}
+cor(pull(trees_and_nycha, trees_per_acre), pull(trees_and_nycha, num_development))
+```
+
+```{r}
+trees_and_nycha |> 
+  plot_ly(data = _, x = ~num_development, y = ~num_trees, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", 
+                        borough, "<br>%number of NYCHA developments: ", 
+                        num_development, "<br>number of trees: ", num_trees)) |> 
+    layout(title = "Number of trees and number of NYCHA developments by neighborhood",
+           xaxis = list(title = 'Total number of NYCHA developments'), 
+           yaxis = list(title = 'Total number of trees'), 
+           legend = list(title=list(text='Neighborhood')))
+```
+
+```{r}
+cor(pull(trees_and_nycha, num_trees), pull(trees_and_nycha, num_development))
+```
+
 
