@@ -74,6 +74,14 @@ trees_per_acre_df <- trees_and_acres |>
   mutate(trees_per_acre = num_trees/total_acres) |> 
   arrange(desc(trees_per_acre))
 
+trees_per_acre_nta_table <- trees_per_acre_df |> 
+  filter(min_rank(desc(trees_per_acre)) < 11) |> 
+  knitr::kable(digits = 2, caption = "Top 10 NYC neighborhoods with the highest number of trees per acre")
+
+trees_total_nta_table <- trees_per_acre_df |> 
+  filter(min_rank(desc(num_trees)) < 11) |> 
+  knitr::kable(digits = 2, caption = "Top 10 NYC neighborhoods with the highest total number of trees")
+
 ```
 
 ## Asthma Emergency Dept Adults 2017-2019
@@ -99,7 +107,7 @@ m0 <- sum(is.na(trees_and_asthma_ed_adult))
 
 ```
 
-### Tables and Graphs of trees per acre and asthma ED adults and num trees
+### Tables and Graphs of trees per acre and asthma ED adults and num trees OVERALL NYC
 when looking at histograms of x and y values most are skewed; can't do a test of significance
 no to weak linear association
 ```{r}
@@ -125,7 +133,7 @@ trees_and_asthma_ed_adult |>
           text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
                         "<br>tree per acre: ", trees_per_acre, "<br>rate of adult asthma ED visits: ", 
                         average_annual_rate_per_10_000)) |> 
-    layout(title = "Trees per acre and rate of adult asthma emergency department visits <br> by neighborhood",
+    layout(title = "Trees per acre and rate of adult asthma emergency department visits <br> by neighborhood in NYC",
            xaxis = list(title = 'Number of trees per acre'),
            yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
            legend = list(title=list(text='Neighborhood')))
@@ -154,7 +162,7 @@ trees_and_asthma_ed_adult |>
           text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
                         "<br>number of trees: ", num_trees, 
                         "<br>rate of adult asthma ED visits: ", average_annual_rate_per_10_000)) |> 
-    layout(title = "Number of trees and rate of adult asthma emergency department visits <br> by neighborhood",
+    layout(title = "Number of trees and rate of adult asthma emergency department visits <br> by neighborhood in NYC",
          xaxis = list(title = 'Total number of trees'),
          yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
          legend = list(title=list(text='Neighborhood')))
@@ -162,6 +170,112 @@ trees_and_asthma_ed_adult |>
 cor(pull(trees_and_asthma_ed_adult, num_trees), pull(trees_and_asthma_ed_adult, average_annual_rate_per_10_000))
 
 
+```
+
+### Tables and Graphs of trees per acre and asthma ED adults OVERLAY OF BOROUGH
+```{r}
+trees_and_asthma_ed_adult |> 
+  filter(borough == "Manhattan") |> 
+  plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>tree per acre: ", trees_per_acre, "<br>rate of adult asthma ED visits: ", 
+                        average_annual_rate_per_10_000)) |> 
+    layout(title = "Trees per acre and rate of adult asthma emergency department visits <br> by neighborhood in Manhattan",
+           xaxis = list(title = 'Number of trees per acre'),
+           yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
+           legend = list(title=list(text='Neighborhood')))
+
+manhattan_per_acre_asthma_ed_adult <- trees_and_asthma_ed_adult |> 
+  filter(borough == "Manhattan") 
+
+cor(pull(manhattan_per_acre_asthma_ed_adult, trees_per_acre), pull(manhattan_per_acre_asthma_ed_adult, average_annual_rate_per_10_000))
+```
+
+```{r}
+trees_and_asthma_ed_adult |> 
+  filter(borough == "Bronx") |> 
+  plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>tree per acre: ", trees_per_acre, "<br>rate of adult asthma ED visits: ", 
+                        average_annual_rate_per_10_000)) |> 
+    layout(title = "Trees per acre and rate of adult asthma emergency department visits <br> by neighborhood in Bronx",
+           xaxis = list(title = 'Number of trees per acre'),
+           yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
+           legend = list(title=list(text='Neighborhood')))
+
+bronx_per_acre_asthma_ed_adult <- trees_and_asthma_ed_adult |> 
+  filter(borough == "Bronx") 
+
+cor(pull(bronx_per_acre_asthma_ed_adult, trees_per_acre), pull(bronx_per_acre_asthma_ed_adult, average_annual_rate_per_10_000))
+```
+
+```{r}
+trees_and_asthma_ed_adult |> 
+  filter(borough == "Brooklyn") |> 
+  plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>tree per acre: ", trees_per_acre, "<br>rate of adult asthma ED visits: ", 
+                        average_annual_rate_per_10_000)) |> 
+    layout(title = "Trees per acre and rate of adult asthma emergency department visits <br> by neighborhood in Brooklyn",
+           xaxis = list(title = 'Number of trees per acre'),
+           yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
+           legend = list(title=list(text='Neighborhood')))
+
+brooklyn_per_acre_asthma_ed_adult <- trees_and_asthma_ed_adult |> 
+  filter(borough == "Brooklyn") 
+
+cor(pull(brooklyn_per_acre_asthma_ed_adult, trees_per_acre), pull(brooklyn_per_acre_asthma_ed_adult, average_annual_rate_per_10_000))
+```
+
+```{r}
+trees_and_asthma_ed_adult |> 
+  filter(borough == "Staten Island") |> 
+  plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>tree per acre: ", trees_per_acre, "<br>rate of adult asthma ED visits: ", 
+                        average_annual_rate_per_10_000)) |> 
+    layout(title = "Trees per acre and rate of adult asthma emergency department visits <br> by neighborhood in Staten Island",
+           xaxis = list(title = 'Number of trees per acre'),
+           yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
+           legend = list(title=list(text='Neighborhood')))
+
+staten_island_per_acre_asthma_ed_adult <- trees_and_asthma_ed_adult |> 
+  filter(borough == "Staten Island") 
+
+cor(pull(staten_island_per_acre_asthma_ed_adult, trees_per_acre), pull(staten_island_per_acre_asthma_ed_adult, average_annual_rate_per_10_000))
+```
+
+```{r}
+trees_and_asthma_ed_adult |> 
+  filter(borough == "Queens") |> 
+  plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>tree per acre: ", trees_per_acre, "<br>rate of adult asthma ED visits: ", 
+                        average_annual_rate_per_10_000)) |> 
+    layout(title = "Trees per acre and rate of adult asthma emergency department visits <br> by neighborhood in Queens",
+           xaxis = list(title = 'Number of trees per acre'),
+           yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
+           legend = list(title=list(text='Neighborhood')))
+
+queens_per_acre_asthma_ed_adult <- trees_and_asthma_ed_adult |> 
+  filter(borough == "Queens") 
+
+cor(pull(queens_per_acre_asthma_ed_adult, trees_per_acre), pull(queens_per_acre_asthma_ed_adult, average_annual_rate_per_10_000))
 ```
 
 ## Asthma Hospitalizations Adults 2012-2014
@@ -187,7 +301,7 @@ m1 <- sum(is.na(trees_and_asthma_hosp_adult))
 
 ```
 
-### Tables and Graphs of trees per acre and asthma
+### Tables and Graphs of trees per acre and asthma hospitalizations OVERALL NYC
 when looking at histograms of x and y values most are skewed; can't do a test of significance
 
 ```{r}
@@ -213,7 +327,7 @@ trees_and_asthma_hosp_adult |>
           text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
                         "<br>tree per acre: ", trees_per_acre,
                         "<br>rate of adult asthma hospitalizations: ", average_annual_rate_per_10_000)) |> 
-  layout(title = "Trees per acre and rate of adult asthma hospitalizations <br> by neighborhood",
+  layout(title = "Trees per acre and rate of adult asthma hospitalizations <br> by neighborhood in NYC",
          xaxis = list(title = 'Number of trees per acre'),
          yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
          legend = list(title=list(text='Neighborhood')))
@@ -250,6 +364,106 @@ cor(pull(trees_and_asthma_hosp_adult, num_trees), pull(trees_and_asthma_hosp_adu
 
 ```
 
+### Tables and Graphs of trees per acre and asthma hospitalizations OVERLAY BY BOROUGH
+
+```{r}
+trees_and_asthma_hosp_adult |> 
+  filter(borough == "Manhattan") |> 
+  plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>tree per acre: ", trees_per_acre,
+                        "<br>rate of adult asthma hospitalizations: ", average_annual_rate_per_10_000)) |> 
+  layout(title = "Trees per acre and rate of adult asthma hospitalizations <br> by neighborhood in Manhattan",
+         xaxis = list(title = 'Number of trees per acre'),
+         yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         legend = list(title=list(text='Neighborhood')))
+
+manhattan_trees_and_asthma_hosp_adult <- trees_and_asthma_hosp_adult |> 
+  filter(borough == "Manhattan")
+
+cor(pull(manhattan_trees_and_asthma_hosp_adult, trees_per_acre), pull(manhattan_trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
+
+trees_and_asthma_hosp_adult |> 
+  filter(borough == "Bronx") |> 
+  plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>tree per acre: ", trees_per_acre,
+                        "<br>rate of adult asthma hospitalizations: ", average_annual_rate_per_10_000)) |> 
+  layout(title = "Trees per acre and rate of adult asthma hospitalizations <br> by neighborhood in Bronx",
+         xaxis = list(title = 'Number of trees per acre'),
+         yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         legend = list(title=list(text='Neighborhood')))
+
+bronx_trees_and_asthma_hosp_adult <- trees_and_asthma_hosp_adult |> 
+  filter(borough == "Bronx")
+
+cor(pull(bronx_trees_and_asthma_hosp_adult, trees_per_acre), pull(bronx_trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
+
+trees_and_asthma_hosp_adult |> 
+  filter(borough == "Brooklyn") |> 
+  plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>tree per acre: ", trees_per_acre,
+                        "<br>rate of adult asthma hospitalizations: ", average_annual_rate_per_10_000)) |> 
+  layout(title = "Trees per acre and rate of adult asthma hospitalizations <br> by neighborhood in Brooklyn",
+         xaxis = list(title = 'Number of trees per acre'),
+         yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         legend = list(title=list(text='Neighborhood')))
+
+brooklyn_trees_and_asthma_hosp_adult <- trees_and_asthma_hosp_adult |> 
+  filter(borough == "Brooklyn")
+
+cor(pull(brooklyn_trees_and_asthma_hosp_adult, trees_per_acre), pull(brooklyn_trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
+
+trees_and_asthma_hosp_adult |> 
+  filter(borough == "Staten Island") |> 
+  plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>tree per acre: ", trees_per_acre,
+                        "<br>rate of adult asthma hospitalizations: ", average_annual_rate_per_10_000)) |> 
+  layout(title = "Trees per acre and rate of adult asthma hospitalizations <br> by neighborhood in Staten Island",
+         xaxis = list(title = 'Number of trees per acre'),
+         yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         legend = list(title=list(text='Neighborhood')))
+
+staten_island_trees_and_asthma_hosp_adult <- trees_and_asthma_hosp_adult |> 
+  filter(borough == "Staten Island")
+
+cor(pull(staten_island_trees_and_asthma_hosp_adult, trees_per_acre), pull(staten_island_trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
+
+trees_and_asthma_hosp_adult |> 
+  filter(borough == "Queens") |> 
+  plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>tree per acre: ", trees_per_acre,
+                        "<br>rate of adult asthma hospitalizations: ", average_annual_rate_per_10_000)) |> 
+  layout(title = "Trees per acre and rate of adult asthma hospitalizations <br> by neighborhood in Queens",
+         xaxis = list(title = 'Number of trees per acre'),
+         yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         legend = list(title=list(text='Neighborhood')))
+
+queens_trees_and_asthma_hosp_adult <- trees_and_asthma_hosp_adult |> 
+  filter(borough == "Queens")
+
+cor(pull(queens_trees_and_asthma_hosp_adult, trees_per_acre), pull(queens_trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
+```
+
+
 ## Neighborhood Poverty 2013-2017
 ### load Neighborhood Poverty 2013-2017
 
@@ -274,7 +488,7 @@ m2 <- sum(is.na(trees_and_poverty))
 
 ```
 
-### Tables and Graphs of trees per acre and asthma
+### Tables and Graphs of trees per acre and asthma OVERALL NYC
 when looking at histograms of x and y values most are skewed; can't do a test of significance
 ```{r}
 trees_and_poverty |> 
@@ -286,7 +500,7 @@ trees_and_poverty |>
                         "<br>%below poverty line: ", poverty_percent, 
                         "<br>trees per acre: ", trees_per_acre)) |> 
     layout(title = "Percentage of people whose income is below the poverty line <br> and 
-           trees per acre by neighborhood",
+           trees per acre by neighborhood in NYC",
            xaxis = list(title = 'Percentage of people whose income <br> is below the poverty line'),
            yaxis = list(title = 'Number of trees per acre'),
            legend = list(title=list(text='Neighborhood')))
@@ -308,6 +522,109 @@ trees_and_poverty |>
 
 cor(pull(trees_and_poverty, num_trees), pull(trees_and_poverty, poverty_percent))
 
+```
+
+### Tables and Graphs of trees per acre and asthma OVERLAY BY BOROUGH
+```{r}
+trees_and_poverty |> 
+  filter(borough == "Manhattan") |> 
+  plot_ly(data = _, x = ~poverty_percent, y = ~trees_per_acre, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>%below poverty line: ", poverty_percent, 
+                        "<br>trees per acre: ", trees_per_acre)) |> 
+    layout(title = "Percentage of people whose income is below the poverty line <br> and 
+           trees per acre by neighborhood in Manhattan",
+           xaxis = list(title = 'Percentage of people whose income <br> is below the poverty line'),
+           yaxis = list(title = 'Number of trees per acre'),
+           legend = list(title=list(text='Neighborhood')))
+
+manhattan_trees_and_poverty <- trees_and_poverty |> 
+  filter(borough == "Manhattan")
+
+cor(pull(manhattan_trees_and_poverty, trees_per_acre), pull(manhattan_trees_and_poverty, poverty_percent))
+
+trees_and_poverty |> 
+  filter(borough == "Brooklyn") |> 
+  plot_ly(data = _, x = ~poverty_percent, y = ~trees_per_acre, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>%below poverty line: ", poverty_percent, 
+                        "<br>trees per acre: ", trees_per_acre)) |> 
+    layout(title = "Percentage of people whose income is below the poverty line <br> and 
+           trees per acre by neighborhood in Brooklyn",
+           xaxis = list(title = 'Percentage of people whose income <br> is below the poverty line'),
+           yaxis = list(title = 'Number of trees per acre'),
+           legend = list(title=list(text='Neighborhood')))
+
+brooklyn_trees_and_poverty <- trees_and_poverty |> 
+  filter(borough == "Brooklyn")
+
+cor(pull(brooklyn_trees_and_poverty, trees_per_acre), pull(brooklyn_trees_and_poverty, poverty_percent))
+
+trees_and_poverty |> 
+  filter(borough == "Bronx") |> 
+  plot_ly(data = _, x = ~poverty_percent, y = ~trees_per_acre, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>%below poverty line: ", poverty_percent, 
+                        "<br>trees per acre: ", trees_per_acre)) |> 
+    layout(title = "Percentage of people whose income is below the poverty line <br> and 
+           trees per acre by neighborhood in Bronx",
+           xaxis = list(title = 'Percentage of people whose income <br> is below the poverty line'),
+           yaxis = list(title = 'Number of trees per acre'),
+           legend = list(title=list(text='Neighborhood')))
+
+bronx_trees_and_poverty <- trees_and_poverty |> 
+  filter(borough == "Bronx")
+
+cor(pull(bronx_trees_and_poverty, trees_per_acre), pull(bronx_trees_and_poverty, poverty_percent))
+
+trees_and_poverty |> 
+  filter(borough == "Staten Island") |> 
+  plot_ly(data = _, x = ~poverty_percent, y = ~trees_per_acre, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>%below poverty line: ", poverty_percent, 
+                        "<br>trees per acre: ", trees_per_acre)) |> 
+    layout(title = "Percentage of people whose income is below the poverty line <br> and 
+           trees per acre by neighborhood in Staten Island",
+           xaxis = list(title = 'Percentage of people whose income <br> is below the poverty line'),
+           yaxis = list(title = 'Number of trees per acre'),
+           legend = list(title=list(text='Neighborhood')))
+
+staten_island_trees_and_poverty <- trees_and_poverty |> 
+  filter(borough == "Staten Island")
+
+cor(pull(staten_island_trees_and_poverty, trees_per_acre), pull(staten_island_trees_and_poverty, poverty_percent))
+
+trees_and_poverty |> 
+  filter(borough == "Queens") |> 
+  plot_ly(data = _, x = ~poverty_percent, y = ~trees_per_acre, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>%below poverty line: ", poverty_percent, 
+                        "<br>trees per acre: ", trees_per_acre)) |> 
+    layout(title = "Percentage of people whose income is below the poverty line <br> and 
+           trees per acre by neighborhood in Queens",
+           xaxis = list(title = 'Percentage of people whose income <br> is below the poverty line'),
+           yaxis = list(title = 'Number of trees per acre'),
+           legend = list(title=list(text='Neighborhood')))
+
+queens_trees_and_poverty <- trees_and_poverty |> 
+  filter(borough == "Queens")
+
+cor(pull(queens_trees_and_poverty, trees_per_acre), pull(queens_trees_and_poverty, poverty_percent))
 ```
 
 ## Graduated High School 2013-2017
@@ -335,7 +652,7 @@ m3 <- sum(is.na(trees_and_education))
 
 ```
 
-### Tables and Graphs of trees per acre and education
+### Tables and Graphs of trees per acre and education OVERALL NYC
 when looking at histograms of x and y values most are skewed; can't do a test of significance
 ```{r}
 trees_and_education |> 
@@ -345,7 +662,7 @@ trees_and_education |>
           mode = "markers",
           text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>% graduated HS: ", 
                         graduated_hs_percent, "<br>trees per acre: ", trees_per_acre)) |> 
-  layout(title = "Percentage of people who graduated high school <br> and trees per acre by neighborhood", 
+  layout(title = "Percentage of people who graduated high school <br> and trees per acre by neighborhood in NYC", 
          xaxis = list(title = 'Percentage of people who graduated <br> high school (includes equivalency)'), 
          yaxis = list(title = 'Number of trees per acre'), 
          legend = list(title=list(text='Neighborhood')))
@@ -367,6 +684,102 @@ trees_and_education |>
 cor(pull(trees_and_education, num_trees), pull(trees_and_education, graduated_hs_percent))
 
 ```
+
+### Tables and Graphs of trees per acre and education OVERLAY BY BOROUGH
+
+```{r}
+trees_and_education |> 
+  filter(borough == "Manhattan") |> 
+  plot_ly(data = _, x = ~graduated_hs_percent, y = ~trees_per_acre, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>% graduated HS: ", 
+                        graduated_hs_percent, "<br>trees per acre: ", trees_per_acre)) |> 
+  layout(title = "Percentage of people who graduated high school <br> and trees per acre by neighborhood in Manhattan", 
+         xaxis = list(title = 'Percentage of people who graduated <br> high school (includes equivalency)'), 
+         yaxis = list(title = 'Number of trees per acre'), 
+         legend = list(title=list(text='Neighborhood')))
+
+manhattan_trees_and_education <- trees_and_education |> 
+  filter(borough == "Manhattan")
+
+cor(pull(manhattan_trees_and_education, trees_per_acre), pull(manhattan_trees_and_education, graduated_hs_percent))
+
+trees_and_education |> 
+  filter(borough == "Brooklyn") |> 
+  plot_ly(data = _, x = ~graduated_hs_percent, y = ~trees_per_acre, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>% graduated HS: ", 
+                        graduated_hs_percent, "<br>trees per acre: ", trees_per_acre)) |> 
+  layout(title = "Percentage of people who graduated high school <br> and trees per acre by neighborhood in Brooklyn", 
+         xaxis = list(title = 'Percentage of people who graduated <br> high school (includes equivalency)'), 
+         yaxis = list(title = 'Number of trees per acre'), 
+         legend = list(title=list(text='Neighborhood')))
+
+brooklyn_trees_and_education <- trees_and_education |> 
+  filter(borough == "Brooklyn")
+
+cor(pull(brooklyn_trees_and_education, trees_per_acre), pull(brooklyn_trees_and_education, graduated_hs_percent))
+
+trees_and_education |> 
+  filter(borough == "Bronx") |> 
+  plot_ly(data = _, x = ~graduated_hs_percent, y = ~trees_per_acre, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>% graduated HS: ", 
+                        graduated_hs_percent, "<br>trees per acre: ", trees_per_acre)) |> 
+  layout(title = "Percentage of people who graduated high school <br> and trees per acre by neighborhood in Bronx", 
+         xaxis = list(title = 'Percentage of people who graduated <br> high school (includes equivalency)'), 
+         yaxis = list(title = 'Number of trees per acre'), 
+         legend = list(title=list(text='Neighborhood')))
+
+bronx_trees_and_education <- trees_and_education |> 
+  filter(borough == "Bronx")
+
+cor(pull(bronx_trees_and_education, trees_per_acre), pull(bronx_trees_and_education, graduated_hs_percent))
+
+trees_and_education |> 
+  filter(borough == "Staten Island") |> 
+  plot_ly(data = _, x = ~graduated_hs_percent, y = ~trees_per_acre, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>% graduated HS: ", 
+                        graduated_hs_percent, "<br>trees per acre: ", trees_per_acre)) |> 
+  layout(title = "Percentage of people who graduated high school <br> and trees per acre by neighborhood in Staten Island", 
+         xaxis = list(title = 'Percentage of people who graduated <br> high school (includes equivalency)'), 
+         yaxis = list(title = 'Number of trees per acre'), 
+         legend = list(title=list(text='Neighborhood')))
+
+staten_island_trees_and_education <- trees_and_education |> 
+  filter(borough == "Staten Island")
+
+cor(pull(staten_island_trees_and_education, trees_per_acre), pull(staten_island_trees_and_education, graduated_hs_percent))
+
+trees_and_education |> 
+  filter(borough == "Queens") |> 
+  plot_ly(data = _, x = ~graduated_hs_percent, y = ~trees_per_acre, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>% graduated HS: ", 
+                        graduated_hs_percent, "<br>trees per acre: ", trees_per_acre)) |> 
+  layout(title = "Percentage of people who graduated high school <br> and trees per acre by neighborhood in Queens", 
+         xaxis = list(title = 'Percentage of people who graduated <br> high school (includes equivalency)'), 
+         yaxis = list(title = 'Number of trees per acre'), 
+         legend = list(title=list(text='Neighborhood')))
+
+queens_trees_and_education <- trees_and_education |> 
+  filter(borough == "Queens")
+
+cor(pull(queens_trees_and_education, trees_per_acre), pull(queens_trees_and_education, graduated_hs_percent))
+```
+
+
 
 ## NYCHA developments as of 2021
 ### load NYCHA dataset
@@ -402,7 +815,7 @@ m4 <- sum(is.na(trees_and_nycha))
 
 ```
 
-### Tables and Graphs of trees per acre and number of NYCHA developments
+### Tables and Graphs of trees per acre and number of NYCHA developments OVERALL NYC
 ```{r}
 trees_and_nycha |> 
   plot_ly(data = _, x = ~num_development, y = ~trees_per_acre, 
@@ -412,7 +825,7 @@ trees_and_nycha |>
           text = ~paste("neighborhood: ", nta_name, "<br>borough: ", 
                         borough, "<br>number of NYCHA developments: ", 
                         num_development, "<br>trees per acre: ", trees_per_acre)) |> 
-    layout(title = "Trees per acre and number of NYCHA developments by neighborhood",
+    layout(title = "Trees per acre and number of NYCHA developments by neighborhood in NYC",
            xaxis = list(title = 'Total number of NYCHA developments'), 
            yaxis = list(title = 'Number of trees per acre'), 
            legend = list(title=list(text='Neighborhood')))
@@ -436,4 +849,106 @@ cor(pull(trees_and_nycha, num_trees), pull(trees_and_nycha, num_development))
 
 ```
 
+### Tables and Graphs of trees per acre and number of NYCHA developments OVERLAY BY BOROUGH
+
+```{r}
+trees_and_nycha |> 
+  filter(borough == "Manhattan") |> 
+  plot_ly(data = _, x = ~num_development, y = ~trees_per_acre, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", 
+                        borough, "<br>number of NYCHA developments: ", 
+                        num_development, "<br>trees per acre: ", trees_per_acre)) |> 
+    layout(title = "Trees per acre and number of NYCHA developments by neighborhood in Manhattan",
+           xaxis = list(title = 'Total number of NYCHA developments'), 
+           yaxis = list(title = 'Number of trees per acre'), 
+           legend = list(title=list(text='Neighborhood')))
+
+manhattan_trees_and_nycha <- trees_and_nycha |> 
+  filter(borough == "Manhattan")
+
+cor(pull(manhattan_trees_and_nycha, trees_per_acre), pull(manhattan_trees_and_nycha, num_development))
+
+
+trees_and_nycha |> 
+  filter(borough == "Brooklyn") |> 
+  plot_ly(data = _, x = ~num_development, y = ~trees_per_acre, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", 
+                        borough, "<br>number of NYCHA developments: ", 
+                        num_development, "<br>trees per acre: ", trees_per_acre)) |> 
+    layout(title = "Trees per acre and number of NYCHA developments by neighborhood in Brooklyn",
+           xaxis = list(title = 'Total number of NYCHA developments'), 
+           yaxis = list(title = 'Number of trees per acre'), 
+           legend = list(title=list(text='Neighborhood')))
+
+brooklyn_trees_and_nycha <- trees_and_nycha |> 
+  filter(borough == "Brooklyn")
+
+cor(pull(brooklyn_trees_and_nycha, trees_per_acre), pull(brooklyn_trees_and_nycha, num_development))
+
+
+trees_and_nycha |> 
+  filter(borough == "Bronx") |> 
+  plot_ly(data = _, x = ~num_development, y = ~trees_per_acre, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", 
+                        borough, "<br>number of NYCHA developments: ", 
+                        num_development, "<br>trees per acre: ", trees_per_acre)) |> 
+    layout(title = "Trees per acre and number of NYCHA developments by neighborhood in Bronx",
+           xaxis = list(title = 'Total number of NYCHA developments'), 
+           yaxis = list(title = 'Number of trees per acre'), 
+           legend = list(title=list(text='Neighborhood')))
+
+bronx_trees_and_nycha <- trees_and_nycha |> 
+  filter(borough == "Bronx")
+
+cor(pull(bronx_trees_and_nycha, trees_per_acre), pull(bronx_trees_and_nycha, num_development))
+
+trees_and_nycha |> 
+  filter(borough == "Staten Island") |> 
+  plot_ly(data = _, x = ~num_development, y = ~trees_per_acre, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", 
+                        borough, "<br>number of NYCHA developments: ", 
+                        num_development, "<br>trees per acre: ", trees_per_acre)) |> 
+    layout(title = "Trees per acre and number of NYCHA developments by neighborhood in Staten Island",
+           xaxis = list(title = 'Total number of NYCHA developments'), 
+           yaxis = list(title = 'Number of trees per acre'), 
+           legend = list(title=list(text='Neighborhood')))
+
+staten_island_trees_and_nycha <- trees_and_nycha |> 
+  filter(borough == "Staten Island")
+
+cor(pull(staten_island_trees_and_nycha, trees_per_acre), pull(staten_island_trees_and_nycha, num_development))
+
+
+trees_and_nycha |> 
+  filter(borough == "Queens") |> 
+  plot_ly(data = _, x = ~num_development, y = ~trees_per_acre, 
+          color = ~nta_name, 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", 
+                        borough, "<br>number of NYCHA developments: ", 
+                        num_development, "<br>trees per acre: ", trees_per_acre)) |> 
+    layout(title = "Trees per acre and number of NYCHA developments by neighborhood in Queens",
+           xaxis = list(title = 'Total number of NYCHA developments'), 
+           yaxis = list(title = 'Number of trees per acre'), 
+           legend = list(title=list(text='Neighborhood')))
+
+queens_trees_and_nycha <- trees_and_nycha |> 
+  filter(borough == "Queens")
+
+cor(pull(queens_trees_and_nycha, trees_per_acre), pull(queens_trees_and_nycha, num_development))
+
+```
 
