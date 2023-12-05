@@ -11,7 +11,7 @@ output:
 ## Data Import
 
 ```{r, warning = FALSE, message = FALSE}
-# loading the necessary packages
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 library(tidyverse)
 library(readxl)
@@ -22,14 +22,6 @@ library(tmaptools)
 library(shinyjs)
 library(ggridges)
 library(patchwork)
-```
-
-```{r, message = FALSE}
-knitr::opts_chunk$set(
-  fig.width = 6,
-  fig.asp = .6,
-  out.width = "90%"
-)
 
 theme_set(theme_minimal() + theme(legend.position = "right"))
 
@@ -43,11 +35,17 @@ scale_fill_discrete = scale_fill_viridis_d
 ```
 
 ```{r tree Data Import, message = F}
-tree_2015_raw = 
+trees_2015 =
   read_csv("large_tree_data/2015_tree_raw.csv", na = c("", "NA", "Unknown")) |> 
   janitor::clean_names() |> 
-  select(tree_id, status, health, spc_common, nta)
+  mutate(spc_common = str_to_title(spc_common)) |> 
+  mutate(health = fct_relevel(health, c("Good", "Fair", "Poor")))
+```
 
+## Population
+
+Distribution of Race by Borough
+```{r}
 pop_race_2010 = readxl::read_excel("small_data/pop_race2010_nta.xlsx", skip = 6, col_names = FALSE, na = "NA") |> 
   rename(
    "borough" = "...1" ,
@@ -66,107 +64,6 @@ pop_race_2010 = readxl::read_excel("small_data/pop_race2010_nta.xlsx", skip = 6,
   ) |> 
   drop_na()
 
-all_data = left_join(tree_2015_raw, pop_race_2010, by = "nta")
-```
-
-```{r}
-acres_raw <- 
-  read_excel("small_data/t_pl_p5_nta.xlsx", 
-             range = "A9:J203", 
-             col_names = c("borough", "county_code", "nta", "nta_name",
-                           "total_pop_2000", "total_pop_2010", "pop_change_num",
-                           "pop_change_per", "total_acres", "persons_per_acre")
-             ) |> 
-  janitor::clean_names()
-
-acres_sub <- acres_raw |> 
-  select(nta_name, total_acres)
-```
-
-```{r, message = FALSE}
-tree_2015_cleaned <-
-  read_csv("large_tree_data/2015_tree_raw.csv", na = c("", "NA", "Unknown")) |> 
-  janitor::clean_names() |> 
-  select(-created_at, -steward, -user_type, -st_senate, -st_assem, -state) 
-```
-
-```{r}
-trees_per_nta <- tree_2015_cleaned |> 
-  select(nta_name, nta, borough, status) |> 
-  filter(status == "Alive") |> 
-  count(nta_name, borough) |> 
-  rename(num_trees = n)
-
-trees_and_acres <- left_join(trees_per_nta, acres_sub, by = "nta_name")
-
-num_missing_nta <- sum(is.na(trees_and_acres$total_acres))
-
-trees_per_acre_df <- trees_and_acres |> 
-  filter(!is.na(total_acres)) |> 
-  mutate(trees_per_acre = num_trees/total_acres) |> 
-  arrange(desc(trees_per_acre))
-```
-
-```{r}
-poverty_raw <-
-  read_csv("large_tree_data/NYC EH Data Portal - Neighborhood poverty.csv") |> 
-  janitor::clean_names()
-
-poverty_clean <- poverty_raw |> 
-  rename(nta_name = geography, poverty_percent = percent) |> 
-  filter(geo_type == "NTA2010" & time == "2013-17") |> 
-  select(nta_name, poverty_percent)
-
-trees_and_poverty <- left_join(trees_per_acre_df, poverty_clean, by = "nta_name")
-
-m2 <- sum(is.na(trees_and_poverty))
-```
-
-```{r, message = FALSE}
-education_raw <-
-  read_csv("large_tree_data/NYC EH Data Portal - Graduated high school.csv") |> 
-  janitor::clean_names()
-
-
-education_clean <- education_raw |> 
-  rename(nta_name = geography, graduated_hs_percent = percent) |> 
-  filter(geo_type == "NTA2010" & time == "2013-17") |> 
-  select(nta_name, graduated_hs_percent)
-
-trees_and_education <- left_join(trees_per_acre_df, education_clean, by = "nta_name")
-
-m3 <- sum(is.na(trees_and_education))
-```
-
-```{r}
-nycha_raw <-
-  read_csv("large_tree_data/NYCHA_Residential_Addresses_20231130.csv") |> 
-  janitor::clean_names()
-
-nycha_clean <- nycha_raw |> 
-  rename(nta_name = neighborhood_tabulation_area_name) |> 
-  select(nta_name, development) |> 
-  group_by(nta_name, development) |> 
-  distinct() |> 
-  ungroup()
-
-num_dev_nta <- nycha_clean |> 
-  count(nta_name) |> 
-  rename(num_development = n)
-
-trees_and_nycha <- left_join(trees_per_acre_df, num_dev_nta, by = "nta_name")
-
-trees_and_nycha <- trees_and_nycha |> 
-  mutate(num_development =
-           ifelse(is.na(num_development), 0, num_development))
-
-m4 <- sum(is.na(trees_and_nycha))
-```
-
-## Population
-
-Distribution of Race by Borough
-```{r}
 dem_race = 
   pop_race_2010 |> 
   group_by(borough) |> 
@@ -196,6 +93,12 @@ ggplot(data = dem_race, aes(x = borough, y = n, fill = race)) + geom_bar(stat = 
 
 Manhattan Trees and Population Demographics by NTA 
 ```{r}
+pop_race_2010s =  
+  pop_race_2010 |> 
+  select(- borough, -nta_name)
+
+all_data = left_join(trees_2015, pop_race_2010s, by = "nta")
+
 number_mhtn = 
   all_data |> 
   filter(borough == "Manhattan") |> 
@@ -248,6 +151,44 @@ borough_data |>
 ## Poverty
 
 ```{r}
+acres_raw <- 
+  read_excel("small_data/t_pl_p5_nta.xlsx", 
+             range = "A9:J203", 
+             col_names = c("borough", "county_code", "nta", "nta_name",
+                           "total_pop_2000", "total_pop_2010", "pop_change_num",
+                           "pop_change_per", "total_acres", "persons_per_acre")
+             ) |> 
+  janitor::clean_names()
+
+acres_sub <- acres_raw |> 
+  select(nta_name, total_acres)
+
+trees_per_nta <- trees_2015 |> 
+  select(nta_name, nta, borough, status) |> 
+  filter(status == "Alive") |> 
+  count(nta_name, borough) |> 
+  rename(num_trees = n)
+
+trees_and_acres <- left_join(trees_per_nta, acres_sub, by = "nta_name")
+
+num_missing_nta <- sum(is.na(trees_and_acres$total_acres))
+
+trees_per_acre_df <- trees_and_acres |> 
+  filter(!is.na(total_acres)) |> 
+  mutate(trees_per_acre = num_trees/total_acres) |> 
+  arrange(desc(trees_per_acre))
+
+poverty_raw <-
+  read_csv("large_tree_data/NYC EH Data Portal - Neighborhood poverty.csv") |> 
+  janitor::clean_names()
+
+poverty_clean <- poverty_raw |> 
+  rename(nta_name = geography, poverty_percent = percent) |> 
+  filter(geo_type == "NTA2010" & time == "2013-17") |> 
+  select(nta_name, poverty_percent)
+
+trees_and_poverty <- left_join(trees_per_acre_df, poverty_clean, by = "nta_name")
+
 trees_and_poverty |> 
   plot_ly(data = _, x = ~poverty_percent, y = ~trees_per_acre, 
           color = ~nta_name, 
@@ -289,6 +230,18 @@ cor(pull(trees_and_poverty, num_trees), pull(trees_and_poverty, poverty_percent)
 ## Education
 
 ```{r}
+education_raw <-
+  read_csv("large_tree_data/NYC EH Data Portal - Graduated high school.csv") |> 
+  janitor::clean_names()
+
+
+education_clean <- education_raw |> 
+  rename(nta_name = geography, graduated_hs_percent = percent) |> 
+  filter(geo_type == "NTA2010" & time == "2013-17") |> 
+  select(nta_name, graduated_hs_percent)
+
+trees_and_education <- left_join(trees_per_acre_df, education_clean, by = "nta_name")
+
 trees_and_education |> 
   plot_ly(data = _, x = ~graduated_hs_percent, y = ~trees_per_acre, 
           color = ~nta_name, 
@@ -327,6 +280,27 @@ cor(pull(trees_and_education, num_trees), pull(trees_and_education, graduated_hs
 ## Housing
 
 ```{r}
+nycha_raw <-
+  read_csv("large_tree_data/NYCHA_Residential_Addresses_20231130.csv") |> 
+  janitor::clean_names()
+
+nycha_clean <- nycha_raw |> 
+  rename(nta_name = neighborhood_tabulation_area_name) |> 
+  select(nta_name, development) |> 
+  group_by(nta_name, development) |> 
+  distinct() |> 
+  ungroup()
+
+num_dev_nta <- nycha_clean |> 
+  count(nta_name) |> 
+  rename(num_development = n)
+
+trees_and_nycha <- left_join(trees_per_acre_df, num_dev_nta, by = "nta_name")
+
+trees_and_nycha <- trees_and_nycha |> 
+  mutate(num_development =
+           ifelse(is.na(num_development), 0, num_development))
+
 trees_and_nycha |> 
   plot_ly(data = _, x = ~num_development, y = ~trees_per_acre, 
           color = ~nta_name, 
@@ -346,6 +320,27 @@ cor(pull(trees_and_nycha, trees_per_acre), pull(trees_and_nycha, num_development
 ```
 
 ```{r}
+nycha_raw <-
+  read_csv("large_tree_data/NYCHA_Residential_Addresses_20231130.csv") |> 
+  janitor::clean_names()
+
+nycha_clean <- nycha_raw |> 
+  rename(nta_name = neighborhood_tabulation_area_name) |> 
+  select(nta_name, development) |> 
+  group_by(nta_name, development) |> 
+  distinct() |> 
+  ungroup()
+
+num_dev_nta <- nycha_clean |> 
+  count(nta_name) |> 
+  rename(num_development = n)
+
+trees_and_nycha <- left_join(trees_per_acre_df, num_dev_nta, by = "nta_name")
+
+trees_and_nycha <- trees_and_nycha |> 
+  mutate(num_development =
+           ifelse(is.na(num_development), 0, num_development))
+
 trees_and_nycha |> 
   plot_ly(data = _, x = ~num_development, y = ~num_trees, 
           color = ~nta_name, 

@@ -22,21 +22,15 @@ library(shinyjs)
 library(ggridges)
 library(patchwork)
 
-knitr::opts_chunk$set(
-  fig.width = 6,
-  fig.asp = .6,
-  out.width = "90%"
-)
-
 theme_set(theme_minimal() + theme(legend.position = "right"))
 
 options(
-  ggplot2.continuous.colour = "viridis",
-  ggplot2.continuous.fill = "viridis"
+  ggplot2.continuous.colour = "virdis",
+  ggplot2.continuous.fill = "virdis"
 )
 
-scale_colour_discrete = scale_colour_viridis_d
-scale_fill_discrete = scale_fill_viridis_d
+scale_colour_discrete = scale_colour_viridis_d(option = "mako")
+scale_fill_discrete = scale_fill_viridis_d(option = "mako")
 ```
 
 ```{r, message = F}
@@ -69,17 +63,18 @@ pop_race_2010 = readxl::read_excel("small_data/pop_race2010_nta.xlsx", skip = 6,
    "two_races" = "...12",
    "hispanic_any_race" = "...13"
   ) |> 
-  drop_na()
+  drop_na() |> 
+  select(- borough, -nta_name)
 
 all_data = left_join(trees_2015, pop_race_2010, by = "nta")
 
 number_tree = 
   all_data |> 
-  group_by(borough.x) |> 
+  group_by(borough) |> 
   summarize(n_trees = n_distinct(tree_id)) |> 
-  mutate(borough.x = fct_reorder(borough.x, n_trees))
+  mutate(borough = fct_reorder(borough, n_trees))
 
-ggplot(data = number_tree, aes(x = borough.x, y = n_trees, fill = borough.x)) + geom_bar(stat = 'identity') + geom_text(aes(label = n_trees), size = 3, vjust = -1) + 
+ggplot(data = number_tree, aes(x = borough, y = n_trees, fill = borough)) + geom_bar(stat = 'identity') + geom_text(aes(label = n_trees), size = 3, vjust = -1) + 
   labs(
     title = "Number of Trees in each Borough",
     x = "Borough",
@@ -91,7 +86,7 @@ ggplot(data = number_tree, aes(x = borough.x, y = n_trees, fill = borough.x)) + 
 #rare trees (n < 500)
 queens_rare_trees = 
   all_data |> 
-  filter(borough.x == "Queens") |>
+  filter(borough == "Queens") |>
   count(spc_common) |> 
   filter(n < 500) |> 
   mutate(spc_common = fct_reorder(spc_common, n))
@@ -108,8 +103,8 @@ Trees in Manhattan by NTA
 ```{r}
 mhtn_number_tree = 
   all_data |> 
-  filter(borough.x == "Manhattan") |> 
-  group_by(nta_name.x) |> 
+  filter(borough == "Manhattan") |> 
+  group_by(nta_name) |> 
   summarize(n_trees = n_distinct(tree_id),
             n_population = (sum(total_population)/100000)) |> 
   pivot_longer(
@@ -118,10 +113,10 @@ mhtn_number_tree =
     names_prefix = "n_",
     values_to = "total"
   ) |> 
-   mutate(nta_name.x = fct_reorder(nta_name.x, total))
+   mutate(nta_name = fct_reorder(nta_name, total))
   
 
-ggplot(mhtn_number_tree, aes(x = nta_name.x, y = total, fill = type)) + geom_bar(stat = 'identity', position = 'dodge')+ theme(axis.text.x = element_text(angle = 65, hjust=1)) + 
+ggplot(mhtn_number_tree, aes(x = nta_name, y = total, fill = type)) + geom_bar(stat = 'identity', position = 'dodge')+ theme(axis.text.x = element_text(angle = 65, hjust=1)) + 
   labs(
     title = "Number of Trees in Manhattan by NTA",
     x = "Neighborhood Tabulation Area",
@@ -188,7 +183,7 @@ Queens Trees by Species
 queens_prev_trees = 
   all_data |> 
   drop_na() |> 
-  filter(borough.x == "Queens") |>
+  filter(borough == "Queens") |>
   count(spc_common) |> 
   filter(n > 500) |> 
   mutate(spc_common = fct_reorder(spc_common, n))
@@ -274,8 +269,11 @@ tm_shape(nta_dbh_spatial) +
               palette = "YlGn",
               border.col = "black",
               title = "Mean Tree DBH (Inches)") +
-  tm_layout(main.title = "Average Tree DBH Across NYC Neighborhoods") +
-  tm_legend(legend.position = c("left","center"))
+  tm_layout(main.title = "Average Tree DBH Across NYC Neighborhoods",
+            main.title.size = 1,
+            frame = FALSE) +
+  tm_legend(legend.position = c("left","center"),
+            legend.text.size = 0.52)
 ```
 
 ## Tree Health Status
@@ -304,7 +302,12 @@ trees_zip |>
               n = 3,
               palette = "viridis",
               border.col = "black",
-              title = "Tree Heath by Zip Codes in Manhattan")
+              title = "Tree Health Status")+
+  tm_layout(main.title = "Tree Heath by Zip Codes in NYC",
+            main.title.size = 1,
+            frame = FALSE) +
+  tm_legend(legend.position = c("left","center"),
+            legend.text.size = 0.52)
 ```
 
 ```{r}
@@ -318,7 +321,12 @@ trees_zip |>
               n = 3,
               palette = "viridis",
               border.col = "black",
-              title = "Tree Heath by Zip Codes in Manhattan")
+              title = "Tree Health Status")+
+  tm_layout(main.title = "Tree Heath by Zip Codes in Manhattan",
+            main.title.size = 1,
+            frame = FALSE) +
+  tm_legend(legend.position = c("left","center"),
+            legend.text.size = 0.52)
 ```
 
 ```{r}
@@ -333,7 +341,12 @@ trees_zip |>
               n = 3,
               palette = "viridis",
               border.col = "black",
-              title = "Tree Heath by Zip Codes in Brooklyn")
+              title = "Tree Health Status")+
+  tm_layout(main.title = "Tree Heath by Zip Codes in Brooklyn",
+            main.title.size = 1,
+            frame = FALSE) +
+  tm_legend(legend.position = c("left","center"),
+            legend.text.size = 0.52)
 ```
 
 ```{r}
@@ -348,7 +361,12 @@ trees_zip |>
               n = 3,
               palette = "viridis",
               border.col = "black",
-              title = "Tree Heath by Zip Codes in Queens")
+              title = "Tree Health Status")+
+  tm_layout(main.title = "Tree Heath by Zip Codes in Queens",
+            main.title.size = 1,
+            frame = FALSE) +
+  tm_legend(legend.position = c("left","center"),
+            legend.text.size = 0.52)
 ```
 
 ```{r}
@@ -363,7 +381,12 @@ trees_zip |>
               n = 3,
               palette = "viridis",
               border.col = "black",
-              title = "Tree Heath by Zip Codes in Bronx")
+              title = "Tree Health Status")+
+  tm_layout(main.title = "Tree Heath by Zip Codes in Bronx",
+            main.title.size = 1,
+            frame = FALSE) +
+  tm_legend(legend.position = c("left","center"),
+            legend.text.size = 0.52)
 ```
 
 ```{r}
@@ -378,7 +401,12 @@ trees_zip |>
               n = 3,
               palette = "viridis",
               border.col = "black",
-              title = "Tree Heath by Zip Codes in Staten Island")
+              title = "Tree Health Status")+
+  tm_layout(main.title = "Tree Heath by Zip Codes in Staten Island",
+            main.title.size = 1,
+            frame = FALSE) +
+  tm_legend(legend.position = c("left","center"),
+            legend.text.size = 0.52)
 ```
 
 ```{r, message = F, warning = F}
@@ -406,7 +434,12 @@ trees_nta |>
               n = 3,
               palette = "viridis",
               border.col = "black",
-              title = "Tree Heath by Zip Codes in Washington Heights")
+              title = "Tree Health Status")+
+  tm_layout(main.title = "Tree Heath by Zip Codes in Washington Heights",
+            main.title.size = 1,
+            frame = FALSE) +
+  tm_legend(legend.position = c("left","center"),
+            legend.text.size = 0.52)
 ```
 
 ```{r, message = F, warning = F}
@@ -416,7 +449,22 @@ trees_2015 |>
   drop_na() |> 
   filter(
          nta_name == c("Washington Heights South", "Washington Heights North")) |>
-   plot_ly(
-       x = ~longitude, y = ~latitude, color = ~health, text = ~spc_common,
-       type = "scatter", mode = "markers", alpha = 0.5)
+   plot_ly(color = ~health, colors = "viridis") |> 
+  add_trace(
+    type = "scattermapbox",
+    mode = "markers",
+    lon = ~longitude,
+    lat = ~latitude,
+    marker = list(size = 5),
+    text = ~spc_common,
+    below = "markers"
+  ) |> 
+  layout(
+    mapbox = list(
+      style = "carto-positron",  
+      center = list(lon = -73.94, lat = 40.84), 
+      zoom = 12
+    ),
+    showlegend = T
+  )
 ```

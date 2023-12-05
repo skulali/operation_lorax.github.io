@@ -11,7 +11,7 @@ output:
 ## Data Import
 
 ```{r, warning = FALSE, message = FALSE}
-# loading the necessary packages
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 library(tidyverse)
 library(readxl)
@@ -22,14 +22,6 @@ library(tmaptools)
 library(shinyjs)
 library(ggridges)
 library(patchwork)
-```
-
-```{r, message = FALSE}
-knitr::opts_chunk$set(
-  fig.width = 6,
-  fig.asp = .6,
-  out.width = "90%"
-)
 
 theme_set(theme_minimal() + theme(legend.position = "right"))
 
@@ -43,11 +35,14 @@ scale_fill_discrete = scale_fill_viridis_d
 ```
 
 ```{r, message = FALSE}
-tree_2015_cleaned <-
+trees_2015 =
   read_csv("large_tree_data/2015_tree_raw.csv", na = c("", "NA", "Unknown")) |> 
   janitor::clean_names() |> 
-  select(-created_at, -steward, -user_type, -st_senate, -st_assem, -state) 
+  mutate(spc_common = str_to_title(spc_common)) |> 
+  mutate(health = fct_relevel(health, c("Good", "Fair", "Poor")))
 ```
+
+## Asthma 
 
 ```{r}
 acres_raw <- 
@@ -61,10 +56,8 @@ acres_raw <-
 
 acres_sub <- acres_raw |> 
   select(nta_name, total_acres)
-```
 
-```{r}
-trees_per_nta <- tree_2015_cleaned |> 
+trees_per_nta <- trees_2015 |> 
   select(nta_name, nta, borough, status) |> 
   filter(status == "Alive") |> 
   count(nta_name, borough) |> 
@@ -78,9 +71,7 @@ trees_per_acre_df <- trees_and_acres |>
   filter(!is.na(total_acres)) |> 
   mutate(trees_per_acre = num_trees/total_acres) |> 
   arrange(desc(trees_per_acre))
-```
 
-```{r, message = FALSE}
 asthma_ed_adults_raw = 
   read_csv("small_data/NYC EH Data Portal_Asthma emergency department visits adults.csv") |> 
   janitor::clean_names()
@@ -92,71 +83,6 @@ asthma_ed_adults_clean = asthma_ed_adults_raw |>
 
 trees_and_asthma_ed_adult <- left_join(trees_per_acre_df, asthma_ed_adults_clean, by = "nta_name")
 
-m0 <- sum(is.na(trees_and_asthma_ed_adult))
-```
-
-```{r}
-asthma_hosp_adult_raw <-
-  read_csv("small_data/NYC EH Data Portal - Asthma hospitalizations adults.csv") |> 
-  janitor::clean_names()
-
-asthma_hosp_adult_clean <- asthma_hosp_adult_raw |> 
-  rename(nta_name = geography) |> 
-  filter(geo_type == "NTA2010" & time == "2012-2014") |> 
-  select(nta_name, average_annual_age_adjusted_rate_per_10_000, average_annual_rate_per_10_000)
-
-trees_and_asthma_hosp_adult <- left_join(trees_per_acre_df, asthma_hosp_adult_clean, by = "nta_name")
-
-m1 <- sum(is.na(trees_and_asthma_hosp_adult))
-```
-
-```{r}
-nyc_comdist = st_read("small_data/geo_export_bd3c92bc-94de-48f3-9de3-e939473f307b.shp")
-
-nyc_finepm2015 = read_csv("small_data/nyc_pm2.5_annual2015.csv") |> 
-  janitor::clean_names() |> 
-  filter(time == "Annual Average 2015" & geo_type_desc == "Community District") |> 
-  select(geo_id, geography, avg_pm2.5 = mean_mcg_m3)
-```
-
-```{r Merging Pm2.5 and Tree Data }
-trees_cd_summarized = tree_2015_cleaned |> 
-  drop_na(tree_dbh) |> 
-  mutate(health = as.factor(health)) |> 
-  group_by(community_board) |> 
-  summarize(
-    "Number of Trees" = n(),
-    avg_dbh = mean(tree_dbh),
-    health_status = mode(health))
-
-nyc_comdistrict_spatial = merge(nyc_comdist, trees_cd_summarized, nyc_finepm2015,
-                        by.x = "boro_cd",
-                        by.y = "community_board")
-
-nyc_comdistrict_treesPM = merge(nyc_comdistrict_spatial, nyc_finepm2015,
-                        by.x = "boro_cd",
-                        by.y = "geo_id")
-```
-
-```{r Heat Stress Data and Merger}
-
-nyc_heatstress_2015 = read_csv("small_data/nyc_Heatstress Hospitalizations_2011-2015.csv", na = c(" ", "NA", "***")) |> 
-  janitor::clean_names() |> 
-  filter(geo_type_desc == "Community District") |> 
-  mutate(
-    average_annual_age_adjusted_rate_per_100_000 = 
-      str_replace(average_annual_age_adjusted_rate_per_100_000, "[*]$", "")) |>
-  select(geo_id, avg_heat_hospit = average_annual_age_adjusted_rate_per_100_000, heat_hospitalizations = total) |> 
-  mutate(avg_heat_hospit = as.numeric(avg_heat_hospit))
-
-nyc_comdistrict_heatstress = merge(nyc_comdistrict_treesPM, nyc_heatstress_2015,
-                        by.x = "boro_cd",
-                        by.y = "geo_id")
-```
-
-## Asthma 
-
-```{r}
 trees_and_asthma_ed_adult |> 
   plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
           color = ~nta_name, 
@@ -195,6 +121,17 @@ cor(pull(trees_and_asthma_ed_adult, num_trees), pull(trees_and_asthma_ed_adult, 
 ```
 
 ```{r}
+asthma_hosp_adult_raw <-
+  read_csv("small_data/NYC EH Data Portal - Asthma hospitalizations adults.csv") |> 
+  janitor::clean_names()
+
+asthma_hosp_adult_clean <- asthma_hosp_adult_raw |> 
+  rename(nta_name = geography) |> 
+  filter(geo_type == "NTA2010" & time == "2012-2014") |> 
+  select(nta_name, average_annual_age_adjusted_rate_per_10_000, average_annual_rate_per_10_000)
+
+trees_and_asthma_hosp_adult <- left_join(trees_per_acre_df, asthma_hosp_adult_clean, by = "nta_name")
+
 trees_and_asthma_hosp_adult |> 
   plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
           color = ~nta_name, 
@@ -232,6 +169,30 @@ cor(pull(trees_and_asthma_hosp_adult, num_trees), pull(trees_and_asthma_hosp_adu
 ```
 
 ```{r PM2.5 Map and Number of Trees}
+nyc_comdist = st_read("small_data/geo_export_bd3c92bc-94de-48f3-9de3-e939473f307b.shp")
+
+nyc_finepm2015 = read_csv("small_data/nyc_pm2.5_annual2015.csv") |> 
+  janitor::clean_names() |> 
+  filter(time == "Annual Average 2015" & geo_type_desc == "Community District") |> 
+  select(geo_id, geography, avg_pm2.5 = mean_mcg_m3)
+
+trees_cd_summarized = trees_2015 |> 
+  drop_na(tree_dbh) |> 
+  mutate(health = as.factor(health)) |> 
+  group_by(community_board) |> 
+  summarize(
+    "Number of Trees" = n(),
+    avg_dbh = mean(tree_dbh),
+    health_status = mode(health))
+
+nyc_comdistrict_spatial = merge(nyc_comdist, trees_cd_summarized, nyc_finepm2015,
+                        by.x = "boro_cd",
+                        by.y = "community_board")
+
+nyc_comdistrict_treesPM = merge(nyc_comdistrict_spatial, nyc_finepm2015,
+                        by.x = "boro_cd",
+                        by.y = "geo_id")
+
 tm_shape(nyc_comdistrict_treesPM) +
   tm_polygons(col = "avg_pm2.5",
               style = "quantile",
@@ -249,6 +210,18 @@ tm_shape(nyc_comdistrict_treesPM) +
 ```
 
 ```{r Heat Stress Map}
+nyc_heatstress_2015 = read_csv("small_data/nyc_Heatstress Hospitalizations_2011-2015.csv", na = c(" ", "NA", "***")) |> 
+  janitor::clean_names() |> 
+  filter(geo_type_desc == "Community District") |> 
+  mutate(
+    average_annual_age_adjusted_rate_per_100_000 = 
+      str_replace(average_annual_age_adjusted_rate_per_100_000, "[*]$", "")) |>
+  select(geo_id, avg_heat_hospit = average_annual_age_adjusted_rate_per_100_000, heat_hospitalizations = total) |> 
+  mutate(avg_heat_hospit = as.numeric(avg_heat_hospit))
+
+nyc_comdistrict_heatstress = merge(nyc_comdistrict_treesPM, nyc_heatstress_2015,
+                        by.x = "boro_cd",
+                        by.y = "geo_id")
 
 tm_shape(nyc_comdistrict_heatstress) +
   tm_polygons(col = "avg_heat_hospit",
