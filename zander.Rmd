@@ -340,3 +340,55 @@ tm_shape(nta_asthma_spatial) +
   tm_legend(legend.position = c("left","top"))
 ```
 
+```{r Bringing Stephanies Code in to see if I can make a trees per acre map}
+acres_raw <- 
+  read_excel("small_data/t_pl_p5_nta.xlsx", 
+             range = "A9:J203", 
+             col_names = c("borough", "county_code", "nta", "nta_name",
+                           "total_pop_2000", "total_pop_2010", "pop_change_num",
+                           "pop_change_per", "total_acres", "persons_per_acre")
+             ) |> 
+  janitor::clean_names()
+
+acres_sub <- acres_raw |> 
+  select(nta_name, nta, total_acres)
+
+trees_per_nta <- trees_2015_cleaned |> 
+  select(nta_name, nta, borough, status) |> 
+  filter(status == "Alive") |> 
+  count(nta, borough) |> 
+  rename(num_trees = n)
+
+trees_and_acres <- left_join(trees_per_nta, acres_sub, by = "nta")
+
+num_missing_nta <- sum(is.na(trees_and_acres$total_acres))
+
+trees_per_acre_df <- trees_and_acres |> 
+  filter(!is.na(total_acres)) |> 
+  mutate(trees_per_acre = num_trees/total_acres) |> 
+  arrange(desc(trees_per_acre))
+
+```
+
+```{r Trees Per Acre Shapefile Join}
+tree_acre_spatial = merge(nyc_nta, trees_per_acre_df, 
+                        by.x = "ntacode",
+                        by.y = "nta")
+```
+
+Trees Per Acre Map Attempt
+```{r Trees Per Acre}
+
+tm_shape(tree_acre_spatial) +
+  tm_polygons(col = "trees_per_acre",
+              style = "quantile",
+              n = 5,
+              palette = "Greens",
+              border.col = "black",
+              title = "Avg. Trees Per Acre by NTA") +
+  tm_layout(main.title = "Tree Count Per Acre Across NYC Neighborhoods", main.title.size = 1) +
+  tm_legend(legend.position = c("left","top"))
+```
+
+
+
