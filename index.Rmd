@@ -1,7 +1,11 @@
 ---
-title: "Holy cow!"
+title: "Operation Lorax - Data Speaks for the Trees!"
 ---
 
-### I have a webpage!
-
-And I can put all kinds of stuff on it!
+```{css, echo=FALSE}
+body {
+  background-image: url('small_data/street_trees.jpeg');
+  background-size: cover; 
+  background-repeat: no-repeat;
+  background-attachment: fixed; 
+}

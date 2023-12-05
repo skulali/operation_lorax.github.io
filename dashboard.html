@@ -8,9 +8,9 @@
 
 
 
-<title>Dashboard</title>
+<title>A Tree-mendous Adventure: Exploratory Data Analysis</title>
 
-<meta property="og:title" content="Dashboard" />
+<meta property="og:title" content="A Tree-mendous Adventure: Exploratory Data Analysis" />
 
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
 
@@ -21,7 +21,10 @@
 window.FlexDashboardComponents = [];
 </script>
 
-<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script id="flexdashboard-navbar" type="application/json">
+[{"title":"Source Code","icon":"fa-code","href":"source_embed","align":"right"}]
+</script>
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -38,12 +41,18 @@ window.FlexDashboardComponents = [];
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
 <script src="site_libs/stickytableheaders-0.1.19/jquery.stickytableheaders.min.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 <link href="site_libs/value-box-accent-static-0.6.2/theme-cosmo-value-box.css" rel="stylesheet" />
+<link href="site_libs/featherlight-1.3.5/featherlight.min.css" rel="stylesheet" />
+<script src="site_libs/featherlight-1.3.5/featherlight.min.js"></script>
+<link href="site_libs/prism-1.4.1/prism.css" rel="stylesheet" />
+<script src="site_libs/prism-1.4.1/prism.js"></script>
 <link href="site_libs/flexdashboard-css-0.6.2/flexdashboard.min.css" rel="stylesheet" />
 <link href="site_libs/flexdashboard-css-0.6.2/theme-cosmo.css" rel="stylesheet" />
-<link href="site_libs/selectize-0.15.2/css/selectize.bootstrap3.css" rel="stylesheet" />
-<script src="site_libs/selectize-0.15.2/js/selectize.min.js"></script>
-<script src="site_libs/selectize-0.15.2/accessibility/js/selectize-plugin-a11y.min.js"></script>
+<link href="site_libs/selectize-0.12.4/css/selectize.bootstrap3.css" rel="stylesheet" />
+<script src="site_libs/selectize-0.12.4/js/selectize.min.js"></script>
+<script src="site_libs/selectize-0.12.4/accessibility/js/selectize-plugin-a11y.min.js"></script>
 <style type="text/css">
 /*
   CSS for flexdashboard.js' use of Sly(). The sizing/position of this CSS needs to be
@@ -157,7 +166,7 @@ html, body {
   
 </span>
 <span class="navbar-brand">
-  Dashboard
+  A Tree-mendous Adventure: Exploratory Data Analysis
   <span class="navbar-author">
         </span>
 </span>
@@ -178,7 +187,7 @@ html, body {
 </div><!--/.container-->
 </div><!--/.navbar-->
 
-<img class="mobile-figure" data-mobile-figure-id=fig1 src="dashboard_files/figure-html/define_function-1.mb.png" />
+<img class="mobile-figure" data-mobile-figure-id=fig1 src="dashboard_files/figure-html/unnamed-chunk-1-1.mb.png" />
 <script type="text/javascript">
 
 
@@ -1863,42 +1872,48 @@ window.FlexDashboardComponents.push({
 <div class="knitr-options" data-fig-width="576" data-fig-height="460">
 
 </div>
-<p><img src="dashboard_files/figure-html/define_function-1.png" width="576" data-figure-id=fig1 /></p>
-<pre><code>
+<pre><code> [1] &quot;Borough&quot;                  &quot;All&quot;                     
+ [3] &quot;Curb Location&quot;            &quot;Guards&quot;                  
+ [5] &quot;Sidewalk&quot;                 &quot;Health&quot;                  
+ [7] &quot;Status&quot;                   &quot;Problems&quot;                
+ [9] &quot;Roots with Stones&quot;        &quot;Roots in Grate&quot;          
+[11] &quot;Root Problem (Other)&quot;     &quot;Trunk has Wires&quot;         
+[13] &quot;Trunk has Lights&quot;         &quot;Trunk has Other Problem&quot; 
+[15] &quot;Branches have Lights&quot;     &quot;Branches with Shoes&quot;     
+[17] &quot;Branches Problem (Other)&quot;</code></pre>
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
 
-Column {.sidebar}
------------------------------------------------------------------------
+</div>
+<div id="section-column" class="section level2 sidebar">
+<h2 class="sidebar">Column</h2>
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
 
-### Sidebar
-
-&lt;div class=&quot;knitr-options&quot; data-fig-width=&quot;576&quot; data-fig-height=&quot;460&quot;&gt;&lt;/div&gt;
-
-```{=html}
-&lt;div class=&quot;form-group shiny-input-container&quot;&gt;
-&lt;label class=&quot;control-label&quot; id=&quot;exposure-label&quot; for=&quot;exposure&quot;&gt;
-&lt;h3&gt;Select Category (Exposure):&lt;/h3&gt;
-&lt;/label&gt;
-&lt;div&gt;
-&lt;select id=&quot;exposure&quot; class=&quot;shiny-input-select&quot;&gt;&lt;option value=&quot;Borough&quot; selected&gt;Borough&lt;/option&gt;
-&lt;option value=&quot;All&quot;&gt;All&lt;/option&gt;
-&lt;option value=&quot;Curb Location&quot;&gt;Curb Location&lt;/option&gt;
-&lt;option value=&quot;Guards&quot;&gt;Guards&lt;/option&gt;
-&lt;option value=&quot;Sidewalk&quot;&gt;Sidewalk&lt;/option&gt;
-&lt;option value=&quot;Health&quot;&gt;Health&lt;/option&gt;
-&lt;option value=&quot;Status&quot;&gt;Status&lt;/option&gt;
-&lt;option value=&quot;Problems&quot;&gt;Problems&lt;/option&gt;
-&lt;option value=&quot;Roots with Stones&quot;&gt;Roots with Stones&lt;/option&gt;
-&lt;option value=&quot;Roots in Grate&quot;&gt;Roots in Grate&lt;/option&gt;
-&lt;option value=&quot;Root Problem (Other)&quot;&gt;Root Problem (Other)&lt;/option&gt;
-&lt;option value=&quot;Trunk has Wires&quot;&gt;Trunk has Wires&lt;/option&gt;
-&lt;option value=&quot;Trunk has Lights&quot;&gt;Trunk has Lights&lt;/option&gt;
-&lt;option value=&quot;Trunk has Other Problem&quot;&gt;Trunk has Other Problem&lt;/option&gt;
-&lt;option value=&quot;Branches have Lights&quot;&gt;Branches have Lights&lt;/option&gt;
-&lt;option value=&quot;Branches with Shoes&quot;&gt;Branches with Shoes&lt;/option&gt;
-&lt;option value=&quot;Branches Problem (Other)&quot;&gt;Branches Problem (Other)&lt;/option&gt;&lt;/select&gt;
-&lt;script type=&quot;application/json&quot; data-for=&quot;exposure&quot; data-nonempty=&quot;&quot;&gt;{&quot;plugins&quot;:[&quot;selectize-plugin-a11y&quot;]}&lt;/script&gt;
-&lt;/div&gt;
-&lt;/div&gt;</code></pre>
+</div>
+<div class="form-group shiny-input-container">
+<label class="control-label" id="exposure-label" for="exposure">
+<h3>Select Category (Exposure):</h3>
+</label>
+<div>
+<select id="exposure" class="shiny-input-select"><option value="Borough" selected>Borough</option>
+<option value="All">All</option>
+<option value="Curb Location">Curb Location</option>
+<option value="Guards">Guards</option>
+<option value="Sidewalk">Sidewalk</option>
+<option value="Health">Health</option>
+<option value="Status">Status</option>
+<option value="Problems">Problems</option>
+<option value="Roots with Stones">Roots with Stones</option>
+<option value="Roots in Grate">Roots in Grate</option>
+<option value="Root Problem (Other)">Root Problem (Other)</option>
+<option value="Trunk has Wires">Trunk has Wires</option>
+<option value="Trunk has Lights">Trunk has Lights</option>
+<option value="Trunk has Other Problem">Trunk has Other Problem</option>
+<option value="Branches have Lights">Branches have Lights</option>
+<option value="Branches with Shoes">Branches with Shoes</option>
+<option value="Branches Problem (Other)">Branches Problem (Other)</option></select>
+<script type="application/json" data-for="exposure" data-nonempty="">{"plugins":["selectize-plugin-a11y"]}</script>
+</div>
+</div>
 <div class="form-group shiny-input-container">
 <label class="control-label" id="outcome-label" for="outcome">
 <h3>Select Tree Status (Outcome):</h3>
@@ -1924,20 +1939,23 @@ Column {.sidebar}
 <script type="application/json" data-for="outcome" data-nonempty="">{"plugins":["selectize-plugin-a11y"]}</script>
 </div>
 </div>
-<div id="column" class="section level2" data-width="650">
+</div>
+<div id="section-column-1" class="section level2">
 <h2>Column</h2>
-<div id="fun-function" class="section level3">
-<h3>Fun function</h3>
+<div id="section-power-calculation" class="section level3"
+data-height="800">
+<h3>Power calculation</h3>
 <div class="knitr-options" data-fig-width="576" data-fig-height="460">
 
 </div>
-<div class="shiny-plot-output html-fill-item" id="oute4470654f5e15fba" style="width:100%;height:400px;"></div>
+<div class="shiny-plot-output html-fill-item" id="outbed1c7a15d77e976" style="width:100%;height:400px;"></div>
 </div>
-<div id="chart-c" class="section level3">
+<div id="section-chart-c" class="section level3">
 <h3>Chart C</h3>
 <div class="knitr-options" data-fig-width="576" data-fig-height="460">
 
 </div>
+<p><img src="dashboard_files/figure-html/unnamed-chunk-1-1.png" width="576" data-figure-id=fig1 /></p>
 </div>
 </div>
 
@@ -1957,11 +1975,180 @@ $(document).ready(function() {
 });
 </script>
 
+<div id="flexdashboard-source-code">
+<pre class="line-numbers"><code class="language-r">---
+title: "A Tree-mendous Adventure: Exploratory Data Analysis"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    source_code: embed
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(viridis)
+library(plotly)
+library(shiny)
+library(rlang)
+```
+
+
+```{r load_data}
+
+trees_2015 &lt;- read_csv("large_tree_data/2015_tree_raw.csv", na = c("", "NA", "Unknown")) |&gt; 
+  janitor::clean_names() %&gt;% 
+  mutate(spc_common = str_to_title(spc_common)) %&gt;% 
+  mutate(health = fct_relevel(health, c("Good", "Fair", "Poor")))
+
+tree_status_df &lt;- trees_2015 %&gt;%
+  select(curb_loc, guards, sidewalk, health, status, problems,
+         borough,
+         root_stone, root_grate, root_other,
+         trunk_wire, trnk_light, trnk_other,
+         brch_light, brch_shoe, brch_other) %&gt;% 
+  mutate(health = fct_relevel(health, c("Good", "Fair", "Poor")),
+         borough = as.factor(borough),
+         All = as.factor("All"),
+         curb_loc = case_match(curb_loc,
+                               "OffsetFromCurb" ~ "Offset From Curb",
+                               "OnCurb" ~ "On Curb"),
+         curb_loc = as.factor(curb_loc),
+         guards = as.factor(guards),
+         sidewalk = case_match(sidewalk,
+                               "NoDamage" ~ "No Damage",
+                               "Damage" ~ "Damage"),
+         sidewalk = as.factor(sidewalk),
+         status = as.factor(status),
+         problems = as.factor(problems)
+         ) %&gt;%
+  rename(`Curb Location` = curb_loc,
+         Borough = borough,
+         Guards = guards,
+         Sidewalk = sidewalk,
+         Status = status,
+         Health = health,
+         Problems = problems,
+         `Roots with Stones` = root_stone, 
+         `Roots in Grate` = root_grate, 
+         `Root Problem (Other)` = root_other,
+         `Trunk has Wires` = trunk_wire, 
+         `Trunk has Lights` = trnk_light, 
+         `Trunk has Other Problem` = trnk_other,
+         `Branches have Lights` = brch_light, 
+         `Branches with Shoes` = brch_shoe, 
+         `Branches Problem (Other)` = brch_other) %&gt;% 
+  select(Borough, All, everything())
+
+colnames(tree_status_df)
+
+exposure_options &lt;- colnames(tree_status_df)[1:5]
+outcome_options &lt;- colnames(tree_status_df)[6:length(tree_status_df)]
+
+```
+
+```{r define_function}
+
+
+effective_tree_protection &lt;- function(df, exposure_str, outcome_str){
+
+  # Convert character strings to symbols
+  exposure_sym &lt;- rlang::sym(exposure_str)
+  outcome_sym &lt;- rlang::sym(outcome_str)
+
+  # Make contingency table for the chi-square test
+  contingency_table &lt;- df %&gt;%
+    filter(!is.na(!!exposure_sym), !is.na(!!outcome_sym)) %&gt;%
+    group_by(!!outcome_sym, !!exposure_sym) %&gt;%
+    count(!!outcome_sym, !!exposure_sym) %&gt;%
+    pivot_wider(names_from = !!exposure_sym, values_from = n)
+
+  # Perform the chi-square test
+  chisq_test_result &lt;- chisq.test(contingency_table[-1])
+  chi_square &lt;- chisq_test_result$statistic
+  p_value &lt;- chisq_test_result$p.value
+
+  # Visualize the distribution differences 
+  plot_title &lt;- str_c("Distribution of Tree ", exposure_str, 
+                      " by ", outcome_str)
+
+  plot &lt;- df %&gt;%
+    filter(!is.na(!!exposure_sym), !is.na(!!outcome_sym)) %&gt;%
+    group_by(!!exposure_sym, !!outcome_sym) %&gt;%
+    summarize(n = n(), .groups = 'drop') %&gt;%
+    group_by(!!exposure_sym) %&gt;%
+    mutate(Percent = n / sum(n) * 100) %&gt;%
+    ggplot(aes(x = !!exposure_sym, y = Percent, fill = !!outcome_sym)) +
+    geom_bar(stat = 'identity', position = 'dodge') +
+    geom_text(aes(label = sprintf("%.1f%%", Percent)),
+              position = position_dodge(width = 0.9),
+              size = 3.5, 
+              vjust = -0.3) +
+    labs(title = plot_title,
+         subtitle = sprintf("p value = %.1e (Chi-square = %.2f)", p_value, chi_square))
+  
+  return(plot)
+}
+
+
+
+```
+
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+
+```{r input_sidebar}
+
+# Input: Select variable for 'exposure'
+selectInput(inputId = "exposure", 
+            label = h3("Select Category (Exposure):"), 
+            choices = colnames(tree_status_df),
+            selected = "Borough"
+            )
+
+# Input: Select variable for 'outcome'
+selectInput(inputId = "outcome", 
+            label = h3("Select Tree Status (Outcome):"), 
+            choices = colnames(tree_status_df),
+            selected = "Health"
+            )
+
+```
+
+Column 
+-----------------------------------------------------------------------
+  
+### Power calculation {data-height=800}
+
+```{r display_plot}
+renderPlot({
+    effective_tree_protection(df = tree_status_df, 
+                              exposure_str = input$exposure, 
+                              outcome_str = input$outcome)
+  })
+```
+
+
+### Chart C
+
+```{r}
+
+#knitr::kable(contingency_table)
+effective_tree_protection(df = tree_status_df, exposure = "All", outcome = "Health")
+
+```
+
+</code></pre>
+</div>
 <script type="text/javascript">
 $(document).ready(function () {
   FlexDashboard.init({
     fillPage: true,
-    orientation: "rows",
+    orientation: "columns",
     storyboard: false,
     defaultFigWidth: 576,
     defaultFigHeight: 460,

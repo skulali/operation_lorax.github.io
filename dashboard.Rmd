@@ -1,5 +1,5 @@
 ---
-title: "Dashboard"
+title: "A Tree-mendous Adventure: Exploratory Data Analysis"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
