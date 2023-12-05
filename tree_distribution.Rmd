@@ -8,12 +8,13 @@ output:
     code_folding: hide
 ---
 
-## Data Import
+## Tree Data
 
 ```{r, warning = F, message = F, echo = F}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 library(tidyverse)
+library(readxl)
 library(plotly)
 library(sf)
 library(tmap)
@@ -29,13 +30,11 @@ options(
   ggplot2.continuous.fill = "virdis"
 )
 
-scale_colour_discrete = scale_colour_viridis_d(option = "mako")
-scale_fill_discrete = scale_fill_viridis_d(option = "mako")
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
 ```
 
-```{r, message = F}
-# importing the original data
-
+```{r}
 trees_2015 =
   read_csv("large_tree_data/2015_tree_raw.csv", na = c("", "NA", "Unknown")) |> 
   janitor::clean_names() |> 
@@ -45,8 +44,7 @@ trees_2015 =
 
 ## Tree Count
 
-Total Number of Trees in each borough
-```{r, messsage = F}
+```{r}
 pop_race_2010 = readxl::read_excel("small_data/pop_race2010_nta.xlsx", skip = 6, col_names = FALSE, na = "NA") |> 
   rename(
    "borough" = "...1" ,
@@ -83,7 +81,6 @@ ggplot(data = number_tree, aes(x = borough, y = n_trees, fill = borough)) + geom
 ```
 
 ```{r}
-#rare trees (n < 500)
 queens_rare_trees = 
   all_data |> 
   filter(borough == "Queens") |>
@@ -93,13 +90,12 @@ queens_rare_trees =
 
 ggplot(data = queens_rare_trees, aes(x = spc_common, y = n, fill = spc_common)) + geom_bar(stat = 'identity') + theme(legend.position = "none", axis.text.x = element_text(angle = 65, hjust=1)) + 
   labs(
-    title = "Species of Trees in Queens (<500 trees)",
+    title = "Species of Trees in Queens",
     x = "Species (common name)",
     y = "Total Number of Trees"
   )
 ```
 
-Trees in Manhattan by NTA 
 ```{r}
 mhtn_number_tree = 
   all_data |> 
@@ -124,130 +120,48 @@ ggplot(mhtn_number_tree, aes(x = nta_name, y = total, fill = type)) + geom_bar(s
   )
 ```
 
-## Tree Species
-
-```{r, warning = F, message = F}
-# Find top 10 trees overall
-top_trees_nyc <- trees_2015 %>% 
-  drop_na(spc_common) %>%   
-  group_by(spc_common) %>%
-  count(spc_common) %>% 
-  arrange(desc(n)) %>% 
-  head(n = 10) %>% 
-  pull(spc_common)
-
-# Plot the top ten NYC trees in each Borough and Average Overall
- trees_2015 %>% 
-    drop_na(spc_common, borough) %>% 
-    group_by(spc_common, borough) %>%
-    count(spc_common) %>% 
-  #  filter(spc_common %in% pull(top_trees_data, spc_common)) %>% 
-    filter(spc_common %in% top_trees_nyc) %>% 
-    pivot_wider(names_from = borough, values_from = n) %>% 
-    mutate(`All Boroughs Average` = mean(Bronx:`Staten Island`)) %>% 
-  #  mutate(`Max` = max(Bronx:`Staten Island`)) %>% 
-    select(spc_common, `All Boroughs Average`, everything()) %>% 
-    #maybe stop here and print out that table 
-    pivot_longer(cols = `All Boroughs Average`:`Staten Island`) %>% 
-    ggplot(aes(x = reorder(spc_common, value), y = value, fill = spc_common)) +
-    geom_bar(stat = "identity") +
-    facet_wrap(~ name) +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-    labs(x = "Tree Species", 
-         y = "Number of Trees", 
-         fill = "Tree Species",
-         title = "Top Ten NYC Trees Overall and in Each NYC Borough")
-```
-
-```{r top_in_each_borough_table, warning = F, message = F}
-# Top ten trees in each borough
-trees_2015 %>%
-  drop_na() %>%
-  group_by(borough, spc_common) %>%
-  count() %>%
-  arrange(borough, desc(n)) %>%
-  group_by(borough) %>%
-  slice_max(n = 10, order_by = n) %>% 
-  select(-n) %>% 
- # group_by(borough) %>% 
-  pivot_wider(names_from = borough, values_from = spc_common) %>% 
-  unnest(cols = c(Bronx, Brooklyn, Manhattan, Queens, `Staten Island`)) %>% 
-  mutate(Rank = row_number()) %>% 
-  select(Rank, everything()) %>% 
-  knitr::kable()
-```
-
-Queens Trees by Species
 ```{r}
-#prevalent trees (n > 500)
-queens_prev_trees = 
-  all_data |> 
-  drop_na() |> 
-  filter(borough == "Queens") |>
-  count(spc_common) |> 
-  filter(n > 500) |> 
-  mutate(spc_common = fct_reorder(spc_common, n))
+acres_raw <- 
+  read_excel("small_data/t_pl_p5_nta.xlsx", 
+             range = "A9:J203", 
+             col_names = c("borough", "county_code", "nta", "nta_name",
+                           "total_pop_2000", "total_pop_2010", "pop_change_num",
+                           "pop_change_per", "total_acres", "persons_per_acre")
+             ) |> 
+  janitor::clean_names()
 
-ggplot(data = queens_prev_trees, aes(x = spc_common, y = n, fill = spc_common)) + geom_bar(stat = 'identity') + theme(legend.position = "none", axis.text.x = element_text(angle = 65, hjust=1)) + 
-  labs(
-    title = "Species of Trees in Queens (>500 trees)",
-    x = "Species (common name)",
-    y = "Total Number of Trees"
-  )
+acres_sub <- acres_raw |> 
+  select(nta_name, total_acres)
+
+trees_per_nta <- trees_2015 |> 
+  select(nta_name, nta, borough, status) |> 
+  filter(status == "Alive") |> 
+  count(nta_name, borough) |> 
+  rename(num_trees = n)
+
+trees_and_acres <- left_join(trees_per_nta, acres_sub, by = "nta_name")
+
+num_missing_nta <- sum(is.na(trees_and_acres$total_acres))
+
+trees_per_acre_df <- trees_and_acres |> 
+  filter(!is.na(total_acres)) |> 
+  mutate(trees_per_acre = num_trees/total_acres) |> 
+  arrange(desc(trees_per_acre))
+
+trees_per_acre_nta_table <- trees_per_acre_df |> 
+  filter(min_rank(desc(trees_per_acre)) < 11) |> 
+  knitr::kable(digits = 2, caption = "Top 10 NYC Neighborhoods with the Highest Number of Trees per Acre")
+
+trees_per_acre_nta_table
+
+trees_total_nta_table <- trees_per_acre_df |> 
+  filter(min_rank(desc(num_trees)) < 11) |> 
+  knitr::kable(digits = 2, caption = "Top 10 NYC Neighborhoods with the Highest Total Number of Trees")
+
+trees_total_nta_table
 ```
 
-## Other
-
-```{r shoes}
-trees_2015 %>% 
-  filter(brch_shoe == "Yes") %>% 
-  ggplot(aes(x = borough)) +
-  geom_bar()
-```
-
-## Tree DBH
-
-```{r, message = F}
-trees_dbh = trees_2015 |> 
-  drop_na(tree_dbh) |> 
-  group_by(borough, nta_name) |> 
-  summarize(
-    n_trees = n(),
-    avg_dbh = mean(tree_dbh)) |> 
-  arrange(desc(avg_dbh))
-
-trees_dbh |> 
-  ungroup() |> 
-  filter(n_trees > 100) |> 
-  filter(min_rank(desc(avg_dbh)) < 11) |> 
-  knitr::kable(digits = 2, caption= "Top 10 Neighborhoods wth the Highest Average DBH (inches) Across Local Street Trees")
-```
-
-```{r Plotly Version DBH Boxplot}
-borough_dbh = trees_2015 |> 
-  drop_na(tree_dbh) |> 
-  group_by(borough) |> 
-  mutate(borough_dbh = mean(tree_dbh))
-
-borough_dbh |> 
-  filter(tree_dbh < 101) |> 
-  plot_ly(y = ~tree_dbh, color = ~borough, type = "box", colors = "viridis")
-```
-
-```{r Density Plot Faceted By Borough}
-borough_dbh |> 
-  filter(tree_dbh < 50) |> 
-  ggplot(aes(x = tree_dbh, fill = borough)) + 
-  geom_density() + facet_grid(borough ~ .) +
-  scale_x_continuous(breaks = scales::pretty_breaks(12)) +
-  labs(
-    title = "Density Plot of All Measured Tree Diameters Below 50 inches",
-    x = "Measured DBH (Inches)",
-    y = "Density"
-  )
-```
-
-```{r, message = F, warning = F}
+```{r}
 nyc_nta = st_read("small_data/geo_export_e924b274-8b6e-427d-87c0-92bfde8ce30a.shp")
 
 nta_dbh_summarized = trees_2015 |> 
@@ -262,6 +176,130 @@ nta_dbh_spatial = merge(nyc_nta, nta_dbh_summarized,
                         by.x = "ntacode",
                         by.y = "nta")
 
+tm_shape(nta_dbh_spatial) +
+  tm_polygons(col = "trees_per_nta",
+              style = "quantile",
+              n = 5,
+              palette = "Greens",
+              border.col = "black",
+              title = "Number of Trees per NTA") +
+  tm_layout(main.title = "Total Tree Count Across NYC Neighborhoods", main.title.size = 1,
+            frame = FALSE) +
+  tm_legend(legend.position = c("left","center"),
+            legend.text.size = 0.52)
+```
+
+## Tree Species
+
+```{r}
+top_trees_nyc <- trees_2015 %>% 
+  drop_na(spc_common) %>%   
+  group_by(spc_common) %>%
+  count(spc_common) %>% 
+  arrange(desc(n)) %>% 
+  head(n = 10) %>% 
+  pull(spc_common)
+
+ trees_2015 %>% 
+    drop_na(spc_common, borough) %>% 
+    group_by(spc_common, borough) %>%
+    count(spc_common) %>% 
+    filter(spc_common %in% top_trees_nyc) %>% 
+    pivot_wider(names_from = borough, values_from = n) %>% 
+    mutate(`All Boroughs Average` = mean(Bronx:`Staten Island`)) %>% 
+    select(spc_common, `All Boroughs Average`, everything()) %>% 
+    pivot_longer(cols = `All Boroughs Average`:`Staten Island`) %>% 
+    ggplot(aes(x = reorder(spc_common, value), y = value, fill = spc_common)) +
+    geom_bar(stat = "identity") +
+    facet_wrap(~ name) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    labs(x = "Tree Species", 
+         y = "Number of Trees", 
+         fill = "Tree Species",
+         title = "Top Ten NYC Trees Overall and in Each NYC Borough")
+```
+
+```{r}
+trees_2015 %>%
+  drop_na() %>%
+  group_by(borough, spc_common) %>%
+  count() %>%
+  arrange(borough, desc(n)) %>%
+  group_by(borough) %>%
+  slice_max(n = 10, order_by = n) %>% 
+  select(-n) %>% 
+  group_by(borough) %>%
+  mutate(row_num = row_number()) %>%
+  pivot_wider(names_from = borough, values_from = spc_common) %>% 
+  unnest(cols = c(Bronx, Brooklyn, Manhattan, Queens, `Staten Island`)) %>% 
+  select(row_num, everything()) %>% 
+  knitr::kable(caption = "Top 10 Tree Species in Each Borough")
+```
+
+```{r}
+queens_prev_trees = 
+  all_data |> 
+  drop_na() |> 
+  filter(borough == "Queens") |>
+  count(spc_common) |> 
+  filter(n > 500) |> 
+  mutate(spc_common = fct_reorder(spc_common, n))
+
+ggplot(data = queens_prev_trees, aes(x = spc_common, y = n, fill = spc_common)) + geom_bar(stat = 'identity') + theme(legend.position = "none", axis.text.x = element_text(angle = 65, hjust=1)) + 
+  labs(
+    title = "Species of Trees in Queens",
+    x = "Species (common name)",
+    y = "Total Number of Trees"
+  )
+```
+
+## Tree DBH
+
+```{r}
+trees_dbh = trees_2015 |> 
+  drop_na(tree_dbh) |> 
+  group_by(borough, nta_name) |> 
+  summarize(
+    n_trees = n(),
+    avg_dbh = mean(tree_dbh)) |> 
+  arrange(desc(avg_dbh))
+
+trees_dbh |> 
+  ungroup() |> 
+  filter(n_trees > 100) |> 
+  filter(min_rank(desc(avg_dbh)) < 11) |> 
+  knitr::kable(digits = 2, caption= "Top 10 Neighborhoods with the Highest Average DBH (inches) Across Local Street Trees")
+```
+
+```{r}
+borough_dbh = trees_2015 |> 
+  drop_na(tree_dbh) |> 
+  group_by(borough) |> 
+  mutate(borough_dbh = mean(tree_dbh))
+
+borough_dbh |> 
+  filter(tree_dbh < 101) |> 
+  plot_ly(y = ~tree_dbh, color = ~borough, type = "box", colors = "viridis") |> 
+  layout(title = "Distribution of DBH in Each Borough",
+         xaxis = list(title = 'Borough'),
+         yaxis = list(title = 'Measured DBH (inches)'),
+        showlegend = FALSE)
+```
+
+```{r}
+borough_dbh |> 
+  filter(tree_dbh < 50) |> 
+  ggplot(aes(x = tree_dbh, fill = borough)) + 
+  geom_density() + facet_grid(borough ~ .) +
+  scale_x_continuous(breaks = scales::pretty_breaks(12)) +
+  labs(
+    title = "Density Plot of All Measured Tree Diameters Below 50 inches",
+    x = "Measured DBH (Inches)",
+    y = "Density"
+  )
+```
+
+```{r}
 tm_shape(nta_dbh_spatial) +
   tm_polygons(col = "avg_dbh",
               style = "quantile",
@@ -278,8 +316,7 @@ tm_shape(nta_dbh_spatial) +
 
 ## Tree Health Status
 
-```{r, message = F}
-# map of tree health in all of NYC
+```{r}
 zip_nyc = st_read("small_data/MODZCTA_2010.shp")
 
 trees_df = 
@@ -311,8 +348,6 @@ trees_zip |>
 ```
 
 ```{r}
-# map of tree health in Manhattan
-
 trees_zip |> 
   filter(borough == "Manhattan") |> 
   tm_shape() +   
@@ -322,16 +357,14 @@ trees_zip |>
               palette = "viridis",
               border.col = "black",
               title = "Tree Health Status")+
-  tm_layout(main.title = "Tree Heath by Zip Codes in Manhattan",
+  tm_layout(main.title = "Tree Heath by Zip Codes
+            in Manhattan",
             main.title.size = 1,
             frame = FALSE) +
-  tm_legend(legend.position = c("left","center"),
-            legend.text.size = 0.52)
+  tm_legend(legend.text.size = 0.52)
 ```
 
 ```{r}
-# map of tree health in Brooklyn
-
 trees_zip |> 
   drop_na() |> 
   filter(borough == "Brooklyn") |> 
@@ -343,15 +376,12 @@ trees_zip |>
               border.col = "black",
               title = "Tree Health Status")+
   tm_layout(main.title = "Tree Heath by Zip Codes in Brooklyn",
-            main.title.size = 1,
+             main.title.size = 1,
             frame = FALSE) +
-  tm_legend(legend.position = c("left","center"),
-            legend.text.size = 0.52)
+  tm_legend(legend.text.size = 0.52)
 ```
 
 ```{r}
-# map of tree health in Queens
-
 trees_zip |> 
   drop_na() |> 
   filter(borough == "Queens") |>
@@ -363,15 +393,12 @@ trees_zip |>
               border.col = "black",
               title = "Tree Health Status")+
   tm_layout(main.title = "Tree Heath by Zip Codes in Queens",
-            main.title.size = 1,
+             main.title.size = 1,
             frame = FALSE) +
-  tm_legend(legend.position = c("left","center"),
-            legend.text.size = 0.52)
+  tm_legend(legend.text.size = 0.52)
 ```
 
 ```{r}
-# map of tree health in Bronx
-
 trees_zip |> 
   drop_na() |> 
   filter(borough == "Bronx") |>
@@ -383,15 +410,12 @@ trees_zip |>
               border.col = "black",
               title = "Tree Health Status")+
   tm_layout(main.title = "Tree Heath by Zip Codes in Bronx",
-            main.title.size = 1,
+             main.title.size = 1,
             frame = FALSE) +
-  tm_legend(legend.position = c("left","center"),
-            legend.text.size = 0.52)
+  tm_legend(legend.text.size = 0.52)
 ```
 
 ```{r}
-# map of tree health in Staten Island
-
 trees_zip |> 
   drop_na() |> 
   filter(borough == "Staten Island") |>
@@ -403,14 +427,12 @@ trees_zip |>
               border.col = "black",
               title = "Tree Health Status")+
   tm_layout(main.title = "Tree Heath by Zip Codes in Staten Island",
-            main.title.size = 1,
+             main.title.size = 1,
             frame = FALSE) +
-  tm_legend(legend.position = c("left","center"),
-            legend.text.size = 0.52)
+  tm_legend(legend.text.size = 0.52)
 ```
 
-```{r, message = F, warning = F}
-# map of tree health in Washington Heights
+```{r}
 trees_df_nta = 
   trees_2015 |> 
   drop_na() |> 
@@ -427,7 +449,7 @@ trees_nta =
 trees_nta |> 
   drop_na() |> 
   filter(
-         nta_name == c("Washington Heights South", "Washington Heights North")) |>
+         nta_name %in% c("Washington Heights South", "Washington Heights North")) |>
   tm_shape() +   
   tm_polygons(col = "health",
               style = "equal",
@@ -435,20 +457,18 @@ trees_nta |>
               palette = "viridis",
               border.col = "black",
               title = "Tree Health Status")+
-  tm_layout(main.title = "Tree Heath by Zip Codes in Washington Heights",
-            main.title.size = 1,
+  tm_layout(main.title = "Tree Heath by Zip Codes 
+            in Washington Heights",
+             main.title.size = 1,
             frame = FALSE) +
-  tm_legend(legend.position = c("left","center"),
-            legend.text.size = 0.52)
+  tm_legend(legend.text.size = 0.52)
 ```
 
-```{r, message = F, warning = F}
-# interactive map based on tree health in Washington Heights
-
+```{r}
 trees_2015 |>
   drop_na() |> 
   filter(
-         nta_name == c("Washington Heights South", "Washington Heights North")) |>
+         nta_name %in% c("Washington Heights South", "Washington Heights North")) |>
    plot_ly(color = ~health, colors = "viridis") |> 
   add_trace(
     type = "scattermapbox",
@@ -460,6 +480,7 @@ trees_2015 |>
     below = "markers"
   ) |> 
   layout(
+    title = "Tree Health in Washington Heights",
     mapbox = list(
       style = "carto-positron",  
       center = list(lon = -73.94, lat = 40.84), 
@@ -467,4 +488,15 @@ trees_2015 |>
     ),
     showlegend = T
   )
+```
+
+## Other
+
+```{r}
+trees_2015 %>%
+  filter(brch_shoe == "Yes") %>%
+  mutate(borough = fct_infreq(borough)) %>%
+  ggplot(aes(x = borough, fill = borough)) +
+  geom_bar() +
+  labs(title = "Number of Trees with Shoes on Them", x = "Borough", y = "Count")
 ```

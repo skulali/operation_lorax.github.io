@@ -1,6 +1,13 @@
 ---
-title: "Operation Lorax - Data Speaks for the Trees!"
 ---
+
+<div class="title-box">
+  <h1>Operation Lorax - Data Speaks for the Trees!</h1>
+</div>
+
+<div class="textbox">
+  Add text here.
+</div>
 
 ```{css, echo=FALSE}
 body {
@@ -8,4 +15,19 @@ body {
   background-size: cover; 
   background-repeat: no-repeat;
   background-attachment: fixed; 
+}
+
+.title-box {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  margin: 20px;
+}
+
+.textbox {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 10px;
+  border-radius: 5px;
+  margin: 10px 0;
 }

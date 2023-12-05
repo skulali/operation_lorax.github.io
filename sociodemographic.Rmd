@@ -8,7 +8,7 @@ output:
     code_folding: hide
 ---
 
-## Data Import
+## Tree Data
 
 ```{r, warning = FALSE, message = FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
@@ -34,7 +34,7 @@ scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 ```
 
-```{r tree Data Import, message = F}
+```{r}
 trees_2015 =
   read_csv("large_tree_data/2015_tree_raw.csv", na = c("", "NA", "Unknown")) |> 
   janitor::clean_names() |> 
@@ -44,7 +44,6 @@ trees_2015 =
 
 ## Population
 
-Distribution of Race by Borough
 ```{r}
 pop_race_2010 = readxl::read_excel("small_data/pop_race2010_nta.xlsx", skip = 6, col_names = FALSE, na = "NA") |> 
   rename(
@@ -91,7 +90,6 @@ ggplot(data = dem_race, aes(x = borough, y = n, fill = race)) + geom_bar(stat = 
   )
 ```
 
-Manhattan Trees and Population Demographics by NTA 
 ```{r}
 pop_race_2010s =  
   pop_race_2010 |> 
@@ -122,11 +120,9 @@ percentages =
   arrange(desc(n_trees))
 
 percentages |> 
- knitr::kable(digits = 3)
+ knitr::kable(digits = 3, caption = "Manhattan Trees and Population Demographics by NTA")
 ```
 
-Trees and Population Demographics by Borough 
- 
 ```{r}
 borough_data = 
   all_data |> 
@@ -145,7 +141,7 @@ borough_data =
   arrange(desc(n_trees))
 
 borough_data |> 
- knitr::kable(digits = 3)
+ knitr::kable(digits = 3, caption = "Trees and Population Demographics by Borough")
 ```
 
 ## Poverty
@@ -191,40 +187,129 @@ trees_and_poverty <- left_join(trees_per_acre_df, poverty_clean, by = "nta_name"
 
 trees_and_poverty |> 
   plot_ly(data = _, x = ~poverty_percent, y = ~trees_per_acre, 
-          color = ~nta_name, 
+          color = ~nta_name,
+          colors = "viridis", 
           type = "scatter",
           mode = "markers",
           text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
                         "<br>%below poverty line: ", poverty_percent, 
                         "<br>trees per acre: ", trees_per_acre)) |> 
-    layout(title = "Percentage of people whose income is below the poverty line <br> and 
-           trees per acre by neighborhood",
+    layout(title = "Percent below the poverty line and trees per acre in NYC",
            xaxis = list(title = 'Percentage of people whose income <br> is below the poverty line'),
            yaxis = list(title = 'Number of trees per acre'),
            legend = list(title=list(text='Neighborhood')))
-```
 
-```{r}
 cor(pull(trees_and_poverty, trees_per_acre), pull(trees_and_poverty, poverty_percent))
 ```
 
 ```{r}
 trees_and_poverty |> 
-  plot_ly(data = _, x = ~poverty_percent, y = ~num_trees, 
-          color = ~nta_name, 
+  filter(borough == "Manhattan") |> 
+  plot_ly(data = _, x = ~poverty_percent, y = ~trees_per_acre, 
+          color = ~nta_name,
+          colors = "viridis", 
           type = "scatter",
           mode = "markers",
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>%below poverty line: ", 
-                        poverty_percent, "<br>number of trees: ", num_trees)) |> 
-    layout(title = "Percentage of people whose income is below the poverty line <br> 
-           and number of trees by neighborhood",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>%below poverty line: ", poverty_percent, 
+                        "<br>trees per acre: ", trees_per_acre)) |> 
+    layout(title = "Percent below the poverty line and trees per acre in Manhattan",
            xaxis = list(title = 'Percentage of people whose income <br> is below the poverty line'),
-           yaxis = list(title = 'Total number of trees'),
+           yaxis = list(title = 'Number of trees per acre'),
            legend = list(title=list(text='Neighborhood')))
+
+manhattan_trees_and_poverty <- trees_and_poverty |> 
+  filter(borough == "Manhattan")
+
+cor(pull(manhattan_trees_and_poverty, trees_per_acre), pull(manhattan_trees_and_poverty, poverty_percent))
 ```
 
 ```{r}
-cor(pull(trees_and_poverty, num_trees), pull(trees_and_poverty, poverty_percent))
+trees_and_poverty |> 
+  filter(borough == "Brooklyn") |> 
+  plot_ly(data = _, x = ~poverty_percent, y = ~trees_per_acre, 
+          color = ~nta_name,
+          colors = "viridis", 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>%below poverty line: ", poverty_percent, 
+                        "<br>trees per acre: ", trees_per_acre)) |> 
+    layout(title = "Percent below the poverty line and trees per acre in Brooklyn",
+           xaxis = list(title = 'Percentage of people whose income <br> is below the poverty line'),
+           yaxis = list(title = 'Number of trees per acre'),
+           legend = list(title=list(text='Neighborhood')))
+
+brooklyn_trees_and_poverty <- trees_and_poverty |> 
+  filter(borough == "Brooklyn")
+
+cor(pull(brooklyn_trees_and_poverty, trees_per_acre), pull(brooklyn_trees_and_poverty, poverty_percent))
+```
+
+```{r}
+trees_and_poverty |> 
+  filter(borough == "Bronx") |> 
+  plot_ly(data = _, x = ~poverty_percent, y = ~trees_per_acre, 
+          color = ~nta_name,
+          colors = "viridis", 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>%below poverty line: ", poverty_percent, 
+                        "<br>trees per acre: ", trees_per_acre)) |> 
+    layout(title = "Percent below the poverty line and trees per acre in Bronx",
+           xaxis = list(title = 'Percentage of people whose income <br> is below the poverty line'),
+           yaxis = list(title = 'Number of trees per acre'),
+           legend = list(title=list(text='Neighborhood')))
+
+bronx_trees_and_poverty <- trees_and_poverty |> 
+  filter(borough == "Bronx")
+
+cor(pull(bronx_trees_and_poverty, trees_per_acre), pull(bronx_trees_and_poverty, poverty_percent))
+```
+
+```{r}
+trees_and_poverty |> 
+  filter(borough == "Staten Island") |> 
+  plot_ly(data = _, x = ~poverty_percent, y = ~trees_per_acre, 
+          color = ~nta_name,
+          colors = "viridis", 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>%below poverty line: ", poverty_percent, 
+                        "<br>trees per acre: ", trees_per_acre)) |> 
+    layout(title = "Percent below the poverty line and trees per acre in Staten Island",
+           xaxis = list(title = 'Percentage of people whose income <br> is below the poverty line'),
+           yaxis = list(title = 'Number of trees per acre'),
+           legend = list(title=list(text='Neighborhood')))
+
+staten_island_trees_and_poverty <- trees_and_poverty |> 
+  filter(borough == "Staten Island")
+
+cor(pull(staten_island_trees_and_poverty, trees_per_acre), pull(staten_island_trees_and_poverty, poverty_percent))
+```
+
+```{r}
+trees_and_poverty |> 
+  filter(borough == "Queens") |> 
+  plot_ly(data = _, x = ~poverty_percent, y = ~trees_per_acre, 
+          color = ~nta_name,
+          colors = "viridis", 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, 
+                        "<br>%below poverty line: ", poverty_percent, 
+                        "<br>trees per acre: ", trees_per_acre)) |> 
+    layout(title = "Percent below the poverty line and trees per acre in Queens",
+           xaxis = list(title = 'Percentage of people whose income <br> is below the poverty line'),
+           yaxis = list(title = 'Number of trees per acre'),
+           legend = list(title=list(text='Neighborhood')))
+
+queens_trees_and_poverty <- trees_and_poverty |> 
+  filter(borough == "Queens")
+
+cor(pull(queens_trees_and_poverty, trees_per_acre), pull(queens_trees_and_poverty, poverty_percent))
 ```
 
 ## Education
@@ -244,119 +329,123 @@ trees_and_education <- left_join(trees_per_acre_df, education_clean, by = "nta_n
 
 trees_and_education |> 
   plot_ly(data = _, x = ~graduated_hs_percent, y = ~trees_per_acre, 
-          color = ~nta_name, 
+          color = ~nta_name,
+          colors = "viridis", 
           type = "scatter",
           mode = "markers",
           text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>% graduated HS: ", 
                         graduated_hs_percent, "<br>trees per acre: ", trees_per_acre)) |> 
-  layout(title = "Percentage of people who graduated high school <br> and trees per acre by neighborhood", 
-         xaxis = list(title = 'Percentage of people who graduated <br> high school (includes equivalency)'), 
+  layout(title = "Percent graduated high school and trees per acre in NYC", 
+         xaxis = list(title = 'Percent graduated <br> high school (includes equivalency)'), 
          yaxis = list(title = 'Number of trees per acre'), 
          legend = list(title=list(text='Neighborhood')))
-```
 
-```{r}
 cor(pull(trees_and_education, trees_per_acre), pull(trees_and_education, graduated_hs_percent))
 ```
 
 ```{r}
 trees_and_education |> 
-  plot_ly(data = _, x = ~graduated_hs_percent, y = ~num_trees, 
-          color = ~nta_name, 
+  filter(borough == "Manhattan") |> 
+  plot_ly(data = _, x = ~graduated_hs_percent, y = ~trees_per_acre, 
+          color = ~nta_name,
+          colors = "viridis", 
           type = "scatter",
           mode = "markers",
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>%people who graduated HS: ", 
-                        graduated_hs_percent, "<br>number of trees: ", num_trees)) |> 
-  layout(title = "Percentage of people who graduated high school <br> and number of trees by neighborhood",
-         xaxis = list(title = 'Percentage of people who graduated <br> high school (includes equivalency)'),
-         yaxis = list(title = 'Total number of trees'),
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>% graduated HS: ", 
+                        graduated_hs_percent, "<br>trees per acre: ", trees_per_acre)) |> 
+  layout(title = "Percent graduated high school and trees per acre in Manhattan", 
+         xaxis = list(title = 'Percent graduated <br> high school (includes equivalency)'), 
+         yaxis = list(title = 'Number of trees per acre'), 
          legend = list(title=list(text='Neighborhood')))
+
+manhattan_trees_and_education <- trees_and_education |> 
+  filter(borough == "Manhattan")
+
+cor(pull(manhattan_trees_and_education, trees_per_acre), pull(manhattan_trees_and_education, graduated_hs_percent))
 ```
 
 ```{r}
-cor(pull(trees_and_education, num_trees), pull(trees_and_education, graduated_hs_percent))
-```
-
-## Housing
-
-```{r}
-nycha_raw <-
-  read_csv("large_tree_data/NYCHA_Residential_Addresses_20231130.csv") |> 
-  janitor::clean_names()
-
-nycha_clean <- nycha_raw |> 
-  rename(nta_name = neighborhood_tabulation_area_name) |> 
-  select(nta_name, development) |> 
-  group_by(nta_name, development) |> 
-  distinct() |> 
-  ungroup()
-
-num_dev_nta <- nycha_clean |> 
-  count(nta_name) |> 
-  rename(num_development = n)
-
-trees_and_nycha <- left_join(trees_per_acre_df, num_dev_nta, by = "nta_name")
-
-trees_and_nycha <- trees_and_nycha |> 
-  mutate(num_development =
-           ifelse(is.na(num_development), 0, num_development))
-
-trees_and_nycha |> 
-  plot_ly(data = _, x = ~num_development, y = ~trees_per_acre, 
-          color = ~nta_name, 
+trees_and_education |> 
+  filter(borough == "Brooklyn") |> 
+  plot_ly(data = _, x = ~graduated_hs_percent, y = ~trees_per_acre, 
+          color = ~nta_name,
+          colors = "viridis", 
           type = "scatter",
           mode = "markers",
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", 
-                        borough, "<br>number of NYCHA developments: ", 
-                        num_development, "<br>trees per acre: ", trees_per_acre)) |> 
-    layout(title = "Trees per acre and number of NYCHA developments by neighborhood",
-           xaxis = list(title = 'Total number of NYCHA developments'), 
-           yaxis = list(title = 'Number of trees per acre'), 
-           legend = list(title=list(text='Neighborhood')))
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>% graduated HS: ", 
+                        graduated_hs_percent, "<br>trees per acre: ", trees_per_acre)) |> 
+  layout(title = "Percent graduated high school and trees per acre in Brooklyn", 
+         xaxis = list(title = 'Percent graduated <br> high school (includes equivalency)'), 
+         yaxis = list(title = 'Number of trees per acre'), 
+         legend = list(title=list(text='Neighborhood')))
+
+brooklyn_trees_and_education <- trees_and_education |> 
+  filter(borough == "Brooklyn")
+
+cor(pull(brooklyn_trees_and_education, trees_per_acre), pull(brooklyn_trees_and_education, graduated_hs_percent))
 ```
 
 ```{r}
-cor(pull(trees_and_nycha, trees_per_acre), pull(trees_and_nycha, num_development))
-```
-
-```{r}
-nycha_raw <-
-  read_csv("large_tree_data/NYCHA_Residential_Addresses_20231130.csv") |> 
-  janitor::clean_names()
-
-nycha_clean <- nycha_raw |> 
-  rename(nta_name = neighborhood_tabulation_area_name) |> 
-  select(nta_name, development) |> 
-  group_by(nta_name, development) |> 
-  distinct() |> 
-  ungroup()
-
-num_dev_nta <- nycha_clean |> 
-  count(nta_name) |> 
-  rename(num_development = n)
-
-trees_and_nycha <- left_join(trees_per_acre_df, num_dev_nta, by = "nta_name")
-
-trees_and_nycha <- trees_and_nycha |> 
-  mutate(num_development =
-           ifelse(is.na(num_development), 0, num_development))
-
-trees_and_nycha |> 
-  plot_ly(data = _, x = ~num_development, y = ~num_trees, 
-          color = ~nta_name, 
+trees_and_education |> 
+  filter(borough == "Bronx") |> 
+  plot_ly(data = _, x = ~graduated_hs_percent, y = ~trees_per_acre, 
+          color = ~nta_name,
+          colors = "viridis", 
           type = "scatter",
           mode = "markers",
-          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", 
-                        borough, "<br>%number of NYCHA developments: ", 
-                        num_development, "<br>number of trees: ", num_trees)) |> 
-    layout(title = "Number of trees and number of NYCHA developments by neighborhood",
-           xaxis = list(title = 'Total number of NYCHA developments'), 
-           yaxis = list(title = 'Total number of trees'), 
-           legend = list(title=list(text='Neighborhood')))
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>% graduated HS: ", 
+                        graduated_hs_percent, "<br>trees per acre: ", trees_per_acre)) |> 
+  layout(title = "Percent graduated high school and trees per acre in Bronx", 
+         xaxis = list(title = 'Percent graduated <br> high school (includes equivalency)'), 
+         yaxis = list(title = 'Number of trees per acre'), 
+         legend = list(title=list(text='Neighborhood')))
+
+bronx_trees_and_education <- trees_and_education |> 
+  filter(borough == "Bronx")
+
+cor(pull(bronx_trees_and_education, trees_per_acre), pull(bronx_trees_and_education, graduated_hs_percent))
 ```
 
 ```{r}
-cor(pull(trees_and_nycha, num_trees), pull(trees_and_nycha, num_development))
+trees_and_education |> 
+  filter(borough == "Staten Island") |> 
+  plot_ly(data = _, x = ~graduated_hs_percent, y = ~trees_per_acre, 
+          color = ~nta_name,
+          colors = "viridis", 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>% graduated HS: ", 
+                        graduated_hs_percent, "<br>trees per acre: ", trees_per_acre)) |> 
+  layout(title = "Percent graduated high school and trees per acre in Staten Island", 
+         xaxis = list(title = 'Percent graduated <br> high school (includes equivalency)'), 
+         yaxis = list(title = 'Number of trees per acre'), 
+         legend = list(title=list(text='Neighborhood')))
+
+staten_island_trees_and_education <- trees_and_education |> 
+  filter(borough == "Staten Island")
+
+cor(pull(staten_island_trees_and_education, trees_per_acre), pull(staten_island_trees_and_education, graduated_hs_percent))
 ```
 
+
+```{r}
+trees_and_education |> 
+  filter(borough == "Queens") |> 
+  plot_ly(data = _, x = ~graduated_hs_percent, y = ~trees_per_acre, 
+          color = ~nta_name,
+          colors = "viridis", 
+          type = "scatter",
+          mode = "markers",
+          text = ~paste("neighborhood: ", nta_name, "<br>borough: ", borough, "<br>% graduated HS: ", 
+                        graduated_hs_percent, "<br>trees per acre: ", trees_per_acre)) |> 
+  layout(title = "Percent graduated high school and trees per acre in Queens", 
+         xaxis = list(title = 'Percent graduated <br> high school (includes equivalency)'), 
+         yaxis = list(title = 'Number of trees per acre'), 
+         legend = list(title=list(text='Neighborhood')))
+
+queens_trees_and_education <- trees_and_education |> 
+  filter(borough == "Queens")
+
+cor(pull(queens_trees_and_education, trees_per_acre), pull(queens_trees_and_education, graduated_hs_percent))
+```
 
