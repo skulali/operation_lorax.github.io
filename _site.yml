@@ -23,6 +23,14 @@ navbar:
       href: zander.html
     - text: "Christine"
       href: christine.html
+    - text: "Dashboard"
+      href: dashboard.html
+    - text: "Tree Distribution"
+      href: tree_distribution.html
+    - text: "Sociodemographic"
+      href: sociodemographic.html
+    - text: "Health"
+      href: health.html
     - text: "Report"
       href: report.html
     - icon: fa-envelope fa-lg
