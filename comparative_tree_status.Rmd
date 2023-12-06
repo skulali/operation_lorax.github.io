@@ -9,6 +9,11 @@ output:
 runtime: shiny
 ---
 
+# Comparison of Various Tree Attributes
+
+In this section
+
+## Tree Attributes Relation to Eachother and Tree Attributes Distribution by Location
 
 ```{r setup, message = FALSE, warning = FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
@@ -127,7 +132,7 @@ df %>%
 ```
 
 
-# Tree Status in Different Scenarios
+### Tree Status in Different Scenarios
 
 ```{r input_}
 
