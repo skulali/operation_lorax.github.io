@@ -233,7 +233,7 @@ trees_and_asthma_hosp_adult |>
                         "<br>rate of adult asthma hospitalizations: ", average_annual_rate_per_10_000)) |> 
   layout(title = "Trees per acre and rate of adult asthma hospitalizations in NYC",
          xaxis = list(title = 'Number of trees per acre'),
-         yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         yaxis = list(title = 'Average annual rate of <br> adult asthma hospitalizations (per 10,000)'),
          legend = list(title=list(text='Neighborhood')))
 
 cor(pull(trees_and_asthma_hosp_adult, trees_per_acre), pull(trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
@@ -252,7 +252,7 @@ trees_and_asthma_hosp_adult |>
                         "<br>rate of adult asthma hospitalizations: ", average_annual_rate_per_10_000)) |> 
   layout(title = "Trees per acre and rate of adult asthma hospitalizations in Manhattan",
          xaxis = list(title = 'Number of trees per acre'),
-         yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         yaxis = list(title = 'Average annual rate of <br> adult asthma hospitalizations (per 10,000)'),
          legend = list(title=list(text='Neighborhood')))
 
 manhattan_trees_and_asthma_hosp_adult <- trees_and_asthma_hosp_adult |> 
@@ -274,7 +274,7 @@ trees_and_asthma_hosp_adult |>
                         "<br>rate of adult asthma hospitalizations: ", average_annual_rate_per_10_000)) |> 
   layout(title = "Trees per acre and rate of adult asthma hospitalizations in Bronx",
          xaxis = list(title = 'Number of trees per acre'),
-         yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         yaxis = list(title = 'Average annual rate of <br> adult asthma hospitalizations (per 10,000)'),
          legend = list(title=list(text='Neighborhood')))
 
 bronx_trees_and_asthma_hosp_adult <- trees_and_asthma_hosp_adult |> 
@@ -296,7 +296,7 @@ trees_and_asthma_hosp_adult |>
                         "<br>rate of adult asthma hospitalizations: ", average_annual_rate_per_10_000)) |> 
   layout(title = "Trees per acre and rate of adult asthma hospitalizations in Brooklyn",
          xaxis = list(title = 'Number of trees per acre'),
-         yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         yaxis = list(title = 'Average annual rate of <br> adult asthma hospitalizations (per 10,000)'),
          legend = list(title=list(text='Neighborhood')))
 
 brooklyn_trees_and_asthma_hosp_adult <- trees_and_asthma_hosp_adult |> 
@@ -318,7 +318,7 @@ trees_and_asthma_hosp_adult |>
                         "<br>rate of adult asthma hospitalizations: ", average_annual_rate_per_10_000)) |> 
   layout(title = "Trees per acre and rate of adult asthma hospitalizations in Staten Island",
          xaxis = list(title = 'Number of trees per acre'),
-         yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         yaxis = list(title = 'Average annual rate of <br> adult asthma hospitalizations (per 10,000)'),
          legend = list(title=list(text='Neighborhood')))
 
 staten_island_trees_and_asthma_hosp_adult <- trees_and_asthma_hosp_adult |> 
@@ -340,7 +340,7 @@ trees_and_asthma_hosp_adult |>
                         "<br>rate of adult asthma hospitalizations: ", average_annual_rate_per_10_000)) |> 
   layout(title = "Trees per acre and rate of adult asthma hospitalizations in Queens",
          xaxis = list(title = 'Number of trees per acre'),
-         yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
+         yaxis = list(title = 'Average annual rate of <br> adult asthma hospitalizations (per 10,000)'),
          legend = list(title=list(text='Neighborhood')))
 
 queens_trees_and_asthma_hosp_adult <- trees_and_asthma_hosp_adult |> 
