@@ -154,7 +154,6 @@ selectInput(inputId = "outcome",
 
 ```
   
-### Visualize Tree Status in Different Scenarios {data-height=800}
 
 ```{r display_plot}
 
@@ -205,4 +204,58 @@ renderPlot({
   })
 
 ```
+
+
+Tree Attributes in Different Scenarios
+
+Several associations were explored between variables such as health, curb location, guards, sidewalk quality, and root, trunk, and branch quality (for example, if there are lights on the branches). There is an association between the location of the trees on the curb and whether branches have lights (trees on the curb are more likely to have lights on their branches). Additionally, there is an assoiation between sidewalk quality and the existence of root problems (damage on the sidewalk is associated with more root problems). 
+
+```{r}
+
+effective_tree_protection(df = tree_status_df, 
+                              exposure_str = "Curb Location", 
+                              outcome_str = "Branches have Lights")
+
+effective_tree_protection(df = tree_status_df, 
+                              exposure_str = "Sidewalk", 
+                              outcome_str = "Root Problem (Other)")
+
+```
+
+
+Tree Attribute Distribution Overall
+
+This figure shows the distribution of different attributes of trees and their status across all of NYC. For example, we see that 81.1% of trees are in “good” health, 14.8% of trees are in “fair” health, and 4.1% of trees are in “poor” health. Notably, 28.7% of sidewalks are damaged (71.2% not damaged). The majority of trees (87.8%) do not have guards and 20.5% of tree roots have stones. 
+
+```{r}
+
+# Apply function to relevant variables 
+
+effective_tree_protection(df = tree_status_df, 
+                              exposure_str = "All of NYC", 
+                              outcome_str = "Health")
+
+effective_tree_protection(df = tree_status_df, 
+                              exposure_str = "All of NYC", 
+                              outcome_str = "Sidewalk")
+
+effective_tree_protection(df = tree_status_df, 
+                              exposure_str = "All of NYC", 
+                              outcome_str = "Roots with Stones")
+```
+
+
+Tree Health in Different Boroughs
+
+Compared to the other four boroughs, Manhattan had the lowest percentage of trees in “good” health, and the highest percentage of trees in both “fair” and “poor” health. Overall in NYC, 81.1% of trees were in “good” health, 14.8% of trees were in “fair” health, and 4.1% were in “poor” health. 
+
+```{r}
+
+    effective_tree_protection(df = tree_status_df, 
+                              exposure_str = "Borough", 
+                              outcome_str = "Health")
+```
+
+
+
 
