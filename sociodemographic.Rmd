@@ -1,5 +1,5 @@
 ---
-title: "From Seed to Sapling:"
+title: "The Concrete Forest: How NYC Populations Have Access to Trees"
 output: 
   html_document:
     toc: true
@@ -8,9 +8,9 @@ output:
     code_folding: hide
 ---
 
-## Tree Data
+## Tree Data Cleaning
 
-```{r, warning = FALSE, message = FALSE}
+```{r, warning = FALSE, message = FALSE, echo = F}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 library(tidyverse)
@@ -43,6 +43,8 @@ trees_2015 =
 ```
 
 ## Population
+
+This plot shows the population breakdown of each New York borough by race and ethnicity category included in the US 2010 Census. White is the majority in all boroughs except for the Bronx. Hawaiian and Pacific Islander is consistently the lowest in all 5 boroughs.
 
 ```{r}
 pop_race_2010 = readxl::read_excel("small_data/pop_race2010_nta.xlsx", skip = 6, col_names = FALSE, na = "NA") |> 
@@ -91,6 +93,31 @@ ggplot(data = dem_race, aes(x = borough, y = n, fill = race)) + geom_bar(stat = 
 ```
 
 ```{r}
+borough_data = 
+  all_data |> 
+  group_by(borough) |> 
+  summarize(n_trees = n_distinct(tree_id),
+            n_white = (sum(white_nonhis)/sum(total_population)*100),
+            n_black = (sum(black_nonhis)/sum(total_population)*100),
+            n_asian = (sum(asian_nonhis)/sum(total_population)*100),
+            n_pacific_islander = (sum(hawaii_pac_isl_nonhis)/sum(total_population)*100),
+            n_amer_ind = (sum(am_ind_alaska_nonhis)/sum(total_population)*100),
+            n_other = (sum(other_nonhis)/sum(total_population)*100),
+            n_hispanic = (sum(hispanic_any_race)/sum(total_population)*100),
+            n_two_races = (sum(two_races)/sum(total_population)*100)
+            ) |> 
+  mutate(n_trees = as.numeric(n_trees)) |> 
+  arrange(desc(n_trees))
+
+borough_data |> 
+ knitr::kable(digits = 3, caption = "Trees and Population Demographics by Borough")
+```
+
+Comments:
+
+- This table lists the number of trees and racial and ethnic percentage breakdown within each borough. - Queens has the highest number of trees, the highest percentage of Asian, Hawaiian and Pacific Islander, American Indian and Two Races population.
+
+```{r}
 pop_race_2010s =  
   pop_race_2010 |> 
   select(- borough, -nta_name)
@@ -123,28 +150,20 @@ percentages |>
  knitr::kable(digits = 3, caption = "Manhattan Trees and Population Demographics by NTA")
 ```
 
-```{r}
-borough_data = 
-  all_data |> 
-  group_by(borough) |> 
-  summarize(n_trees = n_distinct(tree_id),
-            n_white = (sum(white_nonhis)/sum(total_population)*100),
-            n_black = (sum(black_nonhis)/sum(total_population)*100),
-            n_asian = (sum(asian_nonhis)/sum(total_population)*100),
-            n_pacific_islander = (sum(hawaii_pac_isl_nonhis)/sum(total_population)*100),
-            n_amer_ind = (sum(am_ind_alaska_nonhis)/sum(total_population)*100),
-            n_other = (sum(other_nonhis)/sum(total_population)*100),
-            n_hispanic = (sum(hispanic_any_race)/sum(total_population)*100),
-            n_two_races = (sum(two_races)/sum(total_population)*100)
-            ) |> 
-  mutate(n_trees = as.numeric(n_trees)) |> 
-  arrange(desc(n_trees))
+Comments:
 
-borough_data |> 
- knitr::kable(digits = 3, caption = "Trees and Population Demographics by Borough")
-```
+- This table lists the number of trees and racial and ethnic percentage breakdown within each NTA in Manhattan. 
+- The table is ranked by most number of trees and thus, we can conclude that the top 3 neighborhoods with the most trees have a majority white population.  
+
+Since NTAs may differ in size, trees per acre was used to standardize street tree counts in each NTA by the acreage of the NTA. 6 NTAs from the 2015 Tree Census were missing acreage information, so these NTAs were removed for these analyses.
+
+Only alive trees were included in the poverty level and education analyses.
+
+Correlation coefficients were calculated to gauge if a linear association exists between our x and y variables. To test the significance of a correlation coefficient, x and y variables must have a bivariate normal distribution. Since most of our x and y variables exhibited a skewed distribution (histograms not shown), we were unable to test the significance of the correlation coefficient at this time.
 
 ## Poverty
+
+Is there an association between the percentage of people whose income is below the poverty line and the number of trees per acre 1) across neighborhoods in NYC and 2) across neighborhoods in each borough? 
 
 ```{r}
 acres_raw <- 
@@ -202,6 +221,8 @@ trees_and_poverty |>
 cor(pull(trees_and_poverty, trees_per_acre), pull(trees_and_poverty, poverty_percent))
 ```
 
+When examining all of the neighborhoods in NYC, there is a very weak, negative, linear association between percentage of people living below the poverty line and number of trees per acre (r = - 0.0220). 
+
 ```{r}
 trees_and_poverty |> 
   filter(borough == "Manhattan") |> 
@@ -223,6 +244,8 @@ manhattan_trees_and_poverty <- trees_and_poverty |>
 
 cor(pull(manhattan_trees_and_poverty, trees_per_acre), pull(manhattan_trees_and_poverty, poverty_percent))
 ```
+
+When examining only neighborhoods in Manhattan, there is a weak, negative, linear association between percentage of people living below the poverty line and number of trees per acre (r = -0.2111). 
 
 ```{r}
 trees_and_poverty |> 
@@ -246,6 +269,8 @@ brooklyn_trees_and_poverty <- trees_and_poverty |>
 cor(pull(brooklyn_trees_and_poverty, trees_per_acre), pull(brooklyn_trees_and_poverty, poverty_percent))
 ```
 
+When examining only neighborhoods in Brooklyn, there remains a very weak, negative, linear association between percentage of people living below the poverty line and number of trees per acre (r = - 0.0027). This could indicate that a non-linear relationship may be more suitable; it is also possible that no association exists.
+
 ```{r}
 trees_and_poverty |> 
   filter(borough == "Bronx") |> 
@@ -267,6 +292,8 @@ bronx_trees_and_poverty <- trees_and_poverty |>
 
 cor(pull(bronx_trees_and_poverty, trees_per_acre), pull(bronx_trees_and_poverty, poverty_percent))
 ```
+
+When examining only neighborhoods in the Bronx, there is a moderate, positive, linear association between percentage of people living below the poverty line and number of trees per acre (r = 0.4558). It appears that as the percentage of people living below the poverty line increases, the number of trees per acre increases. These results are contrary to our expectations. This may indicate that other factors may be at play.
 
 ```{r}
 trees_and_poverty |> 
@@ -290,6 +317,8 @@ staten_island_trees_and_poverty <- trees_and_poverty |>
 cor(pull(staten_island_trees_and_poverty, trees_per_acre), pull(staten_island_trees_and_poverty, poverty_percent))
 ```
 
+When examining only neighborhoods in Staten Island, there is a moderate, negative, linear association between percentage of people living below the poverty line and number of trees per acre (r = -0.4646). As the percentage of people living below the poverty line increases, the number of trees per acre decreases.
+
 ```{r}
 trees_and_poverty |> 
   filter(borough == "Queens") |> 
@@ -312,13 +341,18 @@ queens_trees_and_poverty <- trees_and_poverty |>
 cor(pull(queens_trees_and_poverty, trees_per_acre), pull(queens_trees_and_poverty, poverty_percent))
 ```
 
+When examining only neighborhoods in Queens, there is a moderate, negative, linear association between percentage of people living below the poverty line and number of trees per acre (r = -0.4384). As the percentage of people living below the poverty line increases, the number of trees per acre decreases.
+
+**Summary**: When examining all of the neighborhoods in NYC, there is a very weak, negative, linear association between percentage of people living below the poverty line and number of trees per acre. When examining neighborhoods by borough, the association between percentage of people living below the poverty line and number of trees per acre varies. Notably, neighborhoods across Staten Island and Queens exhibit a moderate, negative, linear association between percentage of people living below the poverty line and number of trees per acre; as the percentage of people living below the poverty line increases, the number of trees per acre decreases.
+
 ## Education
+
+Is there an association between the percentage of people who graduated high school and the number of trees per acre 1) across neighborhoods in NYC and 2) across neighborhoods in each borough?
 
 ```{r}
 education_raw <-
   read_csv("large_tree_data/NYC EH Data Portal - Graduated high school.csv") |> 
   janitor::clean_names()
-
 
 education_clean <- education_raw |> 
   rename(nta_name = geography, graduated_hs_percent = percent) |> 
@@ -343,6 +377,8 @@ trees_and_education |>
 cor(pull(trees_and_education, trees_per_acre), pull(trees_and_education, graduated_hs_percent))
 ```
 
+When examining all of the neighborhoods in NYC, there is a weak, positive, linear association between the percentage of people who graduated high school and the number of trees per acre (r = 0.0940).
+
 ```{r}
 trees_and_education |> 
   filter(borough == "Manhattan") |> 
@@ -363,6 +399,8 @@ manhattan_trees_and_education <- trees_and_education |>
 
 cor(pull(manhattan_trees_and_education, trees_per_acre), pull(manhattan_trees_and_education, graduated_hs_percent))
 ```
+
+When examining only neighborhoods in Manhattan, there remains a weak, positive, linear association between the percentage of people who graduated high school and the number of trees per acre (r = 0.2170).
 
 ```{r}
 trees_and_education |> 
@@ -385,6 +423,8 @@ brooklyn_trees_and_education <- trees_and_education |>
 cor(pull(brooklyn_trees_and_education, trees_per_acre), pull(brooklyn_trees_and_education, graduated_hs_percent))
 ```
 
+When examining only neighborhoods in Brooklyn, there remains a weak, positive, linear association between the percentage of people who graduated high school and the number of trees per acre (r = 0.2240).
+
 ```{r}
 trees_and_education |> 
   filter(borough == "Bronx") |> 
@@ -405,6 +445,8 @@ bronx_trees_and_education <- trees_and_education |>
 
 cor(pull(bronx_trees_and_education, trees_per_acre), pull(bronx_trees_and_education, graduated_hs_percent))
 ```
+
+When examining only neighborhoods in the Bronx, there is a moderate, negative, linear association between the percentage of people who graduated high school and the number of trees per acre (r = -0.4767). It appears that as the percentage of people who graduated high school increases, the number of trees per acre decreases. These results are contrary to our expectations. This may indicate that other factors may be at play.
 
 ```{r}
 trees_and_education |> 
@@ -427,6 +469,7 @@ staten_island_trees_and_education <- trees_and_education |>
 cor(pull(staten_island_trees_and_education, trees_per_acre), pull(staten_island_trees_and_education, graduated_hs_percent))
 ```
 
+When examining only neighborhoods in Staten Island, there is a moderate, positive, linear association between the percentage of people who graduated high school and the number of trees per acre (r = 0.5839). As the percentage of people who graduated high school increases, the number of trees per acre increases.
 
 ```{r}
 trees_and_education |> 
@@ -449,3 +492,6 @@ queens_trees_and_education <- trees_and_education |>
 cor(pull(queens_trees_and_education, trees_per_acre), pull(queens_trees_and_education, graduated_hs_percent))
 ```
 
+When examining only neighborhoods in Queens, there is a weak, positive, linear association between the percentage of people who graduated high school and the number of trees per acre (r = 0.1510 ).
+
+**Summary**: When examining all of the neighborhoods in NYC, there is a weak, positive, linear association between the percentage of people who graduated high school and the number of trees per acre (r = 0.0940). When examining neighborhoods by borough, the association between the percentage of people who graduated high school and the number of trees per acre varies. Notably, neighborhoods across Staten Island exhibit a moderate, positive, linear association between percentage of people who graduated high school and the number of trees per acre; as the percentage of people who graduated high school increases, the number of trees per acre increases.
