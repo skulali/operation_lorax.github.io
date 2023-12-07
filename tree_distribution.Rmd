@@ -82,7 +82,7 @@ ggplot(data = number_tree, aes(x = borough, y = n_trees, fill = borough)) + geom
   )
 ```
 
-Now looking at the Manhattan borough, the plot above shows the breakdown of number of trees per NTA and the total population per 10000 people. By looking at these values side-by-side, it is notable that the Upper West Side is the only NTA that has a human population (per 10000) that surpassed the number of trees. It also has the largest number of trees. The data used to generate this plot is from merging the 2015 Street Tree Census and the 2010 US Census Population data sets.
+Now looking at the Manhattan borough, the plot below shows the breakdown of number of trees per NTA and the total population per 10000 people. By looking at these values side-by-side, it is notable that the Upper West Side is the only NTA that has a human population (per 10000) that surpassed the number of trees. It also has the largest number of trees. The data used to generate this plot is from merging the 2015 Street Tree Census and the 2010 US Census Population data sets.
 
 ```{r}
 mhtn_number_tree = 
@@ -162,7 +162,7 @@ Comments:
 - It is important to note while these neighborhoods have a high total number of alive trees, the number of alive trees per acre is low.
 - 6 NTAs from the 2015 Tree Census were missing acreage information, so these NTAs were removed for the purposes of this table.
 
-This map visualizes the spatial distribution of total street trees per neighborhood tabulation area (NTA). The neighborhoods that appear to have the lowest number of street trees are lower Manhattan and the North Bronx. The neighborhoods that appear to be in the highest band of tree counts, ranging from over 5000 to over 12000, are in southern Staten Island, Southeast Brooklyn, and across Queens.
+The map below visualizes the spatial distribution of total street trees per neighborhood tabulation area (NTA). The neighborhoods that appear to have the lowest number of street trees are lower Manhattan and the North Bronx. The neighborhoods that appear to be in the highest band of tree counts, ranging from over 5000 to over 12000, are in southern Staten Island, Southeast Brooklyn, and across Queens.
 
 ```{r}
 nyc_nta = st_read("small_data/geo_export_e924b274-8b6e-427d-87c0-92bfde8ce30a.shp")
@@ -228,7 +228,8 @@ Comments:
 
 - The most common tree in NYC overall is the Callery Pear.
 - The Callery Pear is also the most common tree in Manhattan and Staten Island. 
-- The most common tree species in both Brooklyn and Queens is the London Planetree, and the Honeylocust is the most common tree in the Bronx. 
+- The most common tree species in both Brooklyn and Queens is the London Planetree, and the Honeylocust is the most common tree in the Bronx.
+
 ```{r}
 trees_2015 %>%
   drop_na() %>%
@@ -246,7 +247,7 @@ trees_2015 %>%
   knitr::kable(caption = "Top 10 Tree Species in Each Borough")
 ```
 
-After discovering that Queens has the most number of trees, a closer look was taken to evaluate which species are most prevalent. Due to the vast number of species populating  Queens, the above visualization represents the counts of each species with counts up to 500 and thus showing which species are most rare. 
+After discovering that Queens has the greatest number of trees, a closer look was taken to evaluate which species are most prevalent. Due to the vast number of species populating  Queens, the below visualization represents the counts of each species with counts up to 500 and thus showing which species are most rare. 
 
 ```{r}
 queens_rare_trees = 
@@ -287,13 +288,13 @@ ggplot(data = queens_prev_trees, aes(x = spc_common, y = n, fill = spc_common)) 
 
 Understanding DBH broadly:
 
-- DBH, or diameter at breast height, is a standardized measurement of tree growth that is used by foresters as a baseline unit for understanding tree age, size, and total overall biomass. Depending on the ecological characteristics of a tree species, DBH measurements can be used to calculate estimates of above ground biomass (wood and branch over) and below ground biomass, as well as carbon storage. With the limited information this 2015 street survey provides about DBH and tree species, we will primarily be using DBH as a proxy for the size, age, and maturity of trees across NYC neighborhoods.
-- Roughly, a lower average DBH represents a greater distribution of smaller and younger trees than a higher average DBH, which has a greater number of very large, mature  trees. The estimation of tree age by DBH varies widely by species, due to the differential growth factors of each tree species. Available literature and online tree calculators show that across species, a DBH of around 6 inches can range from 10 - 25 years of tree growth, while a DBH of around 14-15 inches ranges from 35 - 60 years of tree growth. It is likely that a tree over 40-50 inches has seen close to or over a century of growth. 
+- DBH, or diameter at breast height, is a standardized measurement of tree growth that is used by foresters as a baseline unit for understanding tree age, size, and total overall biomass. Depending on the ecological characteristics of a tree species, DBH measurements can be used to calculate estimates of above ground biomass (wood and branch cover) and below ground biomass, as well as carbon storage. With the limited information this 2015 street survey provides about DBH and tree species, we will primarily be using DBH as a proxy for the size, age, and maturity of trees across NYC neighborhoods.
+- Roughly, a lower average DBH represents a greater distribution of smaller and younger trees than a higher average DBH, which has a greater number of very large, mature  trees. The estimation of tree age by DBH varies widely by species, due to the differential growth factors of each tree species. Available literature and online tree calculators show that across species, a DBH of around 6 inches can range from 10 - 25 years of tree growth, while a DBH of around 14 - 15 inches ranges from 35 - 60 years of tree growth. It is likely that a tree over 40 - 50 inches has seen close to or over a century of growth. 
 
 Links  to learn more: 
 
 - [How DBH is measured](http://www.phytosphere.com/treeord/measuringdbh.htm)
-- [What calculations can DBH be used to interpret? Biomass, Carbon Storage, etc.](https://arboretum.harvard.edu/wp-content/uploads/2020/07/HowToMeasureTrees_TeacherGuide.pdf)
+- [What calculations can DBH be used to interpret? Biomass, Carbon Storage, etc.](https://www.mdpi.com/1999-4907/11/2/135)
 - [Online tree calculator estimations](https://www.omnicalculator.com/biology/tree-diameter)
 
 ```{r}

@@ -6,7 +6,7 @@
 </div>
 
 <div class="textbox">
-  In this exploratory study, we aim to examine the geographic distribution and attributes of street trees across NYC and potential associations with sociodemographic variables and health outcomes. This research will aid in informing public health interventions to promote equitable access to urban street trees and improve health.
+  In this exploratory [study](report.html), we aim to examine the geographic distribution and attributes of street trees across NYC and potential associations with sociodemographic variables and health outcomes. This research will aid in informing public health interventions to promote equitable access to urban street trees and improve health.
   
   Main Research Questions:
   

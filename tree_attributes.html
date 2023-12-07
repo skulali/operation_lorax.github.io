@@ -388,6 +388,22 @@ id="section-tree-attributes-relation-to-eachother-and-tree-attributes-distributi
 class="section level2">
 <h2>Tree Attributes Relation to Eachother and Tree Attributes
 Distribution by Location</h2>
+<pre class="r"><code>knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+
+library(tidyverse)
+library(shiny)
+library(rlang)
+library(viridis)
+
+theme_set(theme_minimal() + theme(legend.position = &quot;right&quot;))
+
+options(
+  ggplot2.continuous.colour = &quot;viridis&quot;,
+  ggplot2.continuous.fill = &quot;viridis&quot;
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d</code></pre>
 <pre class="r"><code># Load and wrangle data
 
 trees_2015 &lt;- read_csv(&quot;large_tree_data/2015_tree_raw.csv&quot;, na = c(&quot;&quot;, &quot;NA&quot;, &quot;Unknown&quot;)) |&gt; 
@@ -435,7 +451,6 @@ tree_status_df &lt;- trees_2015 %&gt;%
 
 exposure_options &lt;- colnames(tree_status_df)[3:length(tree_status_df)]
 outcome_options &lt;- colnames(tree_status_df)[3:length(tree_status_df)]
-
 
 # Define function
 
@@ -538,7 +553,7 @@ selectInput(inputId = &quot;outcome&quot;,
                               exposure_str = input$exposure, 
                               outcome_str = input$outcome)
   })</code></pre>
-<div class="shiny-plot-output html-fill-item" id="out5d8b605859ef11bc" style="width:100%;height:400px;"></div>
+<div class="shiny-plot-output html-fill-item" id="out967e0d67e85da3d6" style="width:100%;height:400px;"></div>
 </div>
 <div id="section-compare-tree-attributes-in-each-borough"
 class="section level3">
@@ -574,7 +589,7 @@ selectInput(inputId = &quot;outcome_borough&quot;,
                               exposure_str = &quot;Borough&quot;, 
                               outcome_str = input$outcome_borough)
   })</code></pre>
-<div class="shiny-plot-output html-fill-item" id="outc04e58e63af4e838" style="width:100%;height:400px;"></div>
+<div class="shiny-plot-output html-fill-item" id="outc1e06ad79196cf2e" style="width:100%;height:400px;"></div>
 </div>
 <div id="section-look-at-tree-attributes-in-nyc-overall"
 class="section level3">
@@ -610,7 +625,7 @@ selectInput(inputId = &quot;outcome_all&quot;,
                               exposure_str = &quot;All of NYC&quot;, 
                               outcome_str = input$outcome_all)
   })</code></pre>
-<div class="shiny-plot-output html-fill-item" id="out964ad1dd14b671b2" style="width:100%;height:400px;"></div>
+<div class="shiny-plot-output html-fill-item" id="out6a69044236655cbf" style="width:100%;height:400px;"></div>
 <p>Tree Attributes in Different Scenarios</p>
 <p>Several associations were explored between variables such as health,
 curb location, guards, sidewalk quality, and root, trunk, and branch
@@ -623,11 +638,11 @@ sidewalk is associated with more root problems).</p>
 <pre class="r"><code>effective_tree_protection(df = tree_status_df, 
                               exposure_str = &quot;Curb Location&quot;, 
                               outcome_str = &quot;Branches have Lights&quot;)</code></pre>
-<p><img src="comparative_tree_status_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p><img src="tree_attributes_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 <pre class="r"><code>effective_tree_protection(df = tree_status_df, 
                               exposure_str = &quot;Sidewalk&quot;, 
                               outcome_str = &quot;Root Problem (Other)&quot;)</code></pre>
-<p><img src="comparative_tree_status_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
+<p><img src="tree_attributes_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
 <p>Tree Attribute Distribution Overall</p>
 <p>This figure shows the distribution of different attributes of trees
 and their status across all of NYC. For example, we see that 81.1% of
@@ -640,15 +655,15 @@ guards and 20.5% of tree roots have stones.</p>
 effective_tree_protection(df = tree_status_df, 
                               exposure_str = &quot;All of NYC&quot;, 
                               outcome_str = &quot;Health&quot;)</code></pre>
-<p><img src="comparative_tree_status_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="tree_attributes_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <pre class="r"><code>effective_tree_protection(df = tree_status_df, 
                               exposure_str = &quot;All of NYC&quot;, 
                               outcome_str = &quot;Sidewalk&quot;)</code></pre>
-<p><img src="comparative_tree_status_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
+<p><img src="tree_attributes_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
 <pre class="r"><code>effective_tree_protection(df = tree_status_df, 
                               exposure_str = &quot;All of NYC&quot;, 
                               outcome_str = &quot;Roots with Stones&quot;)</code></pre>
-<p><img src="comparative_tree_status_files/figure-html/unnamed-chunk-2-3.png" width="672" /></p>
+<p><img src="tree_attributes_files/figure-html/unnamed-chunk-2-3.png" width="672" /></p>
 <p>Tree Health in Different Boroughs</p>
 <p>Compared to the other four boroughs, Manhattan had the lowest
 percentage of trees in “good” health, and the highest percentage of
@@ -658,7 +673,7 @@ were in “poor” health.</p>
 <pre class="r"><code>    effective_tree_protection(df = tree_status_df, 
                               exposure_str = &quot;Borough&quot;, 
                               outcome_str = &quot;Health&quot;)</code></pre>
-<p><img src="comparative_tree_status_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="tree_attributes_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 </div>
 </div>
 </div>

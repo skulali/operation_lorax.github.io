@@ -15,7 +15,7 @@ In this section
 
 ## Tree Attributes Relation to Eachother and Tree Attributes Distribution by Location
 
-```{r setup, message = FALSE, warning = FALSE}
+```{r setup, message = FALSE, warning = FALSE, echo = F}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 library(tidyverse)
