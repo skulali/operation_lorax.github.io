@@ -1,5 +1,5 @@
 ---
-title: "The Concrete Forest: How NYC Populations Have Access to Trees"
+title: "The Concrete Forest: Tree Access Across Sociodemographic Groups"
 output: 
   html_document:
     toc: true
@@ -115,7 +115,8 @@ borough_data |>
 
 Comments:
 
-- This table lists the number of trees and racial and ethnic percentage breakdown within each borough. - Queens has the highest number of trees, the highest percentage of Asian, Hawaiian and Pacific Islander, American Indian and Two Races population.
+- This table lists the number of trees and the percent racial and ethnic composition within each borough. 
+- Queens has the highest number of trees, the highest percentage of Asian, Hawaiian and Pacific Islander, American Indian and Two Races population.
 
 ```{r}
 pop_race_2010s =  
@@ -152,7 +153,7 @@ percentages |>
 
 Comments:
 
-- This table lists the number of trees and racial and ethnic percentage breakdown within each NTA in Manhattan. 
+- This table lists the number of trees and percent racial and ethnic composition within each NTA in Manhattan. 
 - The table is ranked by most number of trees and thus, we can conclude that the top 3 neighborhoods with the most trees have a majority white population.  
 
 Since NTAs may differ in size, trees per acre was used to standardize street tree counts in each NTA by the acreage of the NTA. 6 NTAs from the 2015 Tree Census were missing acreage information, so these NTAs were removed for these analyses.
