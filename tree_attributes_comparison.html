@@ -11,7 +11,7 @@
 
 
 
-<title>Comparative Tree Status</title>
+<title>Tree Attributes</title>
 
 <script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -331,13 +331,13 @@ div.tocify {
   <a href="tree_distribution.html">Tree Distribution</a>
 </li>
 <li>
+  <a href="tree_attributes_comparison.html">Tree Attributes</a>
+</li>
+<li>
   <a href="sociodemographic.html">Sociodemographic</a>
 </li>
 <li>
   <a href="health.html">Health</a>
-</li>
-<li>
-  <a href="dashboard.html">Dashboard</a>
 </li>
 <li>
   <a href="report.html">Report</a>
@@ -371,7 +371,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Comparative Tree Status</h1>
+<h1 class="title toc-ignore">Tree Attributes</h1>
 
 </div>
 
@@ -477,11 +477,12 @@ df %&gt;%
               vjust = -0.3) +
     labs(title = str_c(outcome_str, &quot; by &quot;, exposure_str),
          subtitle = sprintf(&quot;p value = %.1e (Chi-square = %.2f)&quot;, p_value, chi_square)) +
-    theme(legend.position=&quot;bottom&quot;)
+    theme(legend.position=&quot;bottom&quot;) +
+    theme(text = element_text(size = 14))
 }</code></pre>
-<div id="tree-status-in-different-scenarios"
+<div id="tree-attributes-in-different-scenarios"
 class="section level1 tabset">
-<h1 class="tabset">Tree Status in Different Scenarios</h1>
+<h1 class="tabset">Tree Attributes in Different Scenarios</h1>
 <div id="curb-location" class="section level2 tabset">
 <h2 class="tabset">Curb Location</h2>
 <pre class="r"><code>exposure &lt;- &quot;Curb Location&quot;</code></pre>
@@ -629,10 +630,9 @@ class="section level1 tabset">
 </div>
 </div>
 </div>
-<div id="tree-attributes-distribution-by-borough-and-overall-in-nyc"
+<div id="distribution-by-borough-and-overall-in-nyc"
 class="section level1 tabset">
-<h1 class="tabset">Tree Attributes Distribution by Borough and Overall
-in NYC</h1>
+<h1 class="tabset">Distribution by Borough and Overall in NYC</h1>
 <div id="distribution-by-borough" class="section level2 tabset">
 <h2 class="tabset">Distribution by Borough</h2>
 <pre class="r"><code>exposure &lt;- &quot;Borough&quot;</code></pre>
@@ -641,8 +641,8 @@ in NYC</h1>
 <pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Health&quot;)</code></pre>
 <p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 </div>
-<div id="tree-location" class="section level3">
-<h3>Tree Location</h3>
+<div id="tree-surroundings" class="section level3">
+<h3>Tree Surroundings</h3>
 <pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Sidewalk Condition&quot;)</code></pre>
 <p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 <pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Curb Location&quot;)</code></pre>
@@ -689,7 +689,7 @@ in NYC</h1>
 <pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Health&quot;)</code></pre>
 <p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
 </div>
-<div id="tree-location-1" class="section level3">
+<div id="tree-location" class="section level3">
 <h3>Tree Location</h3>
 <pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Sidewalk Condition&quot;)</code></pre>
 <p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>

@@ -1,5 +1,5 @@
 ---
-title: "Comparative Tree Status"
+title: "Tree Attributes"
 output: 
   html_document:
     toc: true
@@ -115,12 +115,13 @@ df %>%
               vjust = -0.3) +
     labs(title = str_c(outcome_str, " by ", exposure_str),
          subtitle = sprintf("p value = %.1e (Chi-square = %.2f)", p_value, chi_square)) +
-    theme(legend.position="bottom")
+    theme(legend.position="bottom") +
+    theme(text = element_text(size = 14))
 }
 
 ```
 
-# Tree Status in Different Scenarios {.tabset}
+# Tree Attributes in Different Scenarios {.tabset}
 
 ## Curb Location {.tabset}
 
@@ -275,7 +276,7 @@ tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = 
 tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = "Branches Problem (Other)")
 ```
 
-# Tree Attributes Distribution by Borough and Overall in NYC {.tabset}
+# Distribution by Borough and Overall in NYC {.tabset}
 
 ## Distribution by Borough {.tabset}
 
@@ -289,7 +290,7 @@ exposure <- "Borough"
 tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = "Health")
 ```
 
-### Tree Location 
+### Tree Surroundings 
 
 ```{r}
 tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = "Sidewalk Condition")
