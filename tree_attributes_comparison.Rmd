@@ -123,6 +123,20 @@ df %>%
 
 # Tree Attributes in Different Scenarios {.tabset}
 
+The section below allows for exploration of the relationship between different attributes of trees, such as curb location, tree guards, the quality of the sidewalk, or the tree health, with tree attributes, such as:
+
+* health
+
+* root health (whether they have stones, are in a grate, or have other problems)
+
+* trunk health (whether it has wires, branches, or other abnormalities)
+
+* branch details (lights or other abnormalities)
+
+* whether the tree is alive, dead, or a stump.
+
+The figure includes the percentages of the different distribution categories, a visualization of these relative percentages, and the results of a chi-square test to determine whether the distributions were significantly different between the conditions explored.
+
 ## Curb Location {.tabset}
 
 ```{r}
@@ -278,6 +292,8 @@ tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = 
 
 # Distribution by Borough and Overall in NYC {.tabset}
 
+The section below shows the overall distribution of different tree surroundings, qualities, attributes, and health. It can be explored by borough or as an overall summary of the entire city. 
+
 ## Distribution by Borough {.tabset}
 
 ```{r}
@@ -289,6 +305,8 @@ exposure <- "Borough"
 ```{r}
 tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = "Health")
 ```
+
+This figure shows the distribution of different attributes of trees and their status across all of NYC. For example, we see that 81.1% of trees are in “good” health, 14.8% of trees are in “fair” health, and 4.1% of trees are in “poor” health. Notably, 28.7% of sidewalks are damaged (71.2% not damaged). The majority of trees (87.8%) do not have guards and 20.5% of tree roots have stones. 
 
 ### Tree Surroundings 
 
@@ -373,3 +391,8 @@ tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = 
 ```{r}
 tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = "Alive, Dead, or Stump")
 ```
+
+This figure shows the distribution of different attributes of trees and their status across all of NYC. For example, we see that 81.1% of trees are in “good” health, 14.8% of trees are in “fair” health, and 4.1% of trees are in “poor” health. Notably, 28.7% of sidewalks are damaged (71.2% not damaged). The majority of trees (87.8%) do not have guards and 20.5% of tree roots have stones. 
+
+Compared to the other four boroughs, Manhattan had the lowest percentage of trees in “good” health, and the highest percentage of trees in both “fair” and “poor” health. Overall in NYC, 81.1% of trees were in “good” health, 14.8% of trees were in “fair” health, and 4.1% were in “poor” health. 
+

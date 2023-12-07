@@ -483,6 +483,23 @@ df %&gt;%
 <div id="tree-attributes-in-different-scenarios"
 class="section level1 tabset">
 <h1 class="tabset">Tree Attributes in Different Scenarios</h1>
+<p>The section below allows for exploration of the relationship between
+different attributes of trees, such as curb location, tree guards, the
+quality of the sidewalk, or the tree health, with tree attributes, such
+as:</p>
+<ul>
+<li><p>health</p></li>
+<li><p>root health (whether they have stones, are in a grate, or have
+other problems)</p></li>
+<li><p>trunk health (whether it has wires, branches, or other
+abnormalities)</p></li>
+<li><p>branch details (lights or other abnormalities)</p></li>
+<li><p>whether the tree is alive, dead, or a stump.</p></li>
+</ul>
+<p>The figure includes the percentages of the different distribution
+categories, a visualization of these relative percentages, and the
+results of a chi-square test to determine whether the distributions were
+significantly different between the conditions explored.</p>
 <div id="curb-location" class="section level2 tabset">
 <h2 class="tabset">Curb Location</h2>
 <pre class="r"><code>exposure &lt;- &quot;Curb Location&quot;</code></pre>
@@ -633,6 +650,9 @@ class="section level1 tabset">
 <div id="distribution-by-borough-and-overall-in-nyc"
 class="section level1 tabset">
 <h1 class="tabset">Distribution by Borough and Overall in NYC</h1>
+<p>The section below shows the overall distribution of different tree
+surroundings, qualities, attributes, and health. It can be explored by
+borough or as an overall summary of the entire city.</p>
 <div id="distribution-by-borough" class="section level2 tabset">
 <h2 class="tabset">Distribution by Borough</h2>
 <pre class="r"><code>exposure &lt;- &quot;Borough&quot;</code></pre>
@@ -640,6 +660,12 @@ class="section level1 tabset">
 <h3 class="tabset">Tree Health</h3>
 <pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Health&quot;)</code></pre>
 <p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p>This figure shows the distribution of different attributes of trees
+and their status across all of NYC. For example, we see that 81.1% of
+trees are in “good” health, 14.8% of trees are in “fair” health, and
+4.1% of trees are in “poor” health. Notably, 28.7% of sidewalks are
+damaged (71.2% not damaged). The majority of trees (87.8%) do not have
+guards and 20.5% of tree roots have stones.</p>
 </div>
 <div id="tree-surroundings" class="section level3">
 <h3>Tree Surroundings</h3>
@@ -727,6 +753,17 @@ class="section level1 tabset">
 <h3>Vital Status</h3>
 <pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Alive, Dead, or Stump&quot;)</code></pre>
 <p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
+<p>This figure shows the distribution of different attributes of trees
+and their status across all of NYC. For example, we see that 81.1% of
+trees are in “good” health, 14.8% of trees are in “fair” health, and
+4.1% of trees are in “poor” health. Notably, 28.7% of sidewalks are
+damaged (71.2% not damaged). The majority of trees (87.8%) do not have
+guards and 20.5% of tree roots have stones.</p>
+<p>Compared to the other four boroughs, Manhattan had the lowest
+percentage of trees in “good” health, and the highest percentage of
+trees in both “fair” and “poor” health. Overall in NYC, 81.1% of trees
+were in “good” health, 14.8% of trees were in “fair” health, and 4.1%
+were in “poor” health.</p>
 </div>
 </div>
 </div>
