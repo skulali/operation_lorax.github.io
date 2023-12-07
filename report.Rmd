@@ -34,7 +34,7 @@ scale_fill_discrete = scale_fill_viridis_d
 
 **Project Name:** *Operation Lorax - Data Speaks for the Trees!*
 
-**Project Members:** Stephanie Calluori, Christine Kuryla, Sharon Kulali, Grace Santos, Zander De Jesus
+**Project Members:** Stephanie Calluori (sdc2157), Zander De Jesus (agd2159), Sharon Kulali (sjk2254), Christine Kuryla (clk2162), Grace Santos (gvs2113)
 
 ## Topic
 
@@ -399,7 +399,7 @@ borough_dbh |>
   )
 ```
 
-This density plot shows the spread of adult tree age in each borough, while eliminating some outliers shown in the previous box plot. As the right tail extends, the more older trees exist, so this plot shows that Queens has the most older trees out of all boroughs.
+This density plot shows the spread of adult tree age in each borough, while eliminating some outliers shown in the previous box plot. The wider the right tail extends, the greater the number of older trees that exist in that borough, so this plot shows that Queens has the greatest number of older trees out of all boroughs.
 
 ```{r}
 dem_race = 
@@ -1117,7 +1117,7 @@ The 2015 tree dataset includes only street trees, and does not include any trees
 
 The size of the 2015 NYC Street Tree dataset, which had over 680,0000 individual rows of surveyed trees for 45 variables, was a significant hindrance in the efficiency of our coding process. We originally wanted to assess longitudinal changes in the distribution of trees throughout New York City by comparing the 2015 dataset to the 1995 and 2005 NYC Street Tree datasets. However, after we discovered the large size of these datasets, and that the older datasets may have significant data cleaning and wrangling challenges and inconsistencies with the 2015 dataset (e.g., using census tract levels from census other than the 2010 U.S. Census), we decided to not pursue this analysis.
 
-We addressed the issue of the large file size of the 2015 NYC Street Tree dataset, which was over 200 mb, and by utilizing `git.ignore`. Supplementary datasets of large file size were also placed in the `git.ignore`.. We included the path to our large data folder, so that knitting and building the website would be faster when working with these datasets. Additionally, using the `summarize()` function to bring our observation averages to the size of grouped spatial resolutions (zip code, nta, community district) made dataframe sizes much more manageable for performing joins to shapefiles and rendering the data as maps or charts.
+We addressed the issue of the large file size of the 2015 NYC Street Tree dataset, which was over 200 mb, and by utilizing `git.ignore`. Supplementary datasets of large file size were also placed in the `git.ignore`. We included the path to our large data folder, so that knitting and building the website would be faster when working with these datasets. Additionally, using the `summarize()` function to bring our observation averages to the size of grouped spatial resolutions (zip code, nta, community district) made dataframe sizes much more manageable for performing joins to shapefiles and rendering the data as maps or charts.
 
 After deciding to use the 2015 NYC Street Tree dataset, we wanted to make sure that our supplementary data sets were collected around the same time frame. We had some difficulty in finding data sets that included our desired variables during 2015 or a few years around it and thus, had to choose the best available options. This difficulty was compounded by the challenge of finding data for variables of interest (e.g., sociodemographic, health outcomes) at the spatial resolution desired. For instance, many health outcomes cataloged in the New York City Environmental Health Data Portal were not at the NTA level. Many outcomes we were hoping to explore only had measurements available at much higher spatial resolutions (e.g., citywide or borough). Some health variables only had broad summary results that were too generalized for us to use in meaningful comparative analysis with the street tree dataset.
 

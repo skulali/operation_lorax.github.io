@@ -11,7 +11,7 @@
   Main Research Questions:
   
 - How are trees geographically [distributed](tree_distribution.html) throughout New York City?
-- How are different tree [attributes](comparative_tree_status.html), quality, and health related to each other, and does this differ by borough?
+- How are different tree [attributes](tree_attributes_comparison.html), quality, and health related to each other, and does this differ by borough?
 - How does access to trees vary by [socio-demographic](sociodemographic.html) categories by borough and neighborhoods?
 - Is there a relationship between tree distribution and [health](health.html) outcomes related to asthma and heat stress?
 </div>

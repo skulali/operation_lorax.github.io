@@ -506,7 +506,7 @@ Comments:
 
 - Highest chronic pollution across Manhattan and Upper Brooklyn neighborhoods - densest commercial zones. Particularly in Manhattan and the Bronx, this map suggests that the community districts with highest fine particulate exposures also have the lowest number of trees.
 - Lowest ambient PM2.5 on the outermost edges of Brooklyn and Queens, also have high tree counts and highest dbh averages.
-- Despite the highest pollution in these neighborhoods, asthma hospitalization still concentrations in the predominantly BIPOC communities of Central Bronx and Brooklyn.
+- Despite the highest pollution in these neighborhoods, asthma hospitalization still concentrates in the predominantly BIPOC communities of Central Bronx and Brooklyn.
 
 ## Heatstress
 
