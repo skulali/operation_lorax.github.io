@@ -32,6 +32,7 @@ options(
 
 scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
+
 ```
 
 ```{r}
@@ -381,9 +382,11 @@ Comments:
 - Highest DBH clusters between 13 and 15 inches are in easternmost Queens and South Brooklyn, some of the most residential and spacious neighborhoods of the city. Suggests these neighborhoods have the largest percentage of significantly older trees that have been growing for decades. 
 - Lowest DBH neighborhoods across downtown Manhattan and the Bronx  - youngest and smallest trees. May have more routine plantings of young trees - and also limited curb space that stunts growth.
 
-## Tree Health Status
+## Tree Health Status 
 
-Below are some visualizations of all 5 boroughs of New York by Zip Code, colored by tree health. This data was collected from the 2015 Street Tree Census. The decision to use Zip Codes for these maps was made due to the availability of a shape file of New York with lines to separate by Zip Code. The following 5 visualizations are closer visualizations of each borough. The last map is the tree health across Washington Heights by Zip Codes.
+Below are some visualizations of all 5 boroughs of New York by Zip Code, colored by tree health. This data was collected from the 2015 Street Tree Census. The decision to use Zip Codes for these maps was made due to the availability of a shape file of New York with lines to separate by Zip Code. The following 5 visualizations are closer visualizations of each borough. 
+
+### NYC Overall
 
 ```{r}
 zip_nyc = st_read("small_data/MODZCTA_2010.shp")
@@ -416,6 +419,9 @@ trees_zip |>
             legend.text.size = 0.52)
 ```
 
+### By Borough {.tabset}
+#### Manhattan {.tabset}
+
 ```{r}
 trees_zip |> 
   filter(borough == "Manhattan") |> 
@@ -432,6 +438,8 @@ trees_zip |>
             frame = FALSE) +
   tm_legend(legend.text.size = 0.52)
 ```
+
+#### Brooklyn
 
 ```{r}
 trees_zip |> 
@@ -450,6 +458,8 @@ trees_zip |>
   tm_legend(legend.text.size = 0.52)
 ```
 
+#### Queens
+
 ```{r}
 trees_zip |> 
   drop_na() |> 
@@ -466,6 +476,8 @@ trees_zip |>
             frame = FALSE) +
   tm_legend(legend.text.size = 0.52)
 ```
+
+#### The Bronx
 
 ```{r}
 trees_zip |> 
@@ -484,6 +496,8 @@ trees_zip |>
   tm_legend(legend.text.size = 0.52)
 ```
 
+#### Staten Island
+
 ```{r}
 trees_zip |> 
   drop_na() |> 
@@ -500,6 +514,10 @@ trees_zip |>
             frame = FALSE) +
   tm_legend(legend.text.size = 0.52)
 ```
+
+### Washington Heights
+
+The map below is the tree health across Washington Heights by Zip Codes.
 
 ```{r}
 trees_df_nta = 
