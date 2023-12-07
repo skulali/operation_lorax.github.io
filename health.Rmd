@@ -56,6 +56,8 @@ Is there an association between the number of trees per acre and the annual rate
 
 #### All of NYC Combined
 
+When examining all of the neighborhoods in NYC, there is a very weak, negative, linear association between number of trees per acre and the average annual rate of adult asthma emergency department visits per 10,000 people (r = - 0.0324).
+
 ```{r}
 acres_raw <- 
   read_excel("small_data/t_pl_p5_nta.xlsx", 
@@ -95,6 +97,8 @@ asthma_ed_adults_clean = asthma_ed_adults_raw |>
 
 trees_and_asthma_ed_adult <- left_join(trees_per_acre_df, asthma_ed_adults_clean, by = "nta_name")
 
+cor(pull(trees_and_asthma_ed_adult, trees_per_acre), pull(trees_and_asthma_ed_adult, average_annual_rate_per_10_000))
+
 trees_and_asthma_ed_adult |> 
   plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
           color = ~nta_name,
@@ -109,16 +113,21 @@ trees_and_asthma_ed_adult |>
            yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
            legend = list(title=list(text='Neighborhood')))
 
-cor(pull(trees_and_asthma_ed_adult, trees_per_acre), pull(trees_and_asthma_ed_adult, average_annual_rate_per_10_000))
 ```
-
-When examining all of the neighborhoods in NYC, there is a very weak, negative, linear association between number of trees per acre and the average annual rate of adult asthma emergency department visits per 10,000 people (r = - 0.0324).
 
 #### By Borough {.tabset}
 
 ##### Manhattan {.tabset}
 
+When examining only neighborhoods in Manhattan, there remains a very weak, negative, linear association between number of trees per acre and the average annual rate of adult asthma emergency department visits per 10,000 people (r = - 0.0168). This could indicate that a non-linear relationship may be more suitable; it is also possible that no association exists.
+
 ```{r}
+
+manhattan_per_acre_asthma_ed_adult <- trees_and_asthma_ed_adult |> 
+  filter(borough == "Manhattan") 
+
+cor(pull(manhattan_per_acre_asthma_ed_adult, trees_per_acre), pull(manhattan_per_acre_asthma_ed_adult, average_annual_rate_per_10_000))
+
 trees_and_asthma_ed_adult |> 
   filter(borough == "Manhattan") |> 
   plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
@@ -134,17 +143,19 @@ trees_and_asthma_ed_adult |>
            yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
            legend = list(title=list(text='Neighborhood')))
 
-manhattan_per_acre_asthma_ed_adult <- trees_and_asthma_ed_adult |> 
-  filter(borough == "Manhattan") 
-
-cor(pull(manhattan_per_acre_asthma_ed_adult, trees_per_acre), pull(manhattan_per_acre_asthma_ed_adult, average_annual_rate_per_10_000))
 ```
-
-When examining only neighborhoods in Manhattan, there remains a very weak, negative, linear association between number of trees per acre and the average annual rate of adult asthma emergency department visits per 10,000 people (r = - 0.0168). This could indicate that a non-linear relationship may be more suitable; it is also possible that no association exists.
 
 ##### The Bronx
 
+When examining only neighborhoods in the Bronx, there is a moderate, positive, linear association between number of trees per acre and the average annual rate of adult asthma emergency department visits per 10,000 people (r = 0.4323). It appears that as the number of trees per acre increases, the rate of adult asthma emergency department visits increases. These results are contrary to our expectations. This may indicate that other factors may contribute to adult asthma emergency department visits; for instance, trees per acre may serve as a proxy for a different variable driving the association with asthma ED visits.
+
 ```{r}
+
+bronx_per_acre_asthma_ed_adult <- trees_and_asthma_ed_adult |> 
+  filter(borough == "Bronx") 
+
+cor(pull(bronx_per_acre_asthma_ed_adult, trees_per_acre), pull(bronx_per_acre_asthma_ed_adult, average_annual_rate_per_10_000))
+
 trees_and_asthma_ed_adult |> 
   filter(borough == "Bronx") |> 
   plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
@@ -160,17 +171,19 @@ trees_and_asthma_ed_adult |>
            yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
            legend = list(title=list(text='Neighborhood')))
 
-bronx_per_acre_asthma_ed_adult <- trees_and_asthma_ed_adult |> 
-  filter(borough == "Bronx") 
-
-cor(pull(bronx_per_acre_asthma_ed_adult, trees_per_acre), pull(bronx_per_acre_asthma_ed_adult, average_annual_rate_per_10_000))
 ```
-
-When examining only neighborhoods in the Bronx, there is a moderate, positive, linear association between number of trees per acre and the average annual rate of adult asthma emergency department visits per 10,000 people (r = 0.4323). It appears that as the number of trees per acre increases, the rate of adult asthma emergency department visits increases. These results are contrary to our expectations. This may indicate that other factors may contribute to adult asthma emergency department visits; for instance, trees per acre may serve as a proxy for a different variable driving the association with asthma ED visits.
 
 ##### Brooklyn
 
+When examining only neighborhoods in Brooklyn, there remains a very weak, negative, linear association between number of trees per acre and the average annual rate of adult asthma emergency department visits per 10,000 people (r = - 0.0532). This could indicate that a non-linear relationship may be more suitable; it is also possible that no association exists.
+
 ```{r}
+
+brooklyn_per_acre_asthma_ed_adult <- trees_and_asthma_ed_adult |> 
+  filter(borough == "Brooklyn") 
+
+cor(pull(brooklyn_per_acre_asthma_ed_adult, trees_per_acre), pull(brooklyn_per_acre_asthma_ed_adult, average_annual_rate_per_10_000))
+
 trees_and_asthma_ed_adult |> 
   filter(borough == "Brooklyn") |> 
   plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
@@ -186,17 +199,19 @@ trees_and_asthma_ed_adult |>
            yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
            legend = list(title=list(text='Neighborhood')))
 
-brooklyn_per_acre_asthma_ed_adult <- trees_and_asthma_ed_adult |> 
-  filter(borough == "Brooklyn") 
-
-cor(pull(brooklyn_per_acre_asthma_ed_adult, trees_per_acre), pull(brooklyn_per_acre_asthma_ed_adult, average_annual_rate_per_10_000))
 ```
-
-When examining only neighborhoods in Brooklyn, there remains a very weak, negative, linear association between number of trees per acre and the average annual rate of adult asthma emergency department visits per 10,000 people (r = - 0.0532). This could indicate that a non-linear relationship may be more suitable; it is also possible that no association exists.
 
 ##### Staten Island
 
+When examining only neighborhoods in Staten Island, there is a moderate, negative, linear association between number of trees per acre and the average annual rate of adult asthma emergency department visits per 10,000 people (r = -0.4554). As the number of trees per acre increases, the rate of adult asthma emergency department visits decreases.
+
 ```{r}
+
+staten_island_per_acre_asthma_ed_adult <- trees_and_asthma_ed_adult |> 
+  filter(borough == "Staten Island") 
+
+cor(pull(staten_island_per_acre_asthma_ed_adult, trees_per_acre), pull(staten_island_per_acre_asthma_ed_adult, average_annual_rate_per_10_000))
+
 trees_and_asthma_ed_adult |> 
   filter(borough == "Staten Island") |> 
   plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
@@ -212,17 +227,19 @@ trees_and_asthma_ed_adult |>
            yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
            legend = list(title=list(text='Neighborhood')))
 
-staten_island_per_acre_asthma_ed_adult <- trees_and_asthma_ed_adult |> 
-  filter(borough == "Staten Island") 
-
-cor(pull(staten_island_per_acre_asthma_ed_adult, trees_per_acre), pull(staten_island_per_acre_asthma_ed_adult, average_annual_rate_per_10_000))
 ```
-
-When examining only neighborhoods in Staten Island, there is a moderate, negative, linear association between number of trees per acre and the average annual rate of adult asthma emergency department visits per 10,000 people (r = -0.4554). As the number of trees per acre increases, the rate of adult asthma emergency department visits decreases.
 
 ##### Queens
 
+When examining only neighborhoods in Queens, there is a moderate, negative, linear association between number of trees per acre and the average annual rate of adult asthma emergency department visits per 10,000 people (r = -0.5260). As the number of trees per acre increases, the rate of adult asthma emergency department visits decreases.
+
 ```{r}
+
+queens_per_acre_asthma_ed_adult <- trees_and_asthma_ed_adult |> 
+  filter(borough == "Queens") 
+
+cor(pull(queens_per_acre_asthma_ed_adult, trees_per_acre), pull(queens_per_acre_asthma_ed_adult, average_annual_rate_per_10_000))
+
 trees_and_asthma_ed_adult |> 
   filter(borough == "Queens") |> 
   plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
@@ -238,13 +255,7 @@ trees_and_asthma_ed_adult |>
            yaxis = list(title = 'Average annual rate of <br> adult asthma emergency dept visits (per 10,000)'),
            legend = list(title=list(text='Neighborhood')))
 
-queens_per_acre_asthma_ed_adult <- trees_and_asthma_ed_adult |> 
-  filter(borough == "Queens") 
-
-cor(pull(queens_per_acre_asthma_ed_adult, trees_per_acre), pull(queens_per_acre_asthma_ed_adult, average_annual_rate_per_10_000))
 ```
-
-When examining only neighborhoods in Queens, there is a moderate, negative, linear association between number of trees per acre and the average annual rate of adult asthma emergency department visits per 10,000 people (r = -0.5260). As the number of trees per acre increases, the rate of adult asthma emergency department visits decreases.
 
 #### Summary
 
@@ -255,6 +266,8 @@ When examining only neighborhoods in Queens, there is a moderate, negative, line
 Is there an association between the number of trees per acre and the annual rate of adult asthma hospitalizations 1) across neighborhoods in NYC and 2) across neighborhoods in each borough? 
 
 #### All of NYC Combined
+
+When examining all of the neighborhoods in NYC, there is a weak, negative, linear association between number of trees per acre and the average annual rate of adult asthma hospitalizations per 10,000 people (r = - 0.1008).
 
 ```{r}
 asthma_hosp_adult_raw <-
@@ -267,6 +280,8 @@ asthma_hosp_adult_clean <- asthma_hosp_adult_raw |>
   select(nta_name, average_annual_age_adjusted_rate_per_10_000, average_annual_rate_per_10_000)
 
 trees_and_asthma_hosp_adult <- left_join(trees_per_acre_df, asthma_hosp_adult_clean, by = "nta_name")
+
+cor(pull(trees_and_asthma_hosp_adult, trees_per_acre), pull(trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
 
 trees_and_asthma_hosp_adult |> 
   plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
@@ -282,16 +297,21 @@ trees_and_asthma_hosp_adult |>
          yaxis = list(title = 'Average annual rate of <br> adult asthma hospitalizations (per 10,000)'),
          legend = list(title=list(text='Neighborhood')))
 
-cor(pull(trees_and_asthma_hosp_adult, trees_per_acre), pull(trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
 ```
-
-When examining all of the neighborhoods in NYC, there is a weak, negative, linear association between number of trees per acre and the average annual rate of adult asthma hospitalizations per 10,000 people (r = - 0.1008).
 
 #### By Borough {.tabset}
 
 ##### Manhattan {.tabset}
 
+When examining only neighborhoods in Manhattan, there is a very weak, negative, linear association between number of trees per acre and the average annual rate of adult asthma hospitalizations per 10,000 people (r = - 0.0619). This could indicate that a non-linear relationship may be more suitable; it is also possible that no association exists.
+
 ```{r}
+
+manhattan_trees_and_asthma_hosp_adult <- trees_and_asthma_hosp_adult |> 
+  filter(borough == "Manhattan")
+
+cor(pull(manhattan_trees_and_asthma_hosp_adult, trees_per_acre), pull(manhattan_trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
+
 trees_and_asthma_hosp_adult |> 
   filter(borough == "Manhattan") |> 
   plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
@@ -307,17 +327,19 @@ trees_and_asthma_hosp_adult |>
          yaxis = list(title = 'Average annual rate of <br> adult asthma hospitalizations (per 10,000)'),
          legend = list(title=list(text='Neighborhood')))
 
-manhattan_trees_and_asthma_hosp_adult <- trees_and_asthma_hosp_adult |> 
-  filter(borough == "Manhattan")
-
-cor(pull(manhattan_trees_and_asthma_hosp_adult, trees_per_acre), pull(manhattan_trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
 ```
-
-When examining only neighborhoods in Manhattan, there is a very weak, negative, linear association between number of trees per acre and the average annual rate of adult asthma hospitalizations per 10,000 people (r = - 0.0619). This could indicate that a non-linear relationship may be more suitable; it is also possible that no association exists.
 
 ##### The Bronx
 
+When examining only neighborhoods in the Bronx, there is a weak, positive, linear association between number of trees per acre and the average annual rate of adult asthma hospitalizations per 10,000 people (r = 0.3762). It appears that as the number of trees per acre increases, the rate of adult asthma hospitalizations increases. These results are contrary to our expectations. This may indicate that other factors may contribute to adult asthma hospitalizations; for instance, trees per acre may serve as a proxy for a different variable driving the association with asthma hospitalizations.
+
 ```{r}
+
+bronx_trees_and_asthma_hosp_adult <- trees_and_asthma_hosp_adult |> 
+  filter(borough == "Bronx")
+
+cor(pull(bronx_trees_and_asthma_hosp_adult, trees_per_acre), pull(bronx_trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
+
 trees_and_asthma_hosp_adult |> 
   filter(borough == "Bronx") |> 
   plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
@@ -333,17 +355,19 @@ trees_and_asthma_hosp_adult |>
          yaxis = list(title = 'Average annual rate of <br> adult asthma hospitalizations (per 10,000)'),
          legend = list(title=list(text='Neighborhood')))
 
-bronx_trees_and_asthma_hosp_adult <- trees_and_asthma_hosp_adult |> 
-  filter(borough == "Bronx")
-
-cor(pull(bronx_trees_and_asthma_hosp_adult, trees_per_acre), pull(bronx_trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
 ```
-
-When examining only neighborhoods in the Bronx, there is a weak, positive, linear association between number of trees per acre and the average annual rate of adult asthma hospitalizations per 10,000 people (r = 0.3762). It appears that as the number of trees per acre increases, the rate of adult asthma hospitalizations increases. These results are contrary to our expectations. This may indicate that other factors may contribute to adult asthma hospitalizations; for instance, trees per acre may serve as a proxy for a different variable driving the association with asthma hospitalizations.
 
 ##### Brooklyn
 
+When examining only neighborhoods in Brooklyn, there remains a weak, negative, linear association between number of trees per acre and the average annual rate of adult asthma hospitalizations per 10,000 people (r = - 0.1718).
+
 ```{r}
+
+brooklyn_trees_and_asthma_hosp_adult <- trees_and_asthma_hosp_adult |> 
+  filter(borough == "Brooklyn")
+
+cor(pull(brooklyn_trees_and_asthma_hosp_adult, trees_per_acre), pull(brooklyn_trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
+
 trees_and_asthma_hosp_adult |> 
   filter(borough == "Brooklyn") |> 
   plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
@@ -359,17 +383,19 @@ trees_and_asthma_hosp_adult |>
          yaxis = list(title = 'Average annual rate of <br> adult asthma hospitalizations (per 10,000)'),
          legend = list(title=list(text='Neighborhood')))
 
-brooklyn_trees_and_asthma_hosp_adult <- trees_and_asthma_hosp_adult |> 
-  filter(borough == "Brooklyn")
-
-cor(pull(brooklyn_trees_and_asthma_hosp_adult, trees_per_acre), pull(brooklyn_trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
 ```
-
-When examining only neighborhoods in Brooklyn, there remains a weak, negative, linear association between number of trees per acre and the average annual rate of adult asthma hospitalizations per 10,000 people (r = - 0.1718).
 
 ##### Staten Island
 
+When examining only neighborhoods in Staten Island, there is a moderate, negative, linear association between number of trees per acre and the average annual rate of adult asthma hospitalizations per 10,000 people (r = -0.4272). As the number of trees per acre increases, the rate of adult asthma hospitalizations decreases.
+
 ```{r}
+
+staten_island_trees_and_asthma_hosp_adult <- trees_and_asthma_hosp_adult |> 
+  filter(borough == "Staten Island")
+
+cor(pull(staten_island_trees_and_asthma_hosp_adult, trees_per_acre), pull(staten_island_trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
+
 trees_and_asthma_hosp_adult |> 
   filter(borough == "Staten Island") |> 
   plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
@@ -385,17 +411,19 @@ trees_and_asthma_hosp_adult |>
          yaxis = list(title = 'Average annual rate of <br> adult asthma hospitalizations (per 10,000)'),
          legend = list(title=list(text='Neighborhood')))
 
-staten_island_trees_and_asthma_hosp_adult <- trees_and_asthma_hosp_adult |> 
-  filter(borough == "Staten Island")
-
-cor(pull(staten_island_trees_and_asthma_hosp_adult, trees_per_acre), pull(staten_island_trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
 ```
-
-When examining only neighborhoods in Staten Island, there is a moderate, negative, linear association between number of trees per acre and the average annual rate of adult asthma hospitalizations per 10,000 people (r = -0.4272). As the number of trees per acre increases, the rate of adult asthma hospitalizations decreases.
 
 ##### Queens
 
+When examining only neighborhoods in Queens, there is a moderate, negative, linear association between number of trees per acre and the average annual rate of adult asthma hospitalizations per 10,000 people (r = -0.5502). As the number of trees per acre increases, the rate of adult asthma hospitalizations decreases.
+
 ```{r}
+
+queens_trees_and_asthma_hosp_adult <- trees_and_asthma_hosp_adult |> 
+  filter(borough == "Queens")
+
+cor(pull(queens_trees_and_asthma_hosp_adult, trees_per_acre), pull(queens_trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
+
 trees_and_asthma_hosp_adult |> 
   filter(borough == "Queens") |> 
   plot_ly(data = _, x = ~trees_per_acre, y = ~average_annual_rate_per_10_000, 
@@ -411,13 +439,7 @@ trees_and_asthma_hosp_adult |>
          yaxis = list(title = 'Average annual rate of <br> adult asthma hospitalizations (per 10,000)'),
          legend = list(title=list(text='Neighborhood')))
 
-queens_trees_and_asthma_hosp_adult <- trees_and_asthma_hosp_adult |> 
-  filter(borough == "Queens")
-
-cor(pull(queens_trees_and_asthma_hosp_adult, trees_per_acre), pull(queens_trees_and_asthma_hosp_adult, average_annual_rate_per_10_000))
 ```
-
-When examining only neighborhoods in Queens, there is a moderate, negative, linear association between number of trees per acre and the average annual rate of adult asthma hospitalizations per 10,000 people (r = -0.5502). As the number of trees per acre increases, the rate of adult asthma hospitalizations decreases.
 
 #### Summary
 
@@ -426,7 +448,8 @@ When examining only neighborhoods in Queens, there is a moderate, negative, line
 ### Avgerage Annual Hospitalization Rate Across NYC Neighborhoods
 
 ```{r}
-nyc_nta = st_read("small_data/geo_export_e924b274-8b6e-427d-87c0-92bfde8ce30a.shp")
+nyc_nta = st_read("small_data/geo_export_e924b274-8b6e-427d-87c0-92bfde8ce30a.shp",
+                  quiet = TRUE)
 
 nta_asthma_spatial = merge(nyc_nta, asthma_hosp_adult_clean,
                         by.x = "ntaname",
@@ -495,7 +518,8 @@ Comments:
 The [EPA](https://enviroatlas.epa.gov/enviroatlas/DataFactSheets/pdf/ESC/PercentparticulatematterPM25removedannuallybytreecover.pdf) and Leading Forest Agencies discuss that one of the ecosystem benefits of urban street trees is the ability for trees to uptake fine particulate matter (PM2.5) from vehicle exhaust and local combustion through stomata uptake during photosynthesis. 
 
 ```{r}
-nyc_comdist = st_read("small_data/geo_export_bd3c92bc-94de-48f3-9de3-e939473f307b.shp")
+nyc_comdist = st_read("small_data/geo_export_bd3c92bc-94de-48f3-9de3-e939473f307b.shp",
+                      quiet = TRUE)
 
 nyc_finepm2015 = read_csv("small_data/nyc_pm2.5_annual2015.csv") |> 
   janitor::clean_names() |> 
