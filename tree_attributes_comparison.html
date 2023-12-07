@@ -668,104 +668,104 @@ class="section level1 tabset">
 </div>
 </div>
 </div>
-<div id="i-thin-this-fix" class="section level1 tabset">
-<h1 class="tabset">I thin this fix</h1>
-</div>
-<div
-id="tree-attributes-relation-to-eachother-and-tree-attributes-distribution-by-location-1"
-class="section level1">
-<h1>Tree Attributes Relation to Eachother and Tree Attributes
-Distribution by Location</h1>
-</div>
-<div id="tree-status-in-different-scenarios-1"
+<div id="tree-attributes-distribution-by-borough-and-overall-in-nyc"
 class="section level1 tabset">
-<h1 class="tabset">Tree Status in Different Scenarios</h1>
-<div id="curb-location-1" class="section level2">
-<h2>Curb Location</h2>
-<pre class="r"><code>exposure &lt;- &quot;Curb Location&quot;
-
-tree_attribute_plot(df = tree_status_df, 
-                              exposure_str = exposure, 
-                              outcome_str = &quot;Health&quot;)</code></pre>
-<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
-<pre class="r"><code>exposure_tab(exposure)</code></pre>
-<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-23-2.png" width="672" /><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-23-3.png" width="672" /><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-23-4.png" width="672" /><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-23-5.png" width="672" /><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-23-6.png" width="672" /><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-23-7.png" width="672" /></p>
-</div>
-<div id="sidewalk-condition-1" class="section level2">
-<h2>Sidewalk Condition</h2>
-<pre class="r"><code>exposure &lt;- &quot;Sidewalk Condition&quot;
-
-tree_attribute_plot(df = tree_status_df, 
-                              exposure_str = exposure, 
-                              outcome_str = &quot;Health&quot;)</code></pre>
+<h1 class="tabset">Tree Attributes Distribution by Borough and Overall
+in NYC</h1>
+<div id="distribution-by-borough" class="section level2 tabset">
+<h2 class="tabset">Distribution by Borough</h2>
+<pre class="r"><code>exposure &lt;- &quot;Borough&quot;</code></pre>
+<div id="tree-health-4" class="section level3 tabset">
+<h3 class="tabset">Tree Health</h3>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Health&quot;)</code></pre>
 <p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
-<pre class="r"><code>exposure_tab(exposure)</code></pre>
-<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-24-2.png" width="672" /><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-24-3.png" width="672" /><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-24-4.png" width="672" /><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-24-5.png" width="672" /><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-24-6.png" width="672" /><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-24-7.png" width="672" /></p>
 </div>
-<div id="i-think-this-fixes-it" class="section level2 tabset">
-<h2 class="tabset">I think this fixes it</h2>
-<pre class="r"><code># Define exposure for this tab
-exposure &lt;- &quot;Curb Location&quot;
-
-tree_attribute_plot(df = tree_status_df, 
-                              exposure_str = exposure, 
-                              outcome_str = &quot;Health&quot;)
-
-
-grid.arrange(
-  tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Roots with Stones&quot;),
-  tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Roots in Grate&quot;),
-  ncol = 2)
-grid.arrange(
-  tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Root Problem (Other)&quot;),
-  tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Trunk Problem (Other)&quot;),
-  ncol = 2)
-grid.arrange(
-  tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Trunk has Wires&quot;),
-  tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Trunk has Lights&quot;),
-  ncol = 2)
-grid.arrange(
-  tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Roots with Stones&quot;),
-  tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Roots in Grate&quot;),
-  ncol = 2)
-grid.arrange(
-  tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Branches have Lights&quot;),
-  tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Branches Problem (Other)&quot;),
-  ncol = 2)
-
-tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Alive, Dead, or Stump&quot;)
-
-
-# p1 &lt;-  tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = as.character(options[8]))
-# p2 &lt;- tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = as.character(options[9]))
-#  
-# grid.arrange(p1, p2, ncol = 2)
-# 
-# grid.arrange(
-#   tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = options[10]),
-#   tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = options[13]),
-#   ncol = 2)
-# 
-# grid.arrange(
-#   tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = options[11]),
-#   tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = options[12]),
-#   ncol = 2)
-# 
-# grid.arrange(
-#   tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = options[14]),
-#   tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = options[15]),
-#   ncol = 2)
-# 
-# grid.arrange(
-#   tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = options[16]),
-#   tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = options[7]),
-#   ncol = 2)</code></pre>
-<div id="compare-tree-attributes-in-each-borough"
-class="section level3">
-<h3>Compare Tree Attributes in each Borough</h3>
+<div id="tree-attributes" class="section level3">
+<h3>Tree Attributes</h3>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Sidewalk Condition&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Curb Location&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-25-2.png" width="672" /></p>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Guards&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-25-3.png" width="672" /></p>
 </div>
-<div id="look-at-tree-attributes-in-nyc-overall" class="section level3">
-<h3>Look at Tree Attributes in NYC Overall</h3>
+<div id="roots-4" class="section level3">
+<h3>Roots</h3>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Roots with Stones&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Roots in Grate&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-26-2.png" width="672" /></p>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Root Problem (Other)&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-26-3.png" width="672" /></p>
+</div>
+<div id="trunk-4" class="section level3">
+<h3>Trunk</h3>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Trunk has Wires&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Trunk has Lights&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-27-2.png" width="672" /></p>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Trunk Problem (Other)&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-27-3.png" width="672" /></p>
+</div>
+<div id="branches-4" class="section level3">
+<h3>Branches</h3>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Branches have Lights&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Branches Problem (Other)&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-28-2.png" width="672" /></p>
+</div>
+<div id="vital-status-3" class="section level3">
+<h3>Vital Status</h3>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Alive, Dead, or Stump&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
+</div>
+</div>
+<div id="overall-nyc" class="section level2">
+<h2>Overall NYC</h2>
+<pre class="r"><code>exposure &lt;- &quot;All of NYC&quot;</code></pre>
+<div id="tree-health-5" class="section level3 tabset">
+<h3 class="tabset">Tree Health</h3>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Health&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
+</div>
+<div id="tree-attributes-1" class="section level3">
+<h3>Tree Attributes</h3>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Sidewalk Condition&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Curb Location&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-32-2.png" width="672" /></p>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Guards&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-32-3.png" width="672" /></p>
+</div>
+<div id="roots-5" class="section level3">
+<h3>Roots</h3>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Roots with Stones&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Roots in Grate&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-33-2.png" width="672" /></p>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Root Problem (Other)&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-33-3.png" width="672" /></p>
+</div>
+<div id="trunk-5" class="section level3">
+<h3>Trunk</h3>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Trunk has Wires&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Trunk has Lights&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-34-2.png" width="672" /></p>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Trunk Problem (Other)&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-34-3.png" width="672" /></p>
+</div>
+<div id="branches-5" class="section level3">
+<h3>Branches</h3>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Branches have Lights&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Branches Problem (Other)&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-35-2.png" width="672" /></p>
+</div>
+<div id="vital-status-4" class="section level3">
+<h3>Vital Status</h3>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Alive, Dead, or Stump&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
 </div>
 </div>
 </div>
