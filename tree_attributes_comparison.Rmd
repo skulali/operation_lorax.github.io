@@ -8,8 +8,6 @@ output:
     code_folding: hide
 ---
 
-# Comparison of Various Tree Attributes
-
 ```{r setup, message = FALSE, warning = FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
@@ -120,40 +118,7 @@ df %>%
     theme(legend.position="bottom")
 }
 
-# Define layout for tabs
-
-exposure_tab <- function(exposure){
-  
-grid.arrange(
-  tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = "Roots with Stones"),
-  tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = "Roots in Grate"),
-  ncol = 2)
-grid.arrange(
-  tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = "Root Problem (Other)"),
-  tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = "Trunk Problem (Other)"),
-  ncol = 2)
-grid.arrange(
-  tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = "Trunk has Wires"),
-  tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = "Trunk has Lights"),
-  ncol = 2)
-grid.arrange(
-  tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = "Roots with Stones"),
-  tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = "Roots in Grate"),
-  ncol = 2)
-grid.arrange(
-  tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = "Branches have Lights"),
-  tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = "Branches Problem (Other)"),
-  ncol = 2)
-
-tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = "Alive, Dead, or Stump")
-  
-}
-
-
 ```
-
-
-# Tree Attributes Relation to Eachother and Tree Attributes Distribution by Location 
 
 # Tree Status in Different Scenarios {.tabset}
 
@@ -360,7 +325,7 @@ tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = 
 tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = "Alive, Dead, or Stump")
 ```
 
-## Overall NYC
+## Overall NYC {.tabset}
 
 ```{r}
 exposure <- "All of NYC"
