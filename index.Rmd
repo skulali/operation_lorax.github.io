@@ -1,19 +1,21 @@
 ---
 ---
-
 <div class="title-box">
   <h1>Operation Lorax - Data Speaks for the Trees!</h1>
 </div>
 
 <div class="textbox">
-  In this exploratory [study](report.html), we aim to examine the geographic distribution and attributes of street trees across NYC and potential associations with sociodemographic variables and health outcomes. This research will aid in informing public health interventions to promote equitable access to urban street trees and improve health.
-  
-  Main Research Questions:
-  
-- How are trees geographically [distributed](tree_distribution.html) throughout New York City?
-- How are different tree [attributes](tree_attributes_comparison.html), quality, and health related to each other, and does this differ by borough?
-- How does access to trees vary by [socio-demographic](sociodemographic.html) categories by borough and neighborhoods?
-- Is there a relationship between tree distribution and [health](health.html) outcomes related to asthma and heat stress?
+  <p>In this exploratory <a href="report.html">study</a>, we aim to examine the geographic distribution and attributes of street trees across NYC and potential associations with sociodemographic variables and health outcomes. This research will aid in informing public health interventions to promote equitable access to urban street trees and improve health.</p>
+
+  <p>Main Research Questions:</p>
+  <ul>
+    <li>How are trees geographically <a href="tree_distribution.html">distributed</a> throughout New York City?</li>
+    <li>How are different tree <a href="tree_attributes_comparison.html">attributes</a>, quality, and health related to each other, and does this differ by borough?</li>
+    <li>How does access to trees vary by <a href="sociodemographic.html">socio-demographic</a> categories by borough and neighborhoods?</li>
+    <li>Is there a relationship between tree distribution and <a href="health.html">health</a> outcomes related to asthma and heat stress?</li>
+  </ul>
+
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/KrtAGPUAHD8" frameborder="0" border="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
 
 ```{css, echo=FALSE}
@@ -37,4 +39,9 @@ body {
   padding: 10px;
   border-radius: 5px;
   margin: 10px 0;
+}
+
+.textbox iframe {
+  display: block;
+  margin: 0 auto;
 }
