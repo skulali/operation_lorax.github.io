@@ -379,10 +379,8 @@ div.tocify {
 <pre class="r"><code>knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 library(tidyverse)
-library(shiny)
 library(rlang)
 library(viridis)
-library(gridExtra)
 
 theme_set(theme_minimal() + theme(legend.position = &quot;right&quot;))
 
@@ -488,13 +486,13 @@ different attributes of trees, such as curb location, tree guards, the
 quality of the sidewalk, or the tree health, with tree attributes, such
 as:</p>
 <ul>
-<li><p>health</p></li>
-<li><p>root health (whether they have stones, are in a grate, or have
+<li><p>Health</p></li>
+<li><p>Root health (whether they have stones, are in a grate, or have
 other problems)</p></li>
-<li><p>trunk health (whether it has wires, branches, or other
+<li><p>Trunk health (whether it has wires, branches, or other
 abnormalities)</p></li>
-<li><p>branch details (lights or other abnormalities)</p></li>
-<li><p>whether the tree is alive, dead, or a stump.</p></li>
+<li><p>Branch details (lights or other abnormalities)</p></li>
+<li><p>Whether the tree is alive, dead, or a stump.</p></li>
 </ul>
 <p>The figure includes the percentages of the different distribution
 categories, a visualization of these relative percentages, and the
@@ -700,6 +698,18 @@ guards and 20.5% of tree roots have stones.</p>
 <p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
 <pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Branches Problem (Other)&quot;)</code></pre>
 <p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-28-2.png" width="672" /></p>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Branches with Shoes&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-28-3.png" width="672" /></p>
+<pre class="r"><code>tree_status_df %&gt;% 
+  filter(`Branches with Shoes` == &quot;Yes&quot;) %&gt;% 
+  group_by(Borough) %&gt;% 
+  count(`Branches with Shoes`) %&gt;% 
+  ggplot(aes(x = Borough, y = n, fill = Borough)) +
+  geom_bar(stat = &#39;identity&#39;, position = &#39;dodge&#39;) +
+  labs(title = &quot;Number of Trees with Shoes in Branches&quot;,
+       x = &quot;Borough&quot;,
+       y = &quot;Number of Trees&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-28-4.png" width="672" /></p>
 </div>
 <div id="vital-status-3" class="section level3">
 <h3>Vital Status</h3>
@@ -748,17 +758,18 @@ guards and 20.5% of tree roots have stones.</p>
 <p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
 <pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Branches Problem (Other)&quot;)</code></pre>
 <p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-35-2.png" width="672" /></p>
+<pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Branches with Shoes&quot;)</code></pre>
+<p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-35-3.png" width="672" /></p>
 </div>
 <div id="vital-status-4" class="section level3">
 <h3>Vital Status</h3>
 <pre class="r"><code>tree_attribute_plot(df = tree_status_df, exposure_str = exposure, outcome_str = &quot;Alive, Dead, or Stump&quot;)</code></pre>
 <p><img src="tree_attributes_comparison_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
-<p>This figure shows the distribution of different attributes of trees
-and their status across all of NYC. For example, we see that 81.1% of
-trees are in “good” health, 14.8% of trees are in “fair” health, and
-4.1% of trees are in “poor” health. Notably, 28.7% of sidewalks are
-damaged (71.2% not damaged). The majority of trees (87.8%) do not have
-guards and 20.5% of tree roots have stones.</p>
+<p>For example, we see that 81.1% of trees are in “good” health, 14.8%
+of trees are in “fair” health, and 4.1% of trees are in “poor” health.
+Notably, 28.7% of sidewalks are damaged (71.2% not damaged). The
+majority of trees (87.8%) do not have guards and 20.5% of tree roots
+have stones.</p>
 <p>Compared to the other four boroughs, Manhattan had the lowest
 percentage of trees in “good” health, and the highest percentage of
 trees in both “fair” and “poor” health. Overall in NYC, 81.1% of trees
