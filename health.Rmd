@@ -115,7 +115,9 @@ trees_and_asthma_ed_adult |>
 
 ```
 
-#### By Borough {.tabset}
+#### Asthma Emergency Department Visits By Borough {.tabset}
+
+The following tabs explore the association between number of trees per acre and the average annual rate of adult asthma emergency department visits per 10,000 people.
 
 ##### Manhattan {.tabset}
 
@@ -299,7 +301,9 @@ trees_and_asthma_hosp_adult |>
 
 ```
 
-#### By Borough {.tabset}
+#### Asthma Hospitalizations By Borough {.tabset}
+
+The following tabs explore the association between number of trees per acre and the average annual rate of adult asthma hospitalizations per 10,000 people.
 
 ##### Manhattan {.tabset}
 

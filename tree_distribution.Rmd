@@ -45,6 +45,8 @@ trees_2015 =
 
 ## Tree Count
 
+### Trees in Each Borough
+
 This plot summarizes the total number of trees in each borough according to the data collected within the 2015 Street Tree Census. Queens has the largest number of trees, which is nearly 4 times the amount in Manhattan, which has the least number of trees.
 
 ```{r}
@@ -83,6 +85,8 @@ ggplot(data = number_tree, aes(x = borough, y = n_trees, fill = borough)) + geom
   )
 ```
 
+### Manhattan
+
 Now looking at the Manhattan borough, the plot below shows the breakdown of number of trees per NTA and the total population per 10000 people. By looking at these values side-by-side, it is notable that the Upper West Side is the only NTA that has a human population (per 10000) that surpassed the number of trees. It also has the largest number of trees. The data used to generate this plot is from merging the 2015 Street Tree Census and the 2010 US Census Population data sets.
 
 ```{r}
@@ -108,6 +112,8 @@ ggplot(mhtn_number_tree, aes(x = nta_name, y = total, fill = type)) + geom_bar(s
     y = "Total Number of Trees"
   )
 ```
+
+### Neighborhoods 
 
 ```{r}
 acres_raw <- 
@@ -149,6 +155,8 @@ Comments:
 - Upper East Side-Carnegie Hill in Manhattan has the greatest number of alive trees per acre.
 - 6 NTAs from the 2015 Tree Census were missing acreage information, so these NTAs were removed for the purposes of this table.
 
+### Highest Number of Trees
+
 ```{r}
 trees_total_nta_table <- trees_per_acre_df |> 
   filter(min_rank(desc(num_trees)) < 11) |> 
@@ -163,10 +171,13 @@ Comments:
 - It is important to note while these neighborhoods have a high total number of alive trees, the number of alive trees per acre is low.
 - 6 NTAs from the 2015 Tree Census were missing acreage information, so these NTAs were removed for the purposes of this table.
 
+### Total Trees per NTA
+
 The map below visualizes the spatial distribution of total street trees per neighborhood tabulation area (NTA). The neighborhoods that appear to have the lowest number of street trees are lower Manhattan and the North Bronx. The neighborhoods that appear to be in the highest band of tree counts, ranging from over 5000 to over 12000, are in southern Staten Island, Southeast Brooklyn, and across Queens.
 
 ```{r}
-nyc_nta = st_read("small_data/geo_export_e924b274-8b6e-427d-87c0-92bfde8ce30a.shp")
+nyc_nta = st_read("small_data/geo_export_e924b274-8b6e-427d-87c0-92bfde8ce30a.shp",
+                  quiet = TRUE)
 
 nta_dbh_summarized = trees_2015 |> 
   drop_na(tree_dbh) |> 
@@ -196,6 +207,8 @@ tm_shape(nta_dbh_spatial) +
 It is also important to consider that NTAs do not have standardized area, and some NTAs are dramatically larger than others and not all area is equally accommodating to planting street trees.To better understand tree density, we calculated a unit of trees per acre so that this value could be averaged across neighborhoods and account for area differences across NYC boroughs.
 
 ## Tree Species
+
+### Tree Species Distribution
 
 ```{r}
 top_trees_nyc <- trees_2015 %>% 
@@ -231,6 +244,8 @@ Comments:
 - The Callery Pear is also the most common tree in Manhattan and Staten Island. 
 - The most common tree species in both Brooklyn and Queens is the London Planetree, and the Honeylocust is the most common tree in the Bronx.
 
+### Top Tree Species in Each Borough
+
 ```{r}
 trees_2015 %>%
   drop_na() %>%
@@ -247,6 +262,8 @@ trees_2015 %>%
   select(row_num, everything()) %>% 
   knitr::kable(caption = "Top 10 Tree Species in Each Borough")
 ```
+
+### Top Species in Queens
 
 After discovering that Queens has the greatest number of trees, a closer look was taken to evaluate which species are most prevalent. Due to the vast number of species populating  Queens, the below visualization represents the counts of each species with counts up to 500 and thus showing which species are most rare. 
 
@@ -287,6 +304,8 @@ ggplot(data = queens_prev_trees, aes(x = spc_common, y = n, fill = spc_common)) 
 
 ## Tree DBH
 
+### Tree DBH Defined
+
 Understanding DBH broadly:
 
 - DBH, or diameter at breast height, is a standardized measurement of tree growth that is used by foresters as a baseline unit for understanding tree age, size, and total overall biomass. Depending on the ecological characteristics of a tree species, DBH measurements can be used to calculate estimates of above ground biomass (wood and branch cover) and below ground biomass, as well as carbon storage. With the limited information this 2015 street survey provides about DBH and tree species, we will primarily be using DBH as a proxy for the size, age, and maturity of trees across NYC neighborhoods.
@@ -297,6 +316,8 @@ Links  to learn more:
 - [How DBH is measured](http://www.phytosphere.com/treeord/measuringdbh.htm)
 - [What calculations can DBH be used to interpret? Biomass, Carbon Storage, etc.](https://www.mdpi.com/1999-4907/11/2/135)
 - [Online tree calculator estimations](https://www.omnicalculator.com/biology/tree-diameter)
+
+### Neighborhoods with Highest Average DBH
 
 ```{r}
 trees_dbh = trees_2015 |> 
@@ -319,6 +340,8 @@ Comments:
 - Small NTA regions that had high average DBH but low tree counts of less than 100 were filtered out of this table.
 - Averages around 15 inches for all 10 neighborhoods, with multiple thousands of trees within their sample size.
 - 6/10 highest in Queens, no representation of  Manhattan or Bronx.
+
+### Distribution of DBH in Each Borough
 
 ```{r}
 borough_dbh = trees_2015 |> 
@@ -362,6 +385,8 @@ Comments:
 - Manhattan and Bronx have peaks where about 10% of all trees are less than 5 inches in DBH, these peaks are lower around 7 - 8% for Queens and Brooklyn respectively.
 - Staten Island closest to bimodal distribution. 
 
+### Tree DBH Mapped
+
 ```{r}
 tm_shape(nta_dbh_spatial) +
   tm_polygons(col = "avg_dbh",
@@ -384,12 +409,13 @@ Comments:
 
 ## Tree Health Status 
 
-Below are some visualizations of all 5 boroughs of New York by Zip Code, colored by tree health. This data was collected from the 2015 Street Tree Census. The decision to use Zip Codes for these maps was made due to the availability of a shape file of New York with lines to separate by Zip Code. The following 5 visualizations are closer visualizations of each borough. 
+Below are some visualizations of all 5 boroughs of New York by Zip Code, colored by tree health. This data was collected from the 2015 Street Tree Census. The decision to use Zip Codes for these maps was made due to the availability of a shape file of New York with lines to separate by Zip Code. 
 
 ### NYC Overall
 
 ```{r}
-zip_nyc = st_read("small_data/MODZCTA_2010.shp")
+zip_nyc = st_read("small_data/MODZCTA_2010.shp",
+                  quiet = TRUE)
 
 trees_df = 
   trees_2015 |> 
@@ -419,7 +445,10 @@ trees_zip |>
             legend.text.size = 0.52)
 ```
 
-### By Borough {.tabset}
+### Health Status By Borough {.tabset}
+
+The following 5 visualizations are closer visualizations of tree health status in each borough. 
+
 #### Manhattan {.tabset}
 
 ```{r}
@@ -517,6 +546,8 @@ trees_zip |>
 
 ### Washington Heights
 
+#### Tree Health Map
+
 The map below is the tree health across Washington Heights by Zip Codes.
 
 ```{r}
@@ -550,6 +581,8 @@ trees_nta |>
             frame = FALSE) +
   tm_legend(legend.text.size = 0.52)
 ```
+
+#### Interactive Tree Scatter Plot
 
 This plot is an interactive scatter plot of every tree included in Washington Heights included in the 2015 Street Tree Census data set. The colors indicate the health of the tree and when hovering over a certain point, the latitude, longitude, and species are shown. 
 
