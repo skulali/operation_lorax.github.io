@@ -103,8 +103,19 @@ trees_2015 |>
 
 trees_2015 %>% 
   filter(brch_shoe == "Yes") %>% 
+  group_by(borough) %>% 
+  count(brch_shoe) %>% 
+  ggplot(aes(x = borough, y = n)) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  labs(title = "Number of Trees with Shoes in Branches",
+       xlab = "Borough",
+       ylab = "Number of Trees")
+
+trees_2015 %>% 
+  filter(brch_shoe == "Yes") %>% 
   ggplot(aes(x = borough)) +
-  geom_bar()
+  geom_bar() +
+  labs(title = "Shoes in Branches")
 
 ```
 
